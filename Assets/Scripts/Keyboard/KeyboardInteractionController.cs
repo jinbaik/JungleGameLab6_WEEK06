@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -24,6 +25,9 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     private BoxCollider _padCollider;
     private KeyboardState _placedKeyboard;
     public bool IsSmashMode { get; private set; }
+    public KeyboardInputController ActiveKeyboard => IsSmashMode ? _placedKeyboard.Keyboard : null;
+
+    public event Action<KeyboardInputController> ActiveKeyboardChanged;
 
     [Header("Pickup")]
     [SerializeField, Min(0.1f)] private float _rayDistance = 12f;
@@ -228,20 +232,27 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         OnEnterSmashMode();
     }
 
-    /// <summary>Pad 키보드의 입력을 켜고 고정 카메라 우선순위를 20으로 변경하여 SmashMode에 진입한다.</summary>
+    /// 배치된 키보드와 고정 카메라를 사용해 부수기 모드에 진입한다.
+    /// ActiveKeyboardChanged로 대상 키보드를 알린 뒤 해당 키보드의 입력을 켠다.
     private void OnEnterSmashMode()
     {
         IsSmashMode = true;
         _fixedCam.Priority = 20;
+
+        ActiveKeyboardChanged?.Invoke(ActiveKeyboard);
+
         SetKeyboardInput(_placedKeyboard, true);
     }
 
-    /// <summary>고정 카메라 우선순위를 0으로 되돌리고 Pad 키보드 입력을 꺼 SmashMode를 종료한다.</summary>
+    /// 배치된 키보드와 고정 카메라를 사용해 부수기 모드를 종료한다.
+    /// 키보드 입력을 끄고 ActiveKeyboardChanged에 null을 전달해 대상 해제를 알린다.
     private void OnExitSmashMode()
     {
         IsSmashMode = false;
         _fixedCam.Priority = 0;
         SetKeyboardInput(_placedKeyboard, false);
+
+        ActiveKeyboardChanged?.Invoke(null);
     }
 
     /// <summary>state의 입력 컨트롤러와 원래 키캡 Collider를 active에 따라 켜거나 끈다. 파괴된 키캡의 Collider는 복구하지 않는다.</summary>

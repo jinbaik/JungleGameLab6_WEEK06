@@ -1,0 +1,80 @@
+using System;
+
+using UnityEngine;
+
+using Game.Session;
+using KeyboardModeling;
+
+namespace Game.Economy
+{
+    public sealed class KeyboardRewardController : MonoBehaviour
+    {
+        [Header("Dependencies")]
+        [SerializeField] private GameSession _gameSession;
+        [SerializeField] private KeyboardInteractionController _interactionController;
+
+        [Header("Reward")]
+        [SerializeField, Min(1)] private long _rewardPerKeycap = 10;
+
+        [Header("Runtime State")]
+        private KeyboardInputController _activeKeyboard;
+        private KeycapHealth[] _keycaps = Array.Empty<KeycapHealth>();
+
+        void OnEnable()
+        {
+            _interactionController.ActiveKeyboardChanged += BindKeyboard;
+            BindKeyboard(_interactionController.ActiveKeyboard);
+        }
+
+        void OnDisable()
+        {
+            _interactionController.ActiveKeyboardChanged -= BindKeyboard;
+            UnbindKeyboard();
+        }
+
+        /// keyboard를 새 보상 대상으로 사용하고 기존 키캡의 이벤트 연결을 해제한다.
+        /// keyboard가 있으면 하위 키캡의 Broken 이벤트를 구독하고 대상과 목록을 저장한다.
+        private void BindKeyboard(KeyboardInputController keyboard)
+        {
+            if (_activeKeyboard == keyboard)
+            {
+                return;
+            }
+
+            UnbindKeyboard();
+            _activeKeyboard = keyboard;
+
+            if (keyboard == null)
+            {
+                return;
+            }
+
+            _keycaps = keyboard.GetComponentsInChildren<KeycapHealth>(true);
+
+            for (int index = 0; index < _keycaps.Length; index++)
+            {
+                _keycaps[index].Broken += OnKeycapBroken;
+            }
+        }
+
+        /// 저장된 키캡 목록을 사용해 모든 Broken 이벤트 구독을 해제한다.
+        /// 현재 대상 키보드와 키캡 목록을 비운다.
+        private void UnbindKeyboard()
+        {
+            for (int index = 0; index < _keycaps.Length; index++)
+            {
+                _keycaps[index].Broken -= OnKeycapBroken;
+            }
+
+            _keycaps = Array.Empty<KeycapHealth>();
+            _activeKeyboard = null;
+        }
+
+        /// keycap의 파괴 알림을 받아 설정된 키캡당 보상을 지급한다.
+        /// _rewardPerKeycap을 기존 GameSession의 지갑에 더해 잔액을 변경한다.
+        private void OnKeycapBroken(KeycapHealth keycap)
+        {
+            _gameSession.Wallet.Add(_rewardPerKeycap);
+        }
+    }
+}

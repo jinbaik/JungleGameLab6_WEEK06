@@ -3,6 +3,8 @@ using System;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
+using Random = UnityEngine.Random;
+
 public sealed class KeycapHealth : MonoBehaviour
 {
     public enum BreakMode { Fragments, Particles }
@@ -61,12 +63,14 @@ public sealed class KeycapHealth : MonoBehaviour
     [ContextMenu("Take 1 Damage")]
     private void TakeOneDamage() { if (Application.isPlaying) TakeDamage(1); }
 
-    /// <summary>파편 또는 파티클 프리팹과 힘 설정을 사용해 원본을 숨기고 파괴 효과를 생성하며, 지정 수명 후 효과를 제거한다.</summary>
+    /// 파괴 효과 설정을 사용해 키캡을 파괴 상태로 변경하고 Renderer와 Collider를 끈다.
+    /// Broken 이벤트로 이 키캡을 알린 뒤 파괴 효과를 생성하고 지정 수명 후 제거한다.
     private void Break()
     {
         _broken = true;
         foreach (Renderer renderer in _renderers) renderer.enabled = false;
         foreach (Collider collider in _colliders) collider.enabled = false;
+        Broken?.Invoke(this);
         GameObject effect = Instantiate(_breakMode == BreakMode.Fragments ? _fragmentsPrefab : _particlesPrefab, transform.position, transform.rotation);
         effect.transform.localScale = transform.lossyScale;
         foreach (Rigidbody body in effect.GetComponentsInChildren<Rigidbody>())
