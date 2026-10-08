@@ -114,7 +114,7 @@ namespace KeyboardModeling
         /// </summary>
         private void RefreshStatus(MiniGameController.MiniGameKind game)
         {
-            _status.text = game == MiniGameController.MiniGameKind.Idle ? "SYSTEM ONLINE / STANDBY" : "EVENT ACTIVE / NO TIME LIMIT";
+            _status.text = game == MiniGameController.MiniGameKind.Idle ? "SYSTEM ONLINE / STANDBY" : "EVENT ACTIVE";
         }
 
         /// <summary>

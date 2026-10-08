@@ -4439,6 +4439,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2081484439}
   - component: {fileID: 2081484438}
+  - component: {fileID: 2081484440}
   m_Layer: 0
   m_Name: StorePresentation
   m_TagString: Untagged
@@ -4484,6 +4485,21 @@ Transform:
   - {fileID: 1362419987}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2081484440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2081484437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d26aab0785cea3438280e875d161d52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonitorController
+  _shopCanvas: {fileID: 2127833599}
+  _miniGameCanvas: {fileID: 0}
+  _shopView: {fileID: 2127833600}
 --- !u!1 &2127833599 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1047948132826088465, guid: d90785f541c58bf468ab2208214050df, type: 3}
@@ -4820,6 +4836,10 @@ PrefabInstance:
     - target: {fileID: 6415902809931646720, guid: d90785f541c58bf468ab2208214050df, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6415902809931646720, guid: d90785f541c58bf468ab2208214050df, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7309778553240731167, guid: d90785f541c58bf468ab2208214050df, type: 3}
       propertyPath: m_SizeDelta.x

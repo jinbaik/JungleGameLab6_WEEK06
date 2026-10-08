@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 using Game.Session;
@@ -24,7 +23,6 @@ namespace Game.Shop
         [SerializeField] private Button _toggleButton;
 
         [Header("Input")]
-        private readonly InputAction _toggleAction = new InputAction("ToggleShop", InputActionType.Button, "<Keyboard>/tab");
         private bool _isInputEnabled = true;
 
         [Header("Runtime State")]
@@ -33,16 +31,6 @@ namespace Game.Shop
         public bool IsOpen => _shopPanel.activeSelf;
 
         public event Action<bool> OpenStateChanged;
-
-        void OnEnable()
-        {
-            _toggleAction.performed += OnTogglePerformed;
-
-            if (_isInputEnabled)
-            {
-                _toggleAction.Enable();
-            }
-        }
 
         void Start()
         {
@@ -63,15 +51,8 @@ namespace Game.Shop
             SetOpen(IsOpen);
         }
 
-        void OnDisable()
-        {
-            _toggleAction.Disable();
-            _toggleAction.performed -= OnTogglePerformed;
-        }
-
         void OnDestroy()
         {
-            _toggleAction.Dispose();
             _gameSession.Wallet.BalanceChanged -= OnBalanceChanged;
             _gameSession.Upgrades.LevelChanged -= OnLevelChanged;
             _toggleButton.onClick.RemoveListener(Toggle);
@@ -116,31 +97,13 @@ namespace Game.Shop
         }
 
         /// <summary>
-        /// isEnabled를 사용하여 Tab 입력과 상점 열기 및 닫기 버튼의 사용 여부를 설정한다.
-        /// 연출 중에는 입력을 중지하고, 컴포넌트가 활성화된 경우에만 입력 액션을 다시 켠다.
+        /// isEnabled를 사용하여 상점 전환 요청과 열기 및 닫기 버튼의 사용 여부를 설정한다.
+        /// 입력 허용 상태와 버튼 상태를 변경하여 연출 중에는 Toggle 요청을 차단한다.
         /// </summary>
         public void SetInputEnabled(bool isEnabled)
         {
             _isInputEnabled = isEnabled;
             _toggleButton.interactable = isEnabled;
-
-            if (isEnabled && isActiveAndEnabled)
-            {
-                _toggleAction.Enable();
-            }
-            else
-            {
-                _toggleAction.Disable();
-            }
-        }
-
-        /// <summary>
-        /// context로 전달된 Tab 입력 액션의 실행을 받아 상점 표시 상태를 전환한다.
-        /// 재화와 강화 레벨을 유지하면서 패널과 열기 버튼의 표시를 변경한다.
-        /// </summary>
-        private void OnTogglePerformed(InputAction.CallbackContext context)
-        {
-            Toggle();
         }
 
         /// <summary>

@@ -1867,7 +1867,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: MASH ANY KEY / reach 100% / progress slowly decays
+  m_Text: TYPE ANY KEY / reach 100% / progress slowly decays
 --- !u!1 &7254277293160691736
 GameObject:
   m_ObjectHideFlags: 0
