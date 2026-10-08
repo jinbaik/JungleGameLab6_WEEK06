@@ -23,6 +23,7 @@ namespace KeyboardModeling
 
         [Header("Mini Game")]
         [SerializeField] private MiniGameController _miniGame;
+        private KeycapButton[] _keycapButtons;
 
         [Header("Key Travel")]
         [SerializeField, Min(0f)] private float _pressDistance = 0.15f;
@@ -53,8 +54,12 @@ namespace KeyboardModeling
             _restPositions = new Vector3[_bindings.Length];
             _pressAmounts = new float[_bindings.Length];
             _previousPressed = new bool[_bindings.Length];
+            _keycapButtons = new KeycapButton[_bindings.Length];
             for (int index = 0; index < _bindings.Length; index++)
+            {
                 _restPositions[index] = _bindings[index].Keycap.localPosition;
+                _keycapButtons[index] = _bindings[index].Keycap.GetComponent<KeycapButton>();
+            }
             _hasFocus = Application.isFocused;
         }
 
@@ -80,7 +85,7 @@ namespace KeyboardModeling
             _pressedKeyNames.Clear();
             for (int index = 0; index < _bindings.Length; index++)
             {
-                bool unityPressed = keyboard != null && keyboard[_bindings[index].Key].isPressed;
+                bool unityPressed = keyboard != null && (keyboard[_bindings[index].Key].isPressed || keyboard[_bindings[index].Key].wasPressedThisFrame);
                 bool nativePressed = false;
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
                 if (_captureInput)
@@ -100,6 +105,13 @@ namespace KeyboardModeling
                     _bindings[index].Keycap.GetComponent<KeycapHealth>().TakeDamage(damage);
                 }
                 AnimateKey(index, isPressed, Time.unscaledDeltaTime);
+
+                _keycapButtons[index].SetPressed(isPressed);
+                if (!_inputEnabled || !isActiveAndEnabled)
+                {
+                    RestoreKeys();
+                    return;
+                }
 
                 if (_logInput && isPressed != _previousPressed[index])
                     Debug.Log("[Keyboard][Model] " + (isPressed ? "DOWN " : "UP ") + _bindings[index].Key + " | Unity=" + unityPressed + " Hook=" + nativePressed + " | Target=" + _bindings[index].Keycap.name + " LocalY=" + _bindings[index].Keycap.localPosition.y.ToString("F4"), this);
@@ -209,7 +221,7 @@ namespace KeyboardModeling
 
         /// <summary>
         /// 모든 키캡의 눌림 상태를 해제한다.
-        /// 초기 위치 배열과 매핑된 키캡을 사용하여 원래 위치와 눌림량 0으로 복원한다.
+        /// 초기 위치 배열과 매핑된 키캡을 사용하여 위치, 눌림량, 기능 실행 상태를 초기화한다.
         /// </summary>
         private void RestoreKeys()
         {
@@ -222,6 +234,7 @@ namespace KeyboardModeling
                 _previousPressed[index] = false;
                 _bindings[index].Keycap.localPosition = _restPositions[index];
                 _pressAmounts[index] = 0f;
+                _keycapButtons[index].ResetPressState();
             }
         }
 

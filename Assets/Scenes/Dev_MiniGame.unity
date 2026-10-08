@@ -1028,7 +1028,7 @@ PrefabInstance:
     - target: {fileID: 5033408809425400753, guid: 608c67b85a19ab549b98ae183d2cbfb1, type: 3}
       propertyPath: _miniGame
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 6761897835148527509}
     - target: {fileID: 6087872409866529466, guid: 608c67b85a19ab549b98ae183d2cbfb1, type: 3}
       propertyPath: m_Name
       value: Keyboard_ANSI_104
@@ -1466,6 +1466,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2051169163492135865, guid: 298dd09b174288249bd1bdab08e410b3, type: 3}
   m_PrefabInstance: {fileID: 1606687149856982828}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6761897835148527509 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 498755381938961326, guid: 298dd09b174288249bd1bdab08e410b3, type: 3}
+  m_PrefabInstance: {fileID: 1606687149856982828}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e02571f5689b9e46ade058e611a414f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.MiniGameController
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
