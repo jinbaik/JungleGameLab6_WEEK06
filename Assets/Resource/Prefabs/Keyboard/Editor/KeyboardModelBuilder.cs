@@ -333,6 +333,7 @@ namespace KeyboardModeling.Editor
             collider.center = new Vector3(0f, 0.26f, 0f);
             collider.size = new Vector3(width, 0.53f, depth);
             cap.transform.localScale = Vector3.one * PITCH;
+            KeyboardInputSetup.ConfigureKeycap(cap);
             _caps[id] = PrefabUtility.SaveAsPrefabAsset(cap, PREFAB_ROOT + "/Keycaps/Keycap_" + id + ".prefab");
             UnityEngine.Object.DestroyImmediate(cap);
         }

@@ -75,7 +75,11 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # Personal instructions and local notes
-/LOCAL.md
+/[Dd]ocs/
+*.[mM][dD]
+*.[mM][dD].meta
+!AGENTS.md
+!AGENTS.md.meta
 /.local/
 
 # Temporary agent verification projects
