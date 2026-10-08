@@ -1,4 +1,0 @@
-Key instances: 104
-Unique keycap prefabs: 9
-Scene: Assets/Scenes/Keyboard.unity
-Keyboard width: 0.452 m

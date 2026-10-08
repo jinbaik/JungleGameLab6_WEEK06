@@ -12,7 +12,11 @@ namespace KeyboardModeling.Editor
 {
     public static class KeyboardModelBuilder
     {
-        private const string ROOT = "Assets/Keyboard";
+        private const string RESOURCE_ROOT = "Assets/Resource";
+        private const string PREFAB_ROOT = RESOURCE_ROOT + "/Prefabs";
+        private const string MATERIAL_ROOT = RESOURCE_ROOT + "/Materials";
+        private const string MESH_ROOT = RESOURCE_ROOT + "/Meshes";
+        private const string PREVIEW_ROOT = ".local/KeyboardPreview";
         private const float PITCH = 0.01905f;
         private const int CORNER_SEGMENTS = 12;
 
@@ -30,7 +34,7 @@ namespace KeyboardModeling.Editor
         [MenuItem("Tools/Keyboard/Build Detailed Keyboard Scene")]
         public static void Build()
         {
-            foreach (string folder in new[] { ROOT, ROOT + "/Meshes", ROOT + "/Materials", ROOT + "/Prefabs", ROOT + "/Prefabs/Keycaps", ROOT + "/Preview" })
+            foreach (string folder in new[] { RESOURCE_ROOT, MESH_ROOT, MATERIAL_ROOT, PREFAB_ROOT, PREFAB_ROOT + "/Keycaps", PREVIEW_ROOT })
                 Directory.CreateDirectory(folder);
             AssetDatabase.Refresh();
             _materials.Clear();
@@ -51,7 +55,7 @@ namespace KeyboardModeling.Editor
             GameObject keyboard = new GameObject("Keyboard_ANSI_104");
             GameObject body = BuildBody();
             body.transform.localScale = Vector3.one * PITCH;
-            GameObject bodyPrefab = PrefabUtility.SaveAsPrefabAsset(body, ROOT + "/Prefabs/KeyboardBody.prefab");
+            GameObject bodyPrefab = PrefabUtility.SaveAsPrefabAsset(body, PREFAB_ROOT + "/KeyboardBody.prefab");
             UnityEngine.Object.DestroyImmediate(body);
             GameObject bodyInstance = (GameObject)PrefabUtility.InstantiatePrefab(bodyPrefab);
             bodyInstance.transform.SetParent(keyboard.transform, false);
@@ -59,15 +63,16 @@ namespace KeyboardModeling.Editor
             BuildLayout(keyboard.transform);
             if (_keyCount != 104)
                 throw new InvalidOperationException("ANSI 키 개수가 104개가 아닙니다: " + _keyCount);
+            KeyboardInputSetup.Configure(keyboard);
             keyboard.transform.localScale = Vector3.one * PITCH;
-            GameObject keyboardPrefab = PrefabUtility.SaveAsPrefabAsset(keyboard, ROOT + "/Prefabs/Keyboard_ANSI_104.prefab");
+            GameObject keyboardPrefab = PrefabUtility.SaveAsPrefabAsset(keyboard, PREFAB_ROOT + "/Keyboard_ANSI_104.prefab");
             UnityEngine.Object.DestroyImmediate(keyboard);
             keyboard = (GameObject)PrefabUtility.InstantiatePrefab(keyboardPrefab);
             BuildStudio();
             EditorSceneManager.SaveScene(scene, "Assets/Scenes/Keyboard.unity");
             AssetDatabase.SaveAssets();
             CapturePreview();
-            File.WriteAllText(ROOT + "/Preview/BuildReport.txt", "Key instances: " + _keyCount + "\nUnique keycap prefabs: " + _caps.Count + "\nScene: Assets/Scenes/Keyboard.unity\nKeyboard width: 0.452 m\n");
+            File.WriteAllText(PREVIEW_ROOT + "/BuildReport.txt", "Key instances: " + _keyCount + "\nUnique keycap prefabs: " + _caps.Count + "\nScene: Assets/Scenes/Keyboard.unity\nKeyboard width: 0.452 m\n");
             Debug.Log("KEYBOARD_BUILD_COMPLETE keys=" + _keyCount + " uniqueCaps=" + _caps.Count);
         }
 
@@ -100,7 +105,7 @@ namespace KeyboardModeling.Editor
         /// </summary>
         private static void AddPbtGrain()
         {
-            string path = ROOT + "/Materials/PBT_MicroGrain.asset";
+            string path = MATERIAL_ROOT + "/PBT_MicroGrain.asset";
             Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
             if (texture == null)
             {
@@ -131,7 +136,7 @@ namespace KeyboardModeling.Editor
         /// </summary>
         private static Material MakeMaterial(string name, Color color, float metallic, float smoothness)
         {
-            string path = ROOT + "/Materials/" + name + ".mat";
+            string path = MATERIAL_ROOT + "/" + name + ".mat";
             Material material = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (material == null)
             {
@@ -249,7 +254,7 @@ namespace KeyboardModeling.Editor
         /// </summary>
         private static Mesh SaveMesh(Mesh mesh, string name)
         {
-            string path = ROOT + "/Meshes/" + name + ".asset";
+            string path = MESH_ROOT + "/" + name + ".asset";
             Mesh saved = AssetDatabase.LoadAssetAtPath<Mesh>(path);
             if (saved == null)
             {
@@ -328,7 +333,7 @@ namespace KeyboardModeling.Editor
             collider.center = new Vector3(0f, 0.26f, 0f);
             collider.size = new Vector3(width, 0.53f, depth);
             cap.transform.localScale = Vector3.one * PITCH;
-            _caps[id] = PrefabUtility.SaveAsPrefabAsset(cap, ROOT + "/Prefabs/Keycaps/Keycap_" + id + ".prefab");
+            _caps[id] = PrefabUtility.SaveAsPrefabAsset(cap, PREFAB_ROOT + "/Keycaps/Keycap_" + id + ".prefab");
             UnityEngine.Object.DestroyImmediate(cap);
         }
 
@@ -645,7 +650,7 @@ namespace KeyboardModeling.Editor
             Texture2D image = new Texture2D(1920, 1080, TextureFormat.RGB24, false);
             image.ReadPixels(new Rect(0f, 0f, 1920f, 1080f), 0, 0);
             image.Apply();
-            File.WriteAllBytes(ROOT + "/Preview/" + name + ".png", image.EncodeToPNG());
+            File.WriteAllBytes(PREVIEW_ROOT + "/" + name + ".png", image.EncodeToPNG());
             camera.targetTexture = null;
             RenderTexture.active = previous;
             target.Release();
@@ -654,3 +659,4 @@ namespace KeyboardModeling.Editor
         }
     }
 }
+

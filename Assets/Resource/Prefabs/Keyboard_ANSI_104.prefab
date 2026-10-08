@@ -36884,6 +36884,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6971031978401606262}
+  - component: {fileID: 5033408809425400753}
   m_Layer: 0
   m_Name: Keyboard_ANSI_104
   m_TagString: Untagged
@@ -36908,6 +36909,232 @@ Transform:
   - {fileID: 1340132528345542871}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5033408809425400753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6087872409866529466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c34a4fcdd9e7394daa9de6b2cf24be4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardInputController
+  _inputEnabled: 1
+  _blockShortcuts: 1
+  _bindings:
+  - _key: 60
+    _keycap: {fileID: 8548128700969274151}
+  - _key: 94
+    _keycap: {fileID: 6929360445765524175}
+  - _key: 95
+    _keycap: {fileID: 3556486607592110595}
+  - _key: 96
+    _keycap: {fileID: 2117897565190957213}
+  - _key: 97
+    _keycap: {fileID: 8308325400304397223}
+  - _key: 98
+    _keycap: {fileID: 5525024634637725288}
+  - _key: 99
+    _keycap: {fileID: 2956669096968339188}
+  - _key: 100
+    _keycap: {fileID: 1279899395319297927}
+  - _key: 101
+    _keycap: {fileID: 4505061731555138429}
+  - _key: 102
+    _keycap: {fileID: 8171735746362260920}
+  - _key: 103
+    _keycap: {fileID: 6888342639882111134}
+  - _key: 104
+    _keycap: {fileID: 1301427054745480071}
+  - _key: 105
+    _keycap: {fileID: 2206663537501895423}
+  - _key: 74
+    _keycap: {fileID: 9078913061569020089}
+  - _key: 75
+    _keycap: {fileID: 9110631917641998020}
+  - _key: 76
+    _keycap: {fileID: 2441058545069177180}
+  - _key: 4
+    _keycap: {fileID: 7771627987567722746}
+  - _key: 41
+    _keycap: {fileID: 7455065081766954715}
+  - _key: 42
+    _keycap: {fileID: 1296761263726681387}
+  - _key: 43
+    _keycap: {fileID: 2893661913496382572}
+  - _key: 44
+    _keycap: {fileID: 8031805424020559803}
+  - _key: 45
+    _keycap: {fileID: 2959469176965820618}
+  - _key: 46
+    _keycap: {fileID: 5908900388367744173}
+  - _key: 47
+    _keycap: {fileID: 6708413628518978671}
+  - _key: 48
+    _keycap: {fileID: 131961232538372168}
+  - _key: 49
+    _keycap: {fileID: 8090667406913153385}
+  - _key: 50
+    _keycap: {fileID: 525965308123753153}
+  - _key: 13
+    _keycap: {fileID: 2610349601301214767}
+  - _key: 14
+    _keycap: {fileID: 7355095779228957060}
+  - _key: 65
+    _keycap: {fileID: 8366407212574745127}
+  - _key: 3
+    _keycap: {fileID: 8193404908229327770}
+  - _key: 31
+    _keycap: {fileID: 6623760305490542860}
+  - _key: 37
+    _keycap: {fileID: 8963280008665565397}
+  - _key: 19
+    _keycap: {fileID: 4850912637984831121}
+  - _key: 32
+    _keycap: {fileID: 8968994552982260733}
+  - _key: 34
+    _keycap: {fileID: 3350681404964207810}
+  - _key: 39
+    _keycap: {fileID: 6685370073060151534}
+  - _key: 35
+    _keycap: {fileID: 5922949551168439893}
+  - _key: 23
+    _keycap: {fileID: 7403840454073204210}
+  - _key: 29
+    _keycap: {fileID: 8706261992723010695}
+  - _key: 30
+    _keycap: {fileID: 6816257578053104810}
+  - _key: 11
+    _keycap: {fileID: 811335777987112213}
+  - _key: 12
+    _keycap: {fileID: 2848083007577668120}
+  - _key: 10
+    _keycap: {fileID: 8488270221969748873}
+  - _key: 72
+    _keycap: {fileID: 3191143692783253244}
+  - _key: 15
+    _keycap: {fileID: 1962453191116636375}
+  - _key: 33
+    _keycap: {fileID: 8783265912377606305}
+  - _key: 18
+    _keycap: {fileID: 7520230041062679749}
+  - _key: 20
+    _keycap: {fileID: 7556842345108698144}
+  - _key: 21
+    _keycap: {fileID: 7101673409796926414}
+  - _key: 22
+    _keycap: {fileID: 5127889018504956756}
+  - _key: 24
+    _keycap: {fileID: 71506373010407265}
+  - _key: 25
+    _keycap: {fileID: 199409989544244914}
+  - _key: 26
+    _keycap: {fileID: 1686011990165416515}
+  - _key: 6
+    _keycap: {fileID: 1252169517302256243}
+  - _key: 5
+    _keycap: {fileID: 4979138813985537869}
+  - _key: 2
+    _keycap: {fileID: 1088289824917113568}
+  - _key: 51
+    _keycap: {fileID: 210385098387359296}
+  - _key: 40
+    _keycap: {fileID: 1522476628512807523}
+  - _key: 38
+    _keycap: {fileID: 5266956026076063142}
+  - _key: 17
+    _keycap: {fileID: 7440190266339360552}
+  - _key: 36
+    _keycap: {fileID: 4048947301946903146}
+  - _key: 16
+    _keycap: {fileID: 6904823730855956725}
+  - _key: 28
+    _keycap: {fileID: 8942365194873242934}
+  - _key: 27
+    _keycap: {fileID: 400626203465339861}
+  - _key: 7
+    _keycap: {fileID: 3524626243139695355}
+  - _key: 8
+    _keycap: {fileID: 8906844917898242463}
+  - _key: 9
+    _keycap: {fileID: 534896917864811604}
+  - _key: 52
+    _keycap: {fileID: 9063996089759476074}
+  - _key: 55
+    _keycap: {fileID: 6122709370975895517}
+  - _key: 57
+    _keycap: {fileID: 3302285617830463001}
+  - _key: 53
+    _keycap: {fileID: 113528370182180530}
+  - _key: 1
+    _keycap: {fileID: 1338517098676855674}
+  - _key: 54
+    _keycap: {fileID: 3263782636955314329}
+  - _key: 58
+    _keycap: {fileID: 5580604633961185507}
+  - _key: 59
+    _keycap: {fileID: 7784483660785996815}
+  - _key: 56
+    _keycap: {fileID: 2849457635676676659}
+  - _key: 70
+    _keycap: {fileID: 7731035251881423013}
+  - _key: 68
+    _keycap: {fileID: 8763524049389865304}
+  - _key: 67
+    _keycap: {fileID: 8284855804085008790}
+  - _key: 71
+    _keycap: {fileID: 3088648607807607424}
+  - _key: 69
+    _keycap: {fileID: 1128538448816419478}
+  - _key: 66
+    _keycap: {fileID: 9218139076738529608}
+  - _key: 63
+    _keycap: {fileID: 1330991752628051752}
+  - _key: 61
+    _keycap: {fileID: 3652008396207633068}
+  - _key: 64
+    _keycap: {fileID: 243070880729685808}
+  - _key: 62
+    _keycap: {fileID: 816445980033893598}
+  - _key: 73
+    _keycap: {fileID: 2676945254844384204}
+  - _key: 78
+    _keycap: {fileID: 5320829062504936838}
+  - _key: 79
+    _keycap: {fileID: 2562182782340208821}
+  - _key: 81
+    _keycap: {fileID: 9035760237363660897}
+  - _key: 91
+    _keycap: {fileID: 8187559007413881913}
+  - _key: 92
+    _keycap: {fileID: 2363007357539467477}
+  - _key: 93
+    _keycap: {fileID: 2465476933018591183}
+  - _key: 88
+    _keycap: {fileID: 1311949430087055732}
+  - _key: 89
+    _keycap: {fileID: 8425172141657192536}
+  - _key: 90
+    _keycap: {fileID: 5146454209191862167}
+  - _key: 85
+    _keycap: {fileID: 5354580947611844264}
+  - _key: 86
+    _keycap: {fileID: 5711611703915389836}
+  - _key: 87
+    _keycap: {fileID: 3655971585694597385}
+  - _key: 80
+    _keycap: {fileID: 274820086931546319}
+  - _key: 77
+    _keycap: {fileID: 1122551061414954325}
+  - _key: 84
+    _keycap: {fileID: 2643636184106931102}
+  - _key: 82
+    _keycap: {fileID: 5017820367730836077}
+  _pressDistance: 0.15
+  _animationSpeed: 18
+  _logInput: 1
 --- !u!1 &6118148393335538725
 GameObject:
   m_ObjectHideFlags: 0
