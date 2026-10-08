@@ -76,9 +76,9 @@ public sealed class KeycapHealth : MonoBehaviour
         foreach (Rigidbody body in effect.GetComponentsInChildren<Rigidbody>())
         {
             Vector3 outward = body.worldCenterOfMass - transform.TransformPoint(new Vector3(0f, 0.26f, 0f));
-            Vector3 direction = Vector3.ProjectOnPlane(outward + UnityEngine.Random.insideUnitSphere * 0.05f, transform.up).normalized;
+            Vector3 direction = Vector3.ProjectOnPlane(outward + Random.insideUnitSphere * 0.05f, transform.up).normalized;
             body.AddForce(direction * _fragmentSpeed + transform.up * _upwardSpeed, ForceMode.VelocityChange);
-            body.AddTorque(UnityEngine.Random.insideUnitSphere * _fragmentSpin, ForceMode.VelocityChange);
+            body.AddTorque(Random.insideUnitSphere * _fragmentSpin, ForceMode.VelocityChange);
         }
         Destroy(effect, _effectLifetime);
         Broken?.Invoke(this);

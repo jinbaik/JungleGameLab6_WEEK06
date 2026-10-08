@@ -8,6 +8,8 @@ using Unity.Cinemachine;
 
 using KeyboardModeling;
 
+using Random = UnityEngine.Random;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
