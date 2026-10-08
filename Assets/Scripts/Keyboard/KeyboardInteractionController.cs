@@ -17,7 +17,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     [Header("Camera and Pad")]
     [SerializeField] private Camera _camera;
     [SerializeField] private CinemachineCamera _fixedCam;
-    [SerializeField] private KeyboardInputController _referenceKeyboard;
+    [SerializeField] private GameObject _referenceKeyboard;
     private Vector3 _padPosition;
     private Quaternion _padRotation;
     private Bounds _keyboardBounds;
@@ -40,7 +40,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     public int SpawnedKeyboardCount { get; private set; }
 
     [Header("Spawn")]
-    [SerializeField] private KeyboardInputController _keyboardPrefab;
+    [SerializeField] private GameObject _keyboardPrefab;
     [SerializeField] private BoxCollider _front;
     [SerializeField] private BoxCollider _left;
     [SerializeField] private BoxCollider _right;
@@ -63,7 +63,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
 
     void Start()
     {
-        _placedKeyboard = RegisterKeyboard(_referenceKeyboard);
+        _placedKeyboard = RegisterKeyboard(_referenceKeyboard.GetComponent<KeyboardInputController>());
         _spawnRoot = new GameObject("SpawnedKeyboards").transform;
         SpawnKeyboards(_front, _frontCount, "front");
         SpawnKeyboards(_left, _leftCount, "left");
@@ -109,6 +109,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     /// <summary>입력과 키캡 Collider를 끄고 keyboard에 들기용 Rigidbody와 BoxCollider를 구성하여 등록된 상태를 반환한다.</summary>
     private KeyboardState RegisterKeyboard(KeyboardInputController keyboard)
     {
+
         keyboard.SetInputEnabled(false);
         keyboard.enabled = false;
         Collider[] colliders = keyboard.GetComponentsInChildren<Collider>();
@@ -139,10 +140,10 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         {
             Vector3 offset = new Vector3(Random.Range(-0.5f, 0.5f) * area.size.x, Random.Range(-0.5f, 0.5f) * area.size.y, Random.Range(-0.5f, 0.5f) * area.size.z);
             Vector3 position = area.transform.TransformPoint(area.center + offset);
-            KeyboardInputController keyboard = Instantiate(_keyboardPrefab, position, Random.rotationUniform, _spawnRoot);
+            GameObject keyboard = Instantiate(_keyboardPrefab, position, Random.rotationUniform, _spawnRoot);
             keyboard.name = $"{areaName}_Keyboard_{index + 1}";
             keyboard.transform.localScale = _referenceKeyboard.transform.lossyScale;
-            RegisterKeyboard(keyboard);
+            RegisterKeyboard(keyboard.GetComponent<KeyboardInputController>());
             SpawnedKeyboardCount++;
         }
     }
