@@ -9,15 +9,14 @@ public class Temp : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            OnExitSmashMode();
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.CompareTag("Keyboard"))
-        {
-            OnEnterSmashMode();
+            if (_fixedCam.Priority == 0)
+            {
+                OnEnterSmashMode();
+            }
+            else
+            {
+                OnExitSmashMode();
+            }
         }
     }
 
