@@ -75,9 +75,22 @@ namespace KeyboardModeling
             _keyboard.KeyPressed -= HandleKeyPressed;
         }
 
+        /// <summary>
+        /// keyboard1을 미니게임 입력 대상으로 교체한다.
+        /// 이전 KeyPressed 구독을 해제하고 활성 상태이면 새 대상에 연결한다.
+        /// </summary>
         public void SetKeyBoard(KeyboardInputController keyboard1)
         {
+            if (_keyboard == keyboard1)
+                return;
+
+            if (isActiveAndEnabled && _keyboard != null)
+                _keyboard.KeyPressed -= HandleKeyPressed;
+
             _keyboard = keyboard1;
+
+            if (isActiveAndEnabled && _keyboard != null)
+                _keyboard.KeyPressed += HandleKeyPressed;
         }
 
         void Update()

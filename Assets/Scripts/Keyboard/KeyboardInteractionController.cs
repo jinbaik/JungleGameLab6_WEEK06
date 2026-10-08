@@ -9,6 +9,8 @@ using Unity.Cinemachine;
 using KeyboardModeling;
 
 using Random = UnityEngine.Random;
+using Game.Shop;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -62,6 +64,10 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     [SerializeField] private GameObject _keyboardFragmentsPrefab;
     [Header("monitor")]
     [SerializeField] private MiniGameController _controller;
+    [Header("Shop Focus")]
+    [SerializeField] private ShopView _shopView;
+    private bool _isShopFocused;
+    private bool _resumeSmashInput;
 
 
     void Awake()
@@ -95,6 +101,39 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         if (EditorApplication.isPaused || EditorWindow.focusedWindow == null || EditorWindow.focusedWindow.GetType().Name != "GameView") return;
 #endif
         bool escapePressed = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
+        if (_isShopFocused)
+        {
+            if (escapePressed)
+            {
+                _shopView.SetOpen(false);
+            }
+
+            return;
+        }
+
+        if (_resumeSmashInput)
+        {
+            bool escapeHeld = Keyboard.current != null
+                && Keyboard.current.escapeKey.isPressed;
+
+            if (escapePressed || escapeHeld)
+            {
+                return;
+            }
+
+            _resumeSmashInput = false;
+
+            if (IsSmashMode && _placedKeyboard != null)
+            {
+                KeyboardDestruction destruction =
+                    _placedKeyboard.Keyboard.GetComponent<KeyboardDestruction>();
+
+                if (!destruction.IsBroken)
+                {
+                    SetKeyboardInput(_placedKeyboard, true);
+                }
+            }
+        }
         if (IsSmashMode && escapePressed) { OnExitSmashMode(); return; }
         if (IsSmashMode || Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame) return;
         if (_heldKeyboard != null) DropKeyboard();
@@ -212,6 +251,9 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     /// <summary>other가 들고 있는 키보드이면 Pad 기준 위치와 회전으로 놓고, 기존 키보드는 집었던 위치로 옮긴 뒤 SmashMode를 시작한다.</summary>
     private void TryPlaceKeyboard(Collider other)
     {
+        if (_isShopFocused)
+            return;
+
         if (other.gameObject != lastDroped) return;
 
         if (!_canPlaceHeldKeyboard)
@@ -296,6 +338,24 @@ public sealed class KeyboardInteractionController : MonoBehaviour
             }
         }
         return result;
+    }
+
+    /// <summary>
+    /// isOpen으로 상점 Focus 상태를 갱신하고 키보드 입력을 중지한다.
+    /// 커서 상태를 변경하며 상점을 닫으면 부수기 입력 복원을 예약한다.
+    /// </summary>
+    private void ApplyShopFocus(bool isOpen)
+    {
+        _isShopFocused = isOpen;
+        _resumeSmashInput = !isOpen && IsSmashMode;
+
+        if (_placedKeyboard != null)
+        {
+            SetKeyboardInput(_placedKeyboard, false);
+        }
+
+        Cursor.lockState = isOpen ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = isOpen;
     }
 
     private sealed class KeyboardState

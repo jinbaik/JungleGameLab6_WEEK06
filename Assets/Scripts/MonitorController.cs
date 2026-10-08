@@ -15,6 +15,7 @@ public class MonitorController : MonoBehaviour
 
     [Header("Input")]
     private readonly InputAction _toggleAction = new InputAction("ToggleShop", InputActionType.Button, "<Keyboard>/tab");
+    [SerializeField] private bool _allowTabClose = true;
 
     void OnEnable()
     {
@@ -41,11 +42,14 @@ public class MonitorController : MonoBehaviour
     }
 
     /// <summary>
-    /// context로 전달된 Tab 입력을 받아 상점과 미니게임 화면을 전환한다.
-    /// shopView의 Toggle을 호출하고 상태 변경 이벤트로 두 캔버스를 갱신하며 입력 잠금을 유지한다.
+    /// context의 Tab 입력으로 상점 표시를 전환한다.
+    /// 상점이 열린 상태에서는 _allowTabClose가 허용할 때만 닫는다.
     /// </summary>
     private void OnTogglePerformed(InputAction.CallbackContext context)
     {
+        if (_shopView.IsOpen && !_allowTabClose)
+            return;
+
         _shopView.Toggle();
     }
 
