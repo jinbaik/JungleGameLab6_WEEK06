@@ -7,17 +7,16 @@ public class Temp : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Escape))
         {
-            OnExitSmashMode();
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.CompareTag("Keyboard"))
-        {
-            OnEnterSmashMode();
+            if (_fixedCam.Priority == 0)
+            {
+                OnEnterSmashMode();
+            }
+            else
+            {
+                OnExitSmashMode();
+            }
         }
     }
 
