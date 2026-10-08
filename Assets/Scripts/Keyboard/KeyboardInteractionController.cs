@@ -59,6 +59,8 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         _padCollider = GetComponent<BoxCollider>();
         _padCollider.isTrigger = true;
         _fixedCam.Priority = 0;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Start()
