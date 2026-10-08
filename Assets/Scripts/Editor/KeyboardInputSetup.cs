@@ -9,11 +9,11 @@ namespace KeyboardModeling.Editor
 {
     public static class KeyboardInputSetup
     {
-        private const string PREFAB_PATH = "Assets/Resource/Prefabs/Keyboard_ANSI_104.prefab";
+        private const string PREFAB_PATH = "Assets/Resource/Prefabs/Keyboard_TKL_87.prefab";
 
         /// <summary>
         /// 기존 키보드 프리팹에 실제 키 입력 연동을 추가한다.
-        /// 저장된 키보드 프리팹을 사용하여 104키 매핑을 설정하고 기존 모델을 유지하여 저장한다.
+        /// 저장된 키보드 프리팹을 사용하여 87키 매핑을 설정하고 기존 모델을 유지하여 저장한다.
         /// </summary>
         [MenuItem("Tools/Keyboard/Configure Physical Keyboard Input")]
         public static void ConfigureExistingPrefab()
@@ -25,7 +25,7 @@ namespace KeyboardModeling.Editor
                 Configure(keyboard);
                 PrefabUtility.SaveAsPrefabAsset(keyboard, PREFAB_PATH);
                 AssetDatabase.SaveAssets();
-                Debug.Log("KEYBOARD_INPUT_CONFIGURED keys=104 uniqueMappings=104");
+                Debug.Log("KEYBOARD_INPUT_CONFIGURED keys=87 uniqueMappings=87");
             }
             finally
             {
@@ -86,14 +86,14 @@ namespace KeyboardModeling.Editor
 
         /// <summary>
         /// 키보드 루트에 입력 제어 컴포넌트와 키 참조를 설정한다.
-        /// keyboard의 키캡 각인과 위치를 사용하여 중복 없는 104개 물리 키 매핑을 직렬화한다.
+        /// keyboard의 각인과 위치로 87키를 직렬화하며 configureKeycapActions로 기능 기본 연결 여부를 정한다.
         /// </summary>
-        public static void Configure(GameObject keyboard)
+        public static void Configure(GameObject keyboard, bool configureKeycapActions = true)
         {
             KeyboardInputController controller = keyboard.GetComponent<KeyboardInputController>();
             if (controller == null)
                 controller = keyboard.AddComponent<KeyboardInputController>();
-            Transform keys = keyboard.transform.Find("Keys_104_SharedPrefabs");
+            Transform keys = keyboard.transform.Find("Keys_87_SharedPrefabs");
             var keycaps = new List<Transform>();
             var mappedKeys = new List<Key>();
             var uniqueKeys = new HashSet<Key>();
@@ -109,10 +109,11 @@ namespace KeyboardModeling.Editor
                 keycaps.Add(child);
                 mappedKeys.Add(key);
             }
-            if (keycaps.Count != 104)
-                throw new InvalidOperationException("키보드 입력 매핑은 104개여야 합니다: " + keycaps.Count);
-            foreach (Transform keycap in keycaps)
-                ConfigureKeycap(keycap.gameObject);
+            if (keycaps.Count != 87)
+                throw new InvalidOperationException("키보드 입력 매핑은 87개여야 합니다: " + keycaps.Count);
+            if (configureKeycapActions)
+                foreach (Transform keycap in keycaps)
+                    ConfigureKeycap(keycap.gameObject);
             var serialized = new SerializedObject(controller);
             serialized.FindProperty("_blockShortcuts").boolValue = true;
             SerializedProperty bindings = serialized.FindProperty("_bindings");

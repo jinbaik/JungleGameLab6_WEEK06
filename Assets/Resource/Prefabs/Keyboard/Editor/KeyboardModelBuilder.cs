@@ -47,32 +47,38 @@ namespace KeyboardModeling.Editor
             _cylinder = cylinder.GetComponent<MeshFilter>().sharedMesh;
             UnityEngine.Object.DestroyImmediate(cylinder);
             foreach (float width in new[] { 1f, 1.25f, 1.5f, 1.75f, 2f, 2.25f, 2.75f, 6.25f })
-                CreateCap(width, 1f);
-            CreateCap(1f, 2f);
+            {
+                string id = CapId(width, 1f);
+                GameObject existingCap = AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB_ROOT + "/Keycaps/Keycap_" + id + ".prefab");
+                if (existingCap == null)
+                    CreateCap(width, 1f);
+                else
+                    _caps[id] = existingCap;
+            }
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, Application.isBatchMode ? NewSceneMode.Single : NewSceneMode.Additive);
             UnityEngine.SceneManagement.SceneManager.SetActiveScene(scene);
-            GameObject keyboard = new GameObject("Keyboard_ANSI_104");
+            GameObject keyboard = new GameObject("Keyboard_TKL_87");
             GameObject body = BuildBody();
             body.transform.localScale = Vector3.one * PITCH;
-            GameObject bodyPrefab = PrefabUtility.SaveAsPrefabAsset(body, PREFAB_ROOT + "/KeyboardBody.prefab");
+            GameObject bodyPrefab = PrefabUtility.SaveAsPrefabAsset(body, PREFAB_ROOT + "/KeyboardBody_TKL87.prefab");
             UnityEngine.Object.DestroyImmediate(body);
             GameObject bodyInstance = (GameObject)PrefabUtility.InstantiatePrefab(bodyPrefab);
             bodyInstance.transform.SetParent(keyboard.transform, false);
             bodyInstance.transform.localScale = Vector3.one;
             BuildLayout(keyboard.transform);
-            if (_keyCount != 104)
+            if (_keyCount != 87)
                 throw new InvalidOperationException("ANSI 키 개수가 104개가 아닙니다: " + _keyCount);
             KeyboardInputSetup.Configure(keyboard);
             keyboard.transform.localScale = Vector3.one * PITCH;
-            GameObject keyboardPrefab = PrefabUtility.SaveAsPrefabAsset(keyboard, PREFAB_ROOT + "/Keyboard_ANSI_104.prefab");
+            GameObject keyboardPrefab = PrefabUtility.SaveAsPrefabAsset(keyboard, PREFAB_ROOT + "/Keyboard_TKL_87.prefab");
             UnityEngine.Object.DestroyImmediate(keyboard);
             keyboard = (GameObject)PrefabUtility.InstantiatePrefab(keyboardPrefab);
             BuildStudio();
             EditorSceneManager.SaveScene(scene, "Assets/Scenes/Keyboard.unity");
             AssetDatabase.SaveAssets();
             CapturePreview();
-            File.WriteAllText(PREVIEW_ROOT + "/BuildReport.txt", "Key instances: " + _keyCount + "\nUnique keycap prefabs: " + _caps.Count + "\nScene: Assets/Scenes/Keyboard.unity\nKeyboard width: 0.452 m\n");
+            File.WriteAllText(PREVIEW_ROOT + "/BuildReport.txt", "Key instances: " + _keyCount + "\nUnique keycap prefabs: " + _caps.Count + "\nScene: Assets/Scenes/Keyboard.unity\nKeyboard width: 0.367 m\n");
             Debug.Log("KEYBOARD_BUILD_COMPLETE keys=" + _keyCount + " uniqueCaps=" + _caps.Count);
         }
 
@@ -395,19 +401,19 @@ namespace KeyboardModeling.Editor
         /// </summary>
         private static GameObject BuildBody()
         {
-            GameObject body = new GameObject("KeyboardBody");
+            GameObject body = new GameObject("KeyboardBody_TKL87");
             Transform root = body.transform;
-            Mesh baseMesh = SaveMesh(RoundedSolid("LowerCase", 23.75f, 7.4f, 0.56f, 0.28f, 0.08f), "LowerCase");
-            Part("CNC_LowerCase", root, baseMesh, new Vector3(11.5f, 0.4f, 2.8f), Vector3.one, "AnodizedAluminum");
-            Mesh seam = SaveMesh(RoundedSolid("CaseSeam", 23.71f, 7.36f, 0.038f, 0.27f, 0.012f), "CaseSeam");
-            Part("Case_AssemblySeam", root, seam, new Vector3(11.5f, 0.695f, 2.8f), Vector3.one, "Graphite");
-            Mesh plate = SaveMesh(RoundedSolid("Plate", 23.3f, 6.98f, 0.08f, 0.18f, 0.025f), "Plate");
-            Part("Brass_SwitchPlate", root, plate, new Vector3(11.5f, 0.76f, 2.8f), Vector3.one, "BrushedBrass");
-            Block("TopBezel_Front", root, new Vector3(11.5f, 0.81f, -0.74f), new Vector3(23.6f, 0.22f, 0.34f), "AnodizedAluminum");
-            Block("TopBezel_Rear", root, new Vector3(11.5f, 0.81f, 6.36f), new Vector3(23.6f, 0.22f, 0.28f), "AnodizedAluminum");
+            Mesh baseMesh = SaveMesh(RoundedSolid("LowerCase_TKL87", 19.25f, 7.4f, 0.56f, 0.28f, 0.08f), "LowerCase_TKL87");
+            Part("CNC_LowerCase", root, baseMesh, new Vector3(9.25f, 0.4f, 2.8f), Vector3.one, "AnodizedAluminum");
+            Mesh seam = SaveMesh(RoundedSolid("CaseSeam_TKL87", 19.21f, 7.36f, 0.038f, 0.27f, 0.012f), "CaseSeam_TKL87");
+            Part("Case_AssemblySeam", root, seam, new Vector3(9.25f, 0.695f, 2.8f), Vector3.one, "Graphite");
+            Mesh plate = SaveMesh(RoundedSolid("Plate_TKL87", 18.8f, 6.98f, 0.08f, 0.18f, 0.025f), "Plate_TKL87");
+            Part("Brass_SwitchPlate", root, plate, new Vector3(9.25f, 0.76f, 2.8f), Vector3.one, "BrushedBrass");
+            Block("TopBezel_Front", root, new Vector3(9.25f, 0.81f, -0.74f), new Vector3(19.1f, 0.22f, 0.34f), "AnodizedAluminum");
+            Block("TopBezel_Rear", root, new Vector3(9.25f, 0.81f, 6.36f), new Vector3(19.1f, 0.22f, 0.28f), "AnodizedAluminum");
             Block("TopBezel_Left", root, new Vector3(-0.22f, 0.81f, 2.8f), new Vector3(0.28f, 0.22f, 7.18f), "AnodizedAluminum");
-            Block("TopBezel_Right", root, new Vector3(23.22f, 0.81f, 2.8f), new Vector3(0.28f, 0.22f, 7.18f), "AnodizedAluminum");
-            foreach (float x in new[] { 0.2f, 22.8f })
+            Block("TopBezel_Right", root, new Vector3(18.72f, 0.81f, 2.8f), new Vector3(0.28f, 0.22f, 7.18f), "AnodizedAluminum");
+            foreach (float x in new[] { 0.2f, 18.3f })
             {
                 foreach (float z in new[] { -0.55f, 6.17f })
                 {
@@ -424,28 +430,59 @@ namespace KeyboardModeling.Editor
             Block("USB_C_Tongue", root, new Vector3(2.2f, 0.42f, 6.55f), new Vector3(0.37f, 0.025f, 0.01f), "SwitchHousing");
             for (int contact = 0; contact < 8; contact++)
                 Block("USB_Contact", root, new Vector3(2.04f + contact * 0.045f, 0.446f, 6.558f), new Vector3(0.018f, 0.01f, 0.008f), "BrushedBrass");
-            Block("Rear_Weight_Insert", root, new Vector3(11.5f, 0.425f, 6.513f), new Vector3(5.6f, 0.22f, 0.018f), "BrushedBrass");
-            Block("Indicator_Inset", root, new Vector3(20.25f, 0.824f, 5.72f), new Vector3(3.1f, 0.05f, 0.68f), "DeepOcean_PBT");
-            for (int index = 0; index < 3; index++)
+            Block("Rear_Weight_Insert", root, new Vector3(9.25f, 0.425f, 6.513f), new Vector3(5.6f, 0.22f, 0.018f), "BrushedBrass");
+            Block("Indicator_Inset", root, new Vector3(16.85f, 0.935f, 6.36f), new Vector3(2.85f, 0.025f, 0.18f), "DeepOcean_PBT");
+            for (int index = 0; index < 2; index++)
             {
-                float x = 19.4f + index * 0.85f;
-                Part("StatusLens_" + index, root, _cylinder, new Vector3(x, 0.859f, 5.82f), new Vector3(0.07f, 0.012f, 0.07f), index == 0 ? "StatusLED" : "Rubber");
-                Legend("Status_Label", root, index == 0 ? "NUM" : index == 1 ? "CAPS" : "SCROLL", new Vector3(x, 0.86f, 5.57f), 0.11f, new Color(0.77f, 0.8f, 0.78f));
+                float x = 15.65f + index * 1.2f;
+                Part("StatusLens_" + index, root, _cylinder, new Vector3(x, 0.963f, 6.36f), new Vector3(0.06f, 0.01f, 0.06f), index == 0 ? "StatusLED" : "Rubber");
+                Legend("Status_Label", root, index == 0 ? "CAPS" : "SCROLL", new Vector3(x + 0.4f, 0.963f, 6.36f), 0.085f, new Color(0.77f, 0.8f, 0.78f));
             }
-            Legend("Model_Badge", root, "A T E L I E R   /   1 0 4", new Vector3(17f, 0.935f, 6.36f), 0.1f, new Color(0.78f, 0.59f, 0.32f));
+            Legend("Model_Badge", root, "A T E L I E R   /   T K L   8 7", new Vector3(9.25f, 0.935f, 6.36f), 0.1f, new Color(0.78f, 0.59f, 0.32f));
             BoxCollider collider = body.AddComponent<BoxCollider>();
-            collider.center = new Vector3(11.5f, 0.5f, 2.8f);
-            collider.size = new Vector3(23.75f, 0.85f, 7.4f);
+            collider.center = new Vector3(9.25f, 0.5f, 2.8f);
+            collider.size = new Vector3(19.25f, 0.85f, 7.4f);
             return body;
         }
 
         /// <summary>
-        /// ANSI 104키 배열을 생성한다.
+        /// 기존 재질과 공용 메시를 사용해 텐키리스 본체 프리팹을 저장한다.
+        /// 리소스 경로의 에셋을 읽고 새 TKL 본체만 생성하여 저장된 프리팹을 반환한다.
+        /// </summary>
+        public static GameObject CreateTKLBodyPrefab()
+        {
+            foreach (string name in new[] { "Porcelain_PBT", "DeepOcean_PBT", "BurntOrange_PBT", "AnodizedAluminum", "BrushedBrass", "Graphite", "Rubber", "SwitchHousing", "SwitchStem", "Steel", "Desk", "StatusLED" })
+                _materials[name] = AssetDatabase.LoadAssetAtPath<Material>(MATERIAL_ROOT + "/" + name + ".mat");
+            _box = AssetDatabase.LoadAssetAtPath<Mesh>(MESH_ROOT + "/BeveledBlock.asset");
+            _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            GameObject cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            _cylinder = cylinder.GetComponent<MeshFilter>().sharedMesh;
+            UnityEngine.Object.DestroyImmediate(cylinder);
+            GameObject body = BuildBody();
+            body.transform.localScale = Vector3.one * PITCH;
+            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(body, PREFAB_ROOT + "/KeyboardBody_TKL87.prefab");
+            UnityEngine.Object.DestroyImmediate(body);
+            return prefab;
+        }
+
+        /// <summary>
+        /// 현재 텐키리스 씬과 키캡 확대 이미지를 저장한다.
+        /// 씬의 카메라와 기존 1u 키캡을 사용하여 개인 미리보기 파일을 갱신한다.
+        /// </summary>
+        public static void RenderTKLPreview()
+        {
+            Directory.CreateDirectory(PREVIEW_ROOT);
+            _caps[CapId(1f, 1f)] = AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB_ROOT + "/Keycaps/Keycap_1u.prefab");
+            CapturePreview();
+        }
+
+        /// <summary>
+        /// ANSI 87키 배열을 생성한다.
         /// parent를 사용하여 공유 키캡 인스턴스와 각 키의 각인을 키보드에 추가한다.
         /// </summary>
         private static void BuildLayout(Transform parent)
         {
-            Transform keys = new GameObject("Keys_104_SharedPrefabs").transform;
+            Transform keys = new GameObject("Keys_87_SharedPrefabs").transform;
             keys.SetParent(parent, false);
             Key(keys, "Esc", 0.5f, 5.65f, 1f, "BurntOrange_PBT");
             for (int index = 0; index < 12; index++)
@@ -465,16 +502,6 @@ namespace KeyboardModeling.Editor
             Key(keys, "<", 15.9f, 0.4f, 1f, "DeepOcean_PBT");
             Key(keys, "v", 16.9f, 0.4f, 1f, "DeepOcean_PBT");
             Key(keys, ">", 17.9f, 0.4f, 1f, "DeepOcean_PBT");
-            string[] numTop = { "Num\nLock", "/", "*", "-" };
-            for (int index = 0; index < 4; index++)
-                Key(keys, numTop[index], 19.4f + index, 4.4f, 1f, "DeepOcean_PBT");
-            string[] num = { "7\nHome", "8", "9\nPgUp", "4", "5", "6", "1\nEnd", "2", "3\nPgDn" };
-            for (int index = 0; index < 9; index++)
-                Key(keys, num[index], 19.4f + index % 3, 3.4f - index / 3);
-            Key(keys, "+", 22.4f, 2.9f, 1f, "DeepOcean_PBT", 2f);
-            Key(keys, "Enter", 22.4f, 0.9f, 1f, "BurntOrange_PBT", 2f);
-            Key(keys, "0   Ins", 19.9f, 0.4f, 2f);
-            Key(keys, ".\nDel", 21.4f, 0.4f);
         }
 
         /// <summary>
@@ -569,10 +596,10 @@ namespace KeyboardModeling.Editor
             cameraObject.tag = "MainCamera";
             Camera camera = cameraObject.AddComponent<Camera>();
             cameraObject.AddComponent<AudioListener>();
-            camera.transform.position = new Vector3(0.46f, 0.48f, -0.4f);
-            camera.transform.LookAt(new Vector3(0.219f, 0.018f, 0.055f));
+            camera.transform.position = new Vector3(0.4172f, 0.48f, -0.4f);
+            camera.transform.LookAt(new Vector3(0.1762f, 0.018f, 0.055f));
             camera.orthographic = true;
-            camera.orthographicSize = 0.175f;
+            camera.orthographicSize = 0.145f;
             camera.nearClipPlane = 0.005f;
             camera.farClipPlane = 10f;
             camera.clearFlags = CameraClearFlags.SolidColor;
@@ -584,7 +611,7 @@ namespace KeyboardModeling.Editor
             RenderSettings.ambientLight = new Color(0.3f, 0.32f, 0.35f);
             RenderSettings.skybox = null;
             if (SceneView.lastActiveSceneView != null)
-                SceneView.lastActiveSceneView.LookAt(new Vector3(0.219f, 0.018f, 0.055f), camera.transform.rotation, 0.34f);
+                SceneView.lastActiveSceneView.LookAt(new Vector3(0.1762f, 0.018f, 0.055f), camera.transform.rotation, 0.34f);
         }
 
         /// <summary>
