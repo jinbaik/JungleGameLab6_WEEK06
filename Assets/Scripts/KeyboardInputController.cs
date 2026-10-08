@@ -30,6 +30,7 @@ namespace KeyboardModeling
         [SerializeField, Min(0.01f)] private float _animationSpeed = 18f;
         private Vector3[] _restPositions;
         private float[] _pressAmounts;
+        private float _lastPressDistance;
 
         [Header("Debug")]
         [SerializeField] private bool _logInput = true;
@@ -55,6 +56,7 @@ namespace KeyboardModeling
             _pressAmounts = new float[_bindings.Length];
             _previousPressed = new bool[_bindings.Length];
             _keycapButtons = new KeycapButton[_bindings.Length];
+            _lastPressDistance = _pressDistance;
             for (int index = 0; index < _bindings.Length; index++)
             {
                 _restPositions[index] = _bindings[index].Keycap.localPosition;
@@ -82,7 +84,7 @@ namespace KeyboardModeling
                 return;
             }
 
-            _pressedKeyNames.Clear();
+            bool pressedKeysChanged = false;
             for (int index = 0; index < _bindings.Length; index++)
             {
                 bool unityPressed = keyboard != null && (keyboard[_bindings[index].Key].isPressed || keyboard[_bindings[index].Key].wasPressedThisFrame);
@@ -92,6 +94,7 @@ namespace KeyboardModeling
                     nativePressed = WindowsKeyboardCapture.IsPressed(_bindings[index].Key);
 #endif
                 bool isPressed = unityPressed || nativePressed;
+<<<<<<< HEAD
                 if (isPressed && !_previousPressed[index])
                     KeyPressed?.Invoke(_bindings[index].Key);
                 if (isPressed)
@@ -103,6 +106,12 @@ namespace KeyboardModeling
 
                     int damage = _miniGame != null ? _miniGame.DamageMultiplier : 1;
                     _bindings[index].Keycap.GetComponent<KeycapHealth>().TakeDamage(damage);
+=======
+                pressedKeysChanged |= isPressed != _previousPressed[index];
+                if (isPressed)
+                {
+                    _lastPressedKey = _bindings[index].Key;
+>>>>>>> feature/keyboard
                 }
                 AnimateKey(index, isPressed, Time.unscaledDeltaTime);
 
@@ -117,7 +126,9 @@ namespace KeyboardModeling
                     Debug.Log("[Keyboard][Model] " + (isPressed ? "DOWN " : "UP ") + _bindings[index].Key + " | Unity=" + unityPressed + " Hook=" + nativePressed + " | Target=" + _bindings[index].Keycap.name + " LocalY=" + _bindings[index].Keycap.localPosition.y.ToString("F4"), this);
                 _previousPressed[index] = isPressed;
             }
-            _currentPressedKeys = _pressedKeyNames.Length == 0 ? "None" : _pressedKeyNames.ToString();
+            _lastPressDistance = _pressDistance;
+            if (pressedKeysChanged)
+                RefreshPressedKeyNames();
         }
 
         void OnEnable()
@@ -211,12 +222,35 @@ namespace KeyboardModeling
 
         /// <summary>
         /// 지정한 키캡을 눌림 또는 복귀 위치로 부드럽게 이동한다.
-        /// index, isPressed, deltaTime과 Inspector의 이동 설정을 사용하여 키캡 위치와 눌림량을 변경한다.
+        /// index, isPressed, deltaTime과 이동 설정을 사용하며 목표 위치에 도달한 키는 갱신하지 않는다.
         /// </summary>
         private void AnimateKey(int index, bool isPressed, float deltaTime)
         {
-            _pressAmounts[index] = Mathf.MoveTowards(_pressAmounts[index], isPressed ? 1f : 0f, _animationSpeed * deltaTime);
+            float targetAmount = isPressed ? 1f : 0f;
+            if (_pressAmounts[index] == targetAmount && (targetAmount == 0f || _lastPressDistance == _pressDistance))
+                return;
+
+            _pressAmounts[index] = Mathf.MoveTowards(_pressAmounts[index], targetAmount, _animationSpeed * deltaTime);
             _bindings[index].Keycap.localPosition = _restPositions[index] + Vector3.down * (_pressDistance * _pressAmounts[index]);
+        }
+
+        /// <summary>
+        /// 현재 눌린 키 목록을 문자열로 갱신한다.
+        /// _previousPressed와 _bindings를 사용하여 입력 변화 시에만 _currentPressedKeys를 다시 만든다.
+        /// </summary>
+        private void RefreshPressedKeyNames()
+        {
+            _pressedKeyNames.Clear();
+            for (int index = 0; index < _bindings.Length; index++)
+            {
+                if (!_previousPressed[index])
+                    continue;
+
+                if (_pressedKeyNames.Length > 0)
+                    _pressedKeyNames.Append(", ");
+                _pressedKeyNames.Append(_bindings[index].Key);
+            }
+            _currentPressedKeys = _pressedKeyNames.Length == 0 ? "None" : _pressedKeyNames.ToString();
         }
 
         /// <summary>
@@ -232,7 +266,8 @@ namespace KeyboardModeling
                 if (_logInput && _previousPressed[index])
                     Debug.Log("[Keyboard][Model] RESET " + _bindings[index].Key, this);
                 _previousPressed[index] = false;
-                _bindings[index].Keycap.localPosition = _restPositions[index];
+                if (_pressAmounts[index] != 0f)
+                    _bindings[index].Keycap.localPosition = _restPositions[index];
                 _pressAmounts[index] = 0f;
                 _keycapButtons[index].ResetPressState();
             }
