@@ -1,3 +1,5 @@
+using System;
+
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -11,6 +13,7 @@ public sealed class KeycapHealth : MonoBehaviour
     private bool _broken;
     public int MaxHP => _maxHP;
     public int CurrentHP => _currentHP;
+    public event Action<KeycapHealth> Broken;
 
     [Header("Damage decal")]
     [SerializeField] private DecalProjector _damageDecal;
@@ -69,10 +72,11 @@ public sealed class KeycapHealth : MonoBehaviour
         foreach (Rigidbody body in effect.GetComponentsInChildren<Rigidbody>())
         {
             Vector3 outward = body.worldCenterOfMass - transform.TransformPoint(new Vector3(0f, 0.26f, 0f));
-            Vector3 direction = Vector3.ProjectOnPlane(outward + Random.insideUnitSphere * 0.05f, transform.up).normalized;
+            Vector3 direction = Vector3.ProjectOnPlane(outward + UnityEngine.Random.insideUnitSphere * 0.05f, transform.up).normalized;
             body.AddForce(direction * _fragmentSpeed + transform.up * _upwardSpeed, ForceMode.VelocityChange);
-            body.AddTorque(Random.insideUnitSphere * _fragmentSpin, ForceMode.VelocityChange);
+            body.AddTorque(UnityEngine.Random.insideUnitSphere * _fragmentSpin, ForceMode.VelocityChange);
         }
         Destroy(effect, _effectLifetime);
+        Broken?.Invoke(this);
     }
 }

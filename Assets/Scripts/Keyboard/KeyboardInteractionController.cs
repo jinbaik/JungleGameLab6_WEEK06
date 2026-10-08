@@ -51,6 +51,9 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     [SerializeField, Min(0)] private int _behindCount = 40;
     private Transform _spawnRoot;
 
+    [Header("Keyboard destruction")]
+    [SerializeField] private GameObject _keyboardFragmentsPrefab;
+
     void Awake()
     {
         _padPosition = _referenceKeyboard.transform.position;
@@ -130,7 +133,25 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         body.interpolation = RigidbodyInterpolation.Interpolate;
         KeyboardState state = new KeyboardState(keyboard, body, collider, colliders, colliderEnabled);
         _keyboards.Add(body, state);
+        KeyboardDestruction destruction = keyboard.gameObject.AddComponent<KeyboardDestruction>();
+        destruction.Initialize(keyboard.GetDestructionKeycaps(), _keyboardFragmentsPrefab, () => HandleKeyboardBreaking(state), () => HandleKeyboardDestroyed(state));
         return state;
+    }
+
+    /// <summary>state의 입력을 끄고 들기 목록에서 제거하여 파괴 중인 키보드를 다시 집지 못하게 한다.</summary>
+    private void HandleKeyboardBreaking(KeyboardState state)
+    {
+        SetKeyboardInput(state, false);
+        _keyboards.Remove(state.Body);
+        if (_heldKeyboard == state) _heldKeyboard = null;
+    }
+
+    /// <summary>state가 Pad 키보드이면 파편의 -Z 이동 시작 후 SmashMode를 종료하고 배치 참조를 비운다.</summary>
+    private void HandleKeyboardDestroyed(KeyboardState state)
+    {
+        if (_placedKeyboard != state) return;
+        if (IsSmashMode) OnExitSmashMode();
+        _placedKeyboard = null;
     }
 
     /// <summary>area의 로컬 중심과 크기 안에서 count개를 임의 위치와 회전으로 생성한다. 영역이 없으면 areaName을 알리고 해당 영역 생성을 건너뛴다.</summary>
@@ -215,7 +236,8 @@ public sealed class KeyboardInteractionController : MonoBehaviour
             KeycapHealth health = state.Colliders[index].GetComponentInParent<KeycapHealth>();
             state.Colliders[index].enabled = active && state.ColliderEnabled[index] && (health == null || health.CurrentHP > 0);
         }
-        state.Collider.enabled = true;
+        KeyboardDestruction destruction = state.Keyboard.GetComponent<KeyboardDestruction>();
+        state.Collider.enabled = destruction == null || !destruction.IsBroken;
         state.Keyboard.SetInputEnabled(active);
         state.Keyboard.enabled = active;
     }

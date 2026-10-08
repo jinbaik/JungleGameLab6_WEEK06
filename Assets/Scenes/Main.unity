@@ -187,7 +187,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardInteractionController
   _camera: {fileID: 330585545}
   _fixedCam: {fileID: 1022828482}
-  _referenceKeyboard: {fileID: 6004080589864425764, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
+  _referenceKeyboard: {fileID: 2000000002}
   _rayDistance: 12
   _holdDistance: 3
   _followSpeed: 12
@@ -195,7 +195,7 @@ MonoBehaviour:
   _pickupLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  _keyboardPrefab: {fileID: 6004080589864425764, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
+  _keyboardPrefab: {fileID: 6087872409866529466, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
   _front: {fileID: 1958124755}
   _left: {fileID: 1583888832}
   _right: {fileID: 918914755}
@@ -204,6 +204,7 @@ MonoBehaviour:
   _leftCount: 20
   _rightCount: 20
   _behindCount: 40
+  _keyboardFragmentsPrefab: {fileID: 100, guid: 5dc9afe1dd0444239ccf712060e436a9, type: 3}
 --- !u!1 &250938437
 GameObject:
   m_ObjectHideFlags: 0
@@ -1644,6 +1645,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &2000000002 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6087872409866529466, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
+  m_PrefabInstance: {fileID: 2026616912}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2000000001 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5033408809425400753, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
