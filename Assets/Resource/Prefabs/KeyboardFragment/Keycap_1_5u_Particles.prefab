@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &100
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 101}
+  - component: {fileID: 102}
+  m_Layer: 0
+  m_Name: Keycap_1_5u_Particles
+  m_TagString: Untagged
+  m_IsActive: 1
+--- !u!4 &101
+Transform:
+  m_ObjectHideFlags: 0
+  m_GameObject: {fileID: 100}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+--- !u!114 &102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_GameObject: {fileID: 100}
+  m_Enabled: 1
+  m_Script: {fileID: 11500000, guid: 6022025fd97a492aaecfc662188b3166, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _fragmentMeshes:
+  - {fileID: 4300000, guid: f424671d9ad84a79843861d8d157610e, type: 2}
+  - {fileID: 4300000, guid: d381db91e6044c909ab07c4f17a938d2, type: 2}
+  - {fileID: 4300000, guid: 0221464ebb664484a3b03087007349c7, type: 2}
+  - {fileID: 4300000, guid: 112592ecf5cf475a8cb33131d10ce920, type: 2}
+  - {fileID: 4300000, guid: e253c5eafc4e4ea187ab04adf9e5969f, type: 2}
+  - {fileID: 4300000, guid: 92b25f8dada943beb882d43fe7b1ef28, type: 2}
+  _material: {fileID: 2100000, guid: 0a1a2ec0d6ed18c459f87b5d181564bf, type: 2}
+  _count: 24
+  _lifetime: 1.5
