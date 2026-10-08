@@ -41,6 +41,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
 
     [Header("Spawn")]
     [SerializeField] private GameObject _keyboardPrefab;
+    [SerializeField] private GameObject _inGameKeyBoardPrefab;
     [SerializeField] private BoxCollider _front;
     [SerializeField] private BoxCollider _left;
     [SerializeField] private BoxCollider _right;
@@ -53,6 +54,9 @@ public sealed class KeyboardInteractionController : MonoBehaviour
 
     [Header("Keyboard destruction")]
     [SerializeField] private GameObject _keyboardFragmentsPrefab;
+    [Header("monitor")]
+    [SerializeField] private MiniGameController _controller;
+
 
     void Awake()
     {
@@ -205,8 +209,17 @@ public sealed class KeyboardInteractionController : MonoBehaviour
             _placedKeyboard.Body.position = _pickupPosition;
             _placedKeyboard.Body.rotation = _pickupRotation;
         }
-        _placedKeyboard = _heldKeyboard;
+        // 교체 부분
+
+        Destroy(_heldKeyboard.Collider.gameObject);
+
+
+
+        GameObject temp = Instantiate(_inGameKeyBoardPrefab);
+        _placedKeyboard = RegisterKeyboard(temp.GetComponent<KeyboardInputController>());
         _heldKeyboard = null;
+
+        _controller.SetKeyBoard(_placedKeyboard.Collider.GetComponent<KeyboardInputController>());
         _placedKeyboard.Body.position = _padPosition;
         _placedKeyboard.Body.rotation = _padRotation;
         OnEnterSmashMode();

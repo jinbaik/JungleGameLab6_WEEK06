@@ -75,6 +75,11 @@ namespace KeyboardModeling
             _keyboard.KeyPressed -= HandleKeyPressed;
         }
 
+        public void SetKeyBoard(KeyboardInputController keyboard1)
+        {
+            _keyboard = keyboard1;
+        }
+
         void Update()
         {
             if (_feverRemaining > 0f)
