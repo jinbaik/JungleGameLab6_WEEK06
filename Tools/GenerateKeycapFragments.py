@@ -1,9 +1,11 @@
-import math, re, struct, uuid
+import math, re, struct, uuid, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / 'Assets/Prefabs/KeyboardFragment'
-SOURCE = ROOT / 'Assets/Resource/Prefabs/Keyboard/Prefabs/Keycaps/Keycap_1u.prefab'
+OUT = ROOT / 'Assets/Resource/Prefabs/KeyboardFragment'
+KEY = sys.argv[1] if len(sys.argv) > 1 else 'Keycap_1u'
+COLUMNS, ROWS = map(int, sys.argv[2:4]) if len(sys.argv) > 3 else (2, 2)
+SOURCE = ROOT / 'Assets/Resource/Prefabs/Keycaps' / (KEY + '.prefab')
 OUT.mkdir(parents=True, exist_ok=True)
 
 def meta(path, importer='NativeFormatImporter', fileid=4300000):
@@ -35,7 +37,7 @@ for _,(kind,b) in blocks.items():
 rootgo = next(go for go,(p,s,parent) in transforms.items() if parent == 0)
 roottransform = next(i for i,(kind,b) in blocks.items() if kind==4 and f'm_GameObject: {{fileID: {rootgo}}}' in b)
 guidpaths = {}
-for path in (ROOT/'Assets/Resource/Prefabs/Keyboard/Meshes').glob('*.asset'):
+for path in (ROOT/'Assets/Resource/Meshes').glob('*.asset'):
     guidpaths[re.search(r'guid: (\w+)',Path(str(path)+'.meta').read_text()).group(1)] = path
 
 def worldlocal(go):
@@ -57,7 +59,7 @@ for _,(kind,b) in blocks.items():
     go=int(re.search(r'm_GameObject: \{fileID: (\d+)',b).group(1))
     guid=re.search(r'm_Mesh: .*guid: (\w+)',b).group(1)
     mesh=guidpaths[guid].read_text()
-    if guid=='1587b8289e2cdc34ba310d54acd0a0bd': template=mesh
+    if guidpaths[guid].stem == KEY: template=mesh
     count=int(re.search(r'm_VertexCount: (\d+)',mesh).group(1))
     data=bytes.fromhex(re.search(r'_typelessdata: (\w+)',mesh).group(1))
     stride=len(data)//count
@@ -110,7 +112,7 @@ def meshasset(tris,index):
     center=mul(add(lo,hi),.5);extent=mul(sub(hi,lo),.5)
     def fmt(v): return '{x: %.8g, y: %.8g, z: %.8g}'%v
     mesh=template
-    mesh=re.sub(r'm_Name: .*',f'm_Name: Keycap_1u_Fragment_{index}',mesh,count=1)
+    mesh=re.sub(r'm_Name: .*',f'm_Name: {KEY}_Fragment_{index}',mesh,count=1)
     for field in ['indexCount','vertexCount','m_VertexCount']:
         mesh=re.sub(field+r': \d+',field+f': {len(vertices)}',mesh,count=1)
     mesh=re.sub(r'm_IndexBuffer: \w+','m_IndexBuffer: '+struct.pack('<'+'H'*len(vertices),*range(len(vertices))).hex(),mesh)
@@ -118,7 +120,7 @@ def meshasset(tris,index):
     mesh=re.sub(r'_typelessdata: \w+','_typelessdata: '+packed.hex(),mesh)
     mesh=re.sub(r'm_Center: \{[^}]+\}','m_Center: '+fmt(center),mesh)
     mesh=re.sub(r'm_Extent: \{[^}]+\}','m_Extent: '+fmt(extent),mesh)
-    path=OUT/f'Keycap_1u_Fragment_{index}.asset';path.write_text(mesh)
+    path=OUT/f'{KEY}_Fragment_{index}.asset';path.write_text(mesh)
     return meta(path),len(tris)
 
 HEADER='%YAML 1.1\n%TAG !u! tag:unity3d.com,2011:\n'
@@ -127,11 +129,16 @@ def obj(i,name,components):
 def transform(i,go,parent=0,children=(),scale=1):
     return f'--- !u!4 &{i}\nTransform:\n  m_ObjectHideFlags: 0\n  m_GameObject: {{fileID: {go}}}\n  serializedVersion: 2\n  m_LocalRotation: {{x: 0, y: 0, z: 0, w: 1}}\n  m_LocalPosition: {{x: 0, y: 0, z: 0}}\n  m_LocalScale: {{x: {scale}, y: {scale}, z: {scale}}}\n  m_Children:'+ ('\n'+''.join(f'  - {{fileID: {c}}}\n' for c in children) if children else ' []\n')+f'  m_Father: {{fileID: {parent}}}\n'
 meshguids=[];counts=[]
-for index,(sx,sz) in enumerate([(1,1),(-1,1),(-1,-1),(1,-1)],1):
-    tris=clip(triangles,(sx,0,sx*.28),sx*.04)
-    tris=clip(tris,(sz*-.2,sz*.12,sz),sz*-.02)
-    guid,count=meshasset(tris,index);meshguids.append(guid);counts.append(count)
-prefab=HEADER+obj(100,'Keycap_1u_Fragments',[101])+transform(101,100,children=[201,301,401,501])
+axes = [(1, 0, .12), (-.08, .12, 1)]
+ranges = [(min(dot(axis, v) for tri in triangles for v in tri), max(dot(axis, v) for tri in triangles for v in tri)) for axis in axes]
+for x in range(COLUMNS):
+    for z in range(ROWS):
+        tris = triangles
+        for axis, (lo, hi), cell, bins in zip(axes, ranges, (x, z), (COLUMNS, ROWS)):
+            if cell > 0: tris = clip(tris, axis, lo + (hi-lo)*cell/bins)
+            if cell < bins-1: tris = clip(tris, mul(axis, -1), -(lo + (hi-lo)*(cell+1)/bins))
+        guid,count=meshasset(tris,len(meshguids)+1);meshguids.append(guid);counts.append(count)
+prefab=HEADER+obj(100,KEY+'_Fragments',[101])+transform(101,100,children=[i*100+1 for i in range(2,len(meshguids)+2)])
 for index,guid in enumerate(meshguids,2):
     i=index*100
     prefab+=obj(i,f'Fragment_{index-1}',[i+1,i+2,i+3,i+4,i+5])+transform(i+1,i,101)
@@ -140,36 +147,9 @@ for index,guid in enumerate(meshguids,2):
     prefab+=f'--- !u!23 &{i+3}\n'+renderer
     prefab+=f'--- !u!54 &{i+4}\nRigidbody:\n  m_ObjectHideFlags: 0\n  m_GameObject: {{fileID: {i}}}\n  serializedVersion: 5\n  m_Mass: 0.002\n  m_LinearDamping: 0.2\n  m_AngularDamping: 0.4\n  m_UseGravity: 1\n  m_IsKinematic: 0\n  m_Interpolate: 1\n  m_Constraints: 0\n  m_CollisionDetection: 0\n'
     prefab+=f'--- !u!64 &{i+5}\nMeshCollider:\n  m_ObjectHideFlags: 0\n  m_GameObject: {{fileID: {i}}}\n  m_Material: {{fileID: 0}}\n  m_IsTrigger: 0\n  m_Enabled: 1\n  serializedVersion: 5\n  m_Convex: 1\n  m_CookingOptions: 30\n  m_Mesh: {{fileID: 4300000, guid: {guid}, type: 2}}\n'
-path=OUT/'Keycap_1u_Fragments.prefab';path.write_text(prefab);fragmentguid=meta(path,'PrefabImporter')
-healthguid=meta(ROOT/'Assets/Scripts/Keyboard/KeycapHealth.cs','MonoImporter')
-particleguid=meta(ROOT/'Assets/Scripts/Keyboard/KeycapBreakParticles.cs','MonoImporter')
-particles=HEADER+obj(100,'Keycap_1u_Particles',[101,102])+transform(101,100)
-particles+=f'--- !u!114 &102\nMonoBehaviour:\n  m_ObjectHideFlags: 0\n  m_GameObject: {{fileID: 100}}\n  m_Enabled: 1\n  m_Script: {{fileID: 11500000, guid: {particleguid}, type: 3}}\n  m_Name: \n  m_EditorClassIdentifier: \n  _fragmentMeshes:\n'+''.join(f'  - {{fileID: 4300000, guid: {g}, type: 2}}\n' for g in meshguids)+f'  _material: {material}\n  _count: 24\n  _lifetime: 1.5\n'
-path=OUT/'Keycap_1u_Particles.prefab';path.write_text(particles);particlesguid=meta(path,'PrefabImporter')
-# Two standalone comparison prefabs inherit the original model without changing it.
-for mode,name in [(0,'Keycap_1u_FragmentDemo'),(1,'Keycap_1u_ParticleDemo')]:
-    demo=text.replace(f'  - component: {{fileID: 4383910516040011548}}',f'  - component: {{fileID: 4383910516040011548}}\n  - component: {{fileID: 900000000000000000}}')
-    demo+=f'--- !u!114 &900000000000000000\nMonoBehaviour:\n  m_ObjectHideFlags: 0\n  m_GameObject: {{fileID: {rootgo}}}\n  m_Enabled: 1\n  m_Script: {{fileID: 11500000, guid: {healthguid}, type: 3}}\n  m_Name: \n  m_EditorClassIdentifier: \n  _maxHP: 3\n  _breakMode: {mode}\n  _fragmentsPrefab: {{fileID: 100, guid: {fragmentguid}, type: 3}}\n  _particlesPrefab: {{fileID: 100, guid: {particlesguid}, type: 3}}\n  _fragmentSpeed: 0.3\n  _fragmentSpin: 8\n  _effectLifetime: 3\n'
-    path=OUT/(name+'.prefab');path.write_text(demo);meta(path,'PrefabImporter')
-print('Generated four clipped fragments:', counts)
-print('Created fragment, particle, and two HP comparison prefabs in', OUT)
-
-from PIL import Image, ImageDraw
-image=Image.new('RGB',(1400,650),(28,33,42)); draw=ImageDraw.Draw(image)
-colors=[(229,219,197),(216,204,178),(238,228,205),(200,189,164)]
-draw.text((45,30),'1u KEYCAP: ASSEMBLED',fill='white');draw.text((745,30),'FOUR CLIPPED FRAGMENTS: EXPLODED',fill='white')
-for panel in range(2):
-    faces=[]
-    for index,(sx,sz) in enumerate([(1,1),(-1,1),(-1,-1),(1,-1)]):
-        tris=clip(clip(triangles,(sx,0,sx*.28),sx*.04),(sz*-.2,sz*.12,sz),sz*-.02)
-        offset=(sx*.16,0,sz*.16) if panel else (0,0,0)
-        for tri in tris:
-            points=[add(p,offset) for p in tri]
-            normal=unit(cross(sub(points[1],points[0]),sub(points[2],points[0])))
-            shade=.55+.45*max(0,dot(normal,unit((-.3,1,-.7))))
-            color=tuple(int(c*shade) for c in colors[index])
-            projected=[(350+panel*700+(p[0]-p[2])*220,415+(p[0]+p[2])*90-p[1]*320) for p in points]
-            depth=sum(p[0]+p[2]+p[1]*.4 for p in points)/3
-            faces.append((depth,projected,color))
-    for _,points,color in sorted(faces,key=lambda f:f[0]): draw.polygon(points,fill=color)
-image.save(OUT/'Keycap_1u_FragmentPreview.png')
+path=OUT/(KEY+'_Fragments.prefab');path.write_text(prefab);fragmentguid=meta(path,'PrefabImporter')
+text=re.sub(r'_fragmentsPrefab: \{[^}]*\}', '_fragmentsPrefab: {fileID: 100, guid: '+fragmentguid+', type: 3}', text)
+text=re.sub(r'_breakMode: \d+', '_breakMode: 0', text)
+if '_upwardSpeed:' not in text: text=text.replace('  _fragmentSpin:', '  _upwardSpeed: 0.5\n  _fragmentSpin:')
+SOURCE.write_text(text)
+print(KEY, 'chunks:', len(meshguids), 'triangles:', counts)

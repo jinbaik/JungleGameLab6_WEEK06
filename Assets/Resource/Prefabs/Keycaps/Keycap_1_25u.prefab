@@ -343,9 +343,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KeycapHealth
   _maxHP: 5
   _breakMode: 0
-  _fragmentsPrefab: {fileID: 0}
+  _fragmentsPrefab: {fileID: 100, guid: 43875bc827f1449e847ef288f1b64ac8, type: 3}
   _particlesPrefab: {fileID: 0}
-  _fragmentSpeed: 0.3
+  _fragmentSpeed: 10
+  _upwardSpeed: 10
   _fragmentSpin: 8
   _effectLifetime: 3
 --- !u!114 &3185125839503348664
