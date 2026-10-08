@@ -19,11 +19,9 @@ namespace KeyboardModeling
         private bool _hasFocus;
         private bool _captureInput;
         private Key _lastPressedKey;
-        public event Action<Key> KeyPressed;
-
-        [Header("Mini Game")]
-        [SerializeField] private MiniGameController _miniGame;
         private KeycapButton[] _keycapButtons;
+
+        public event Action<Key> KeyPressed;
 
         [Header("Key Travel")]
         [SerializeField, Min(0f)] private float _pressDistance = 0.15f;
@@ -94,26 +92,25 @@ namespace KeyboardModeling
                     nativePressed = WindowsKeyboardCapture.IsPressed(_bindings[index].Key);
 #endif
                 bool isPressed = unityPressed || nativePressed;
-<<<<<<< HEAD
-                if (isPressed && !_previousPressed[index])
-                    KeyPressed?.Invoke(_bindings[index].Key);
+                bool stateChanged = isPressed != _previousPressed[index];
+                bool pressedThisFrame = isPressed && stateChanged;
+                pressedKeysChanged |= stateChanged;
+                _previousPressed[index] = isPressed;
                 if (isPressed)
                 {
                     _lastPressedKey = _bindings[index].Key;
-                    if (_pressedKeyNames.Length > 0)
-                        _pressedKeyNames.Append(", ");
-                    _pressedKeyNames.Append(_bindings[index].Key);
-
-                    int damage = _miniGame != null ? _miniGame.DamageMultiplier : 1;
-                    _bindings[index].Keycap.GetComponent<KeycapHealth>().TakeDamage(damage);
-=======
-                pressedKeysChanged |= isPressed != _previousPressed[index];
-                if (isPressed)
-                {
-                    _lastPressedKey = _bindings[index].Key;
->>>>>>> feature/keyboard
                 }
                 AnimateKey(index, isPressed, Time.unscaledDeltaTime);
+
+                if (pressedThisFrame)
+                {
+                    KeyPressed?.Invoke(_bindings[index].Key);
+                    if (!_inputEnabled || !isActiveAndEnabled)
+                    {
+                        RestoreKeys();
+                        return;
+                    }
+                }
 
                 _keycapButtons[index].SetPressed(isPressed);
                 if (!_inputEnabled || !isActiveAndEnabled)
@@ -122,9 +119,8 @@ namespace KeyboardModeling
                     return;
                 }
 
-                if (_logInput && isPressed != _previousPressed[index])
+                if (_logInput && stateChanged)
                     Debug.Log("[Keyboard][Model] " + (isPressed ? "DOWN " : "UP ") + _bindings[index].Key + " | Unity=" + unityPressed + " Hook=" + nativePressed + " | Target=" + _bindings[index].Keycap.name + " LocalY=" + _bindings[index].Keycap.localPosition.y.ToString("F4"), this);
-                _previousPressed[index] = isPressed;
             }
             _lastPressDistance = _pressDistance;
             if (pressedKeysChanged)
