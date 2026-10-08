@@ -1039,6 +1039,7 @@ GameObject:
   m_Component:
   - component: {fileID: 604136539110410410}
   - component: {fileID: 2312579063080902634}
+  - component: {fileID: -4762073215838258561}
   m_Layer: 0
   m_Name: Keycap_1_5u
   m_TagString: Untagged
@@ -1086,3 +1087,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.425, y: 0.53, z: 0.925}
   m_Center: {x: 0, y: 0.26, z: 0}
+--- !u!114 &-4762073215838258561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8674815686869142189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d626322e2624714ab14ab507c74b2a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeycapHealth
+  _maxHP: 100
+  _breakMode: 0
+  _fragmentsPrefab: {fileID: 0}
+  _particlesPrefab: {fileID: 0}
+  _fragmentSpeed: 0.3
+  _fragmentSpin: 8
+  _effectLifetime: 3

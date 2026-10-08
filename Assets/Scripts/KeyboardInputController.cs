@@ -89,8 +89,11 @@ namespace KeyboardModeling
                     if (_pressedKeyNames.Length > 0)
                         _pressedKeyNames.Append(", ");
                     _pressedKeyNames.Append(_bindings[index].Key);
+
+                    _bindings[index].Keycap.GetComponent<KeycapHealth>().TakeDamage(1);
                 }
                 AnimateKey(index, isPressed, Time.unscaledDeltaTime);
+
                 if (_logInput && isPressed != _previousPressed[index])
                     Debug.Log("[Keyboard][Model] " + (isPressed ? "DOWN " : "UP ") + _bindings[index].Key + " | Unity=" + unityPressed + " Hook=" + nativePressed + " | Target=" + _bindings[index].Keycap.name + " LocalY=" + _bindings[index].Keycap.localPosition.y.ToString("F4"), this);
                 _previousPressed[index] = isPressed;
