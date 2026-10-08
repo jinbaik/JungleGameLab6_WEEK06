@@ -70,6 +70,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         _padRotation = _referenceKeyboard.transform.rotation;
         _keyboardBounds = CalculateKeyboardBounds(_referenceKeyboard.transform);
         _padCollider = GetComponent<BoxCollider>();
+        _controller = FindAnyObjectByType<MiniGameController>();
         _padCollider.isTrigger = true;
         _fixedCam.Priority = 0;
         Cursor.lockState = CursorLockMode.Locked;
@@ -111,7 +112,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         _heldKeyboard.Body.MoveRotation(Quaternion.Slerp(_heldKeyboard.Body.rotation, rotation, amount));
     }
 
-    void OnTriggerEnter(Collider other) { TryPlaceKeyboard(other); }
+    //void OnTriggerEnter(Collider other) { TryPlaceKeyboard(other); }
     void OnTriggerStay(Collider other) { TryPlaceKeyboard(other); }
     void OnTriggerExit(Collider other) { if (_heldKeyboard != null && other.attachedRigidbody == _heldKeyboard.Body) _canPlaceHeldKeyboard = true; }
 
@@ -196,13 +197,13 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         _canPlaceHeldKeyboard = !Physics.ComputePenetration(state.Collider, state.Body.position, state.Body.rotation, _padCollider, _padCollider.transform.position, _padCollider.transform.rotation, out _, out _);
         if (_placedKeyboard == state) _placedKeyboard = null;
     }
-    private int lastDroped;
+    private GameObject lastDroped;
     /// <summary>현재 키보드의 카메라 추적을 중단하고 Rigidbody를 중력에 따라 움직이는 상태로 전환한다.</summary>
     private void DropKeyboard()
     {
         _heldKeyboard.Body.isKinematic = false;
         _heldKeyboard.Body.useGravity = true;
-        lastDroped = _heldKeyboard.Collider.GetEntityId();
+        lastDroped = _heldKeyboard.Collider.gameObject;
         _heldKeyboard = null;
 
 
@@ -211,26 +212,32 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     /// <summary>other가 들고 있는 키보드이면 Pad 기준 위치와 회전으로 놓고, 기존 키보드는 집었던 위치로 옮긴 뒤 SmashMode를 시작한다.</summary>
     private void TryPlaceKeyboard(Collider other)
     {
+        if (other.gameObject != lastDroped) return;
 
-        if (_heldKeyboard == null || !_canPlaceHeldKeyboard || other.attachedRigidbody != _heldKeyboard.Body) return;
+        if (!_canPlaceHeldKeyboard)
+        {
+
+            return;
+        }
         if (_placedKeyboard != null)
         {
+
             SetKeyboardInput(_placedKeyboard, false);
             _placedKeyboard.Body.position = _pickupPosition;
             _placedKeyboard.Body.rotation = _pickupRotation;
         }
         // 교체 부분
-        if (other.GetEntityId() != lastDroped) return;
 
 
         GameObject temp = Instantiate(_inGameKeyBoardPrefab);
         _placedKeyboard = RegisterKeyboard(temp.GetComponent<KeyboardInputController>());
-        Destroy(_heldKeyboard.Collider.gameObject);
+        Destroy(other.gameObject);
         _heldKeyboard = null;
 
         _controller.SetKeyBoard(_placedKeyboard.Collider.GetComponent<KeyboardInputController>());
         _placedKeyboard.Body.position = _padPosition;
         _placedKeyboard.Body.rotation = _padRotation;
+
         OnEnterSmashMode();
     }
 
