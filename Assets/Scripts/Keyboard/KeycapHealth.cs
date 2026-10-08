@@ -3,6 +3,8 @@ using System;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
+using Random = UnityEngine.Random;
+
 public sealed class KeycapHealth : MonoBehaviour
 {
     public enum BreakMode { Fragments, Particles }
