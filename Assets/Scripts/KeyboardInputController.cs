@@ -19,6 +19,10 @@ namespace KeyboardModeling
         private bool _hasFocus;
         private bool _captureInput;
         private Key _lastPressedKey;
+        public event Action<Key> KeyPressed;
+
+        [Header("Mini Game")]
+        [SerializeField] private MiniGameController _miniGame;
 
         [Header("Key Travel")]
         [SerializeField, Min(0f)] private float _pressDistance = 0.15f;
@@ -83,6 +87,8 @@ namespace KeyboardModeling
                     nativePressed = WindowsKeyboardCapture.IsPressed(_bindings[index].Key);
 #endif
                 bool isPressed = unityPressed || nativePressed;
+                if (isPressed && !_previousPressed[index])
+                    KeyPressed?.Invoke(_bindings[index].Key);
                 if (isPressed)
                 {
                     _lastPressedKey = _bindings[index].Key;
@@ -90,7 +96,8 @@ namespace KeyboardModeling
                         _pressedKeyNames.Append(", ");
                     _pressedKeyNames.Append(_bindings[index].Key);
 
-                    _bindings[index].Keycap.GetComponent<KeycapHealth>().TakeDamage(1);
+                    int damage = _miniGame != null ? _miniGame.DamageMultiplier : 1;
+                    _bindings[index].Keycap.GetComponent<KeycapHealth>().TakeDamage(damage);
                 }
                 AnimateKey(index, isPressed, Time.unscaledDeltaTime);
 

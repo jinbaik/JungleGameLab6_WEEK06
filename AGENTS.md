@@ -147,3 +147,8 @@ using Game.System;
 ## 10. Local Instructions
 
 - 프로젝트 루트에 LOCAL.md가 존재하면 개인 작업 지침으로 추가로 읽고 적용한다.
+
+## 11. Unity-Cli 사용 지침
+
+- 이벤트 연결 방식은 C# Event Action 바인딩으로만 한다.
+- UnityEventTools.AddIntPersistentListener() 함수처럼 컴퓨터만 알고 개발자가 추적하기 어려운 이벤트 바인딩 방식을 피해야 한다.
