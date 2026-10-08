@@ -143,7 +143,3 @@ using Game.System;
 ## 9. Coroutine
 
 - Coroutine 내부에서는 Time.deltaTime만을 사용해야 한다.
-
-## 10. Local Instructions
-
-- 프로젝트 루트에 LOCAL.md가 존재하면 개인 작업 지침으로 추가로 읽고 적용한다.

@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-
+using UnityEditor;
+using UnityEditor.Events;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
-using UnityEditor;
 
 namespace KeyboardModeling.Editor
 {
@@ -19,6 +18,7 @@ namespace KeyboardModeling.Editor
         [MenuItem("Tools/Keyboard/Configure Physical Keyboard Input")]
         public static void ConfigureExistingPrefab()
         {
+            ConfigureExistingKeycaps();
             GameObject keyboard = PrefabUtility.LoadPrefabContents(PREFAB_PATH);
             try
             {
@@ -31,6 +31,57 @@ namespace KeyboardModeling.Editor
             {
                 PrefabUtility.UnloadPrefabContents(keyboard);
             }
+        }
+
+        /// <summary>
+        /// 저장된 키캡 프리팹에 누름 이벤트를 추가한다.
+        /// 기존 Keycaps 폴더의 프리팹을 사용하여 버튼과 HP 이벤트 연결을 저장한다.
+        /// </summary>
+        private static void ConfigureExistingKeycaps()
+        {
+            string[] guids = AssetDatabase.FindAssets("t:Prefab", new[] { "Assets/Resource/Prefabs/Keycaps" });
+            foreach (string guid in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                GameObject keycap = PrefabUtility.LoadPrefabContents(path);
+                try
+                {
+                    ConfigureKeycap(keycap);
+                    PrefabUtility.SaveAsPrefabAsset(keycap, path);
+                }
+                finally
+                {
+                    PrefabUtility.UnloadPrefabContents(keycap);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 키캡에 누름 기능을 연결한다.
+        /// keycap의 버튼을 준비하고 기존 KeycapHealth가 있으면 1회당 피해 1 이벤트를 중복 없이 등록한다.
+        /// </summary>
+        /// 
+
+        public static void ConfigureKeycap(GameObject keycap)
+        {
+            KeycapButton button = keycap.GetComponent<KeycapButton>();
+            if (button == null)
+                button = keycap.AddComponent<KeycapButton>();
+
+            KeycapHealth health = keycap.GetComponent<KeycapHealth>();
+            if (health == null)
+                return;
+
+            for (int index = 0; index < button.OnPressed.GetPersistentEventCount(); index++)
+            {
+                if (button.OnPressed.GetPersistentTarget(index) == health && button.OnPressed.GetPersistentMethodName(index) == nameof(KeycapHealth.TakeDamage))
+                    return;
+            }
+
+
+            //여기서 밑 코드로 추가하면 인스팩터에서 수정가능
+            UnityEventTools.AddIntPersistentListener(button.OnPressed, health.TakeDamage, 1);
+            EditorUtility.SetDirty(button);
         }
 
         /// <summary>
@@ -60,6 +111,8 @@ namespace KeyboardModeling.Editor
             }
             if (keycaps.Count != 104)
                 throw new InvalidOperationException("키보드 입력 매핑은 104개여야 합니다: " + keycaps.Count);
+            foreach (Transform keycap in keycaps)
+                ConfigureKeycap(keycap.gameObject);
             var serialized = new SerializedObject(controller);
             serialized.FindProperty("_blockShortcuts").boolValue = true;
             SerializedProperty bindings = serialized.FindProperty("_bindings");
