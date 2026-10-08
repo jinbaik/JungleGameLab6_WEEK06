@@ -1040,6 +1040,7 @@ GameObject:
   - component: {fileID: 604136539110410410}
   - component: {fileID: 2312579063080902634}
   - component: {fileID: -4762073215838258561}
+  - component: {fileID: 9023987422780794531}
   m_Layer: 0
   m_Name: Keycap_1_5u
   m_TagString: Untagged
@@ -1099,10 +1100,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d626322e2624714ab14ab507c74b2a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeycapHealth
-  _maxHP: 100
+  _maxHP: 5
   _breakMode: 0
   _fragmentsPrefab: {fileID: 0}
   _particlesPrefab: {fileID: 0}
   _fragmentSpeed: 0.3
   _fragmentSpin: 8
   _effectLifetime: 3
+--- !u!114 &9023987422780794531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8674815686869142189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10e2f0d54e65d484c893eafc9c5931b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeycapButton
+  _onPressed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: -4762073215838258561}
+        m_TargetAssemblyTypeName: KeycapHealth, Assembly-CSharp
+        m_MethodName: TakeDamage
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
