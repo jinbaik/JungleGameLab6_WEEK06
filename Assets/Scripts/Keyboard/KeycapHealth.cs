@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public sealed class KeycapHealth : MonoBehaviour
 {
@@ -10,6 +11,10 @@ public sealed class KeycapHealth : MonoBehaviour
     private bool _broken;
     public int MaxHP => _maxHP;
     public int CurrentHP => _currentHP;
+
+    [Header("Damage decal")]
+    [SerializeField] private DecalProjector _damageDecal;
+    [SerializeField] private Material[] _crackMaterials;
 
     [Header("Break effect")]
     [SerializeField] private BreakMode _breakMode;
@@ -25,6 +30,7 @@ public sealed class KeycapHealth : MonoBehaviour
     void Awake()
     {
         _currentHP = _maxHP;
+        UpdateDamageDecal();
         _renderers = GetComponentsInChildren<Renderer>();
         _colliders = GetComponentsInChildren<Collider>();
     }
@@ -34,7 +40,18 @@ public sealed class KeycapHealth : MonoBehaviour
     {
         if (_broken || damage <= 0) return;
         _currentHP = Mathf.Max(0, _currentHP - damage);
+        UpdateDamageDecal();
         if (_currentHP == 0) Break();
+    }
+
+    /// <summary>현재 체력 비율과 세 단계 균열 재질을 사용해 데칼을 갱신하고, 체력이 충분하거나 소진되면 데칼을 숨긴다.</summary>
+    private void UpdateDamageDecal()
+    {
+        if (_damageDecal == null) return;
+        float healthRatio = (float)_currentHP / _maxHP;
+        bool showCracks = _currentHP > 0 && healthRatio <= 0.75f;
+        _damageDecal.enabled = showCracks;
+        if (showCracks) _damageDecal.material = _crackMaterials[healthRatio > 0.5f ? 0 : healthRatio > 0.25f ? 1 : 2];
     }
 
     /// <summary>추가 입력 없이 실행 중인 키캡에 피해 1을 적용하여 현재 체력과 파괴 상태를 변경한다.</summary>
