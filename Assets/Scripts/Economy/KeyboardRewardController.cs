@@ -23,6 +23,7 @@ namespace Game.Economy
 
         void OnEnable()
         {
+            _interactionController = FindAnyObjectByType<KeyboardInteractionController>();
             _interactionController.ActiveKeyboardChanged += BindKeyboard;
             BindKeyboard(_interactionController.ActiveKeyboard);
         }

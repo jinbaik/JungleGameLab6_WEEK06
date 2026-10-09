@@ -21,6 +21,7 @@ namespace Game.UI
 
         void OnEnable()
         {
+            _interactionController = FindAnyObjectByType<KeyboardInteractionController>();
             _interactionController.ActiveKeyboardChanged += BindKeyboard;
             _rewardController.RewardGranted += OnRewardGranted;
             BindKeyboard(_interactionController.ActiveKeyboard);
@@ -33,10 +34,6 @@ namespace Game.UI
             UnbindKeyboard();
         }
 
-        /// <summary>
-        /// keyboardのキーキャップ被ダメージ通知を表示対象として接続する。
-        /// 以前の通知を解除し、新しいキーキャップ一覧と入力対象を保存する。
-        /// </summary>
         private void BindKeyboard(KeyboardInputController keyboard)
         {
             if (_activeKeyboard == keyboard) return;
@@ -60,10 +57,6 @@ namespace Game.UI
             _activeKeyboard = null;
         }
 
-        /// <summary>
-        /// damageの要求量と実際の減少量をToastへ渡し、表示設定に従って数値を選ぶ。
-        /// 発生位置と両方の被ダメージ量を保存したダメージToastをプールへ要求する。
-        /// </summary>
         private void OnDamaged(KeycapDamage damage)
         {
             long amount = _showRequestedDamage ? damage.RequestedDamage : damage.AppliedDamage;

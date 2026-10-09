@@ -704,6 +704,8 @@ GameObject:
   - component: {fileID: 9097960147096061553}
   - component: {fileID: 1979642950152958313}
   - component: {fileID: 2612928670998550527}
+  - component: {fileID: 5098958360283032277}
+  - component: {fileID: 8823056269604226751}
   m_Layer: 0
   m_Name: Screen
   m_TagString: Untagged
@@ -759,7 +761,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MonitorController
   _shopCanvas: {fileID: 3013255842556445708}
   _miniGameCanvas: {fileID: 7372345893925918935}
+  monitorCam: {fileID: 0}
   _shopView: {fileID: 7425521347323571261}
+  _allowTabClose: 1
+--- !u!114 &5098958360283032277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8012220062700350010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 320dfc8c5016fb149a29786bc2bd5d3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Economy.KeyboardRewardController
+  _gameSession: {fileID: 1979642950152958313}
+  _interactionController: {fileID: 0}
+  _rewardPerKeycap: 10
+--- !u!114 &8823056269604226751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8012220062700350010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a60226cbacced034eaa9aa09eb5abe32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.UI.KeyboardToastPresenter
+  _interactionController: {fileID: 0}
+  _rewardController: {fileID: 5098958360283032277}
+  _toastPool: {fileID: 0}
+  _showRequestedDamage: 0
 --- !u!1 &8469913425420804115
 GameObject:
   m_ObjectHideFlags: 0

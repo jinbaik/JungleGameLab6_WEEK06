@@ -261,7 +261,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
 
         if (other.gameObject != lastDroped) return;
 
-        if (!_canPlaceHeldKeyboard || _placedKeyboard != null || _heldKeyboard != null)
+        if (!_canPlaceHeldKeyboard)
         {
 
             return;
@@ -274,32 +274,27 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         //    _placedKeyboard.Body.position = _pickupPosition;
         //    _placedKeyboard.Body.rotation = _pickupRotation;
         //}
-        else
-        {
-            // 교체 부분
 
+        GameObject temp = Instantiate(_inGameKeyBoardPrefab);
+        _placedKeyboard = RegisterKeyboard(temp.GetComponent<KeyboardInputController>());
+        Destroy(other.gameObject);
+        _heldKeyboard = null;
 
-            GameObject temp = Instantiate(_inGameKeyBoardPrefab);
-            _placedKeyboard = RegisterKeyboard(temp.GetComponent<KeyboardInputController>());
-            Destroy(other.gameObject);
-            _heldKeyboard = null;
-
-            _controller.SetKeyBoard(_placedKeyboard.Collider.GetComponent<KeyboardInputController>());
-            _placedKeyboard.Body.position = _padPosition;
-            _placedKeyboard.Body.rotation = _padRotation;
+        _controller.SetKeyBoard(_placedKeyboard.Collider.GetComponent<KeyboardInputController>());
+        _placedKeyboard.Body.position = _padPosition;
+        _placedKeyboard.Body.rotation = _padRotation;
 
             //_placedKeyboard.Body.isKinematic = true;
 
-            Rigidbody body = _placedKeyboard.Body;
+        Rigidbody body = _placedKeyboard.Body;
 
-            // 먼저 물리 모드를 확정하고, 보간 없이 최종 위치를 지정한다.
-            body.interpolation = RigidbodyInterpolation.None;
-            body.isKinematic = true;
-            body.useGravity = false;
+        // 먼저 물리 모드를 확정하고, 보간 없이 최종 위치를 지정한다.
+        body.interpolation = RigidbodyInterpolation.None;
+        body.isKinematic = true;
+        body.useGravity = false;
 
-            body.position = _padPosition;
-            body.rotation = _padRotation;
-        }
+        body.position = _padPosition;
+        body.rotation = _padRotation;
 
         OnEnterSmashMode();
     }
