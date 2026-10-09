@@ -98,6 +98,11 @@ namespace KeyboardModeling
         {
             if (_feverRemaining > 0f)
             {
+                if (_keyboard == null || !_keyboard.InputEnabled || !_keyboard.isActiveAndEnabled)
+                {
+                    return;
+                }
+
                 _feverRemaining = Mathf.Max(0f, _feverRemaining - Time.deltaTime);
                 if (_feverRemaining == 0f)
                 {
