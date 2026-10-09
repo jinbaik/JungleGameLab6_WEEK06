@@ -217,7 +217,7 @@ namespace KeyboardModeling
         /// </summary>
         private void RefreshFeverLabel(bool fever)
         {
-            _feverLabel.text = fever ? $"FEVER / {_controller.FeverRemaining:0.0}s / DAMAGE x2" : $"FEVER CHARGE / {_controller.FeverCharge * 100f:0}%";
+            _feverLabel.text = fever ? $"FEVER / {_controller.FeverRemaining:0.0}s / DAMAGE x{_controller.DamageMultiplier}" : $"FEVER CHARGE / {_controller.FeverCharge * 100f:0}%";
         }
     }
 }

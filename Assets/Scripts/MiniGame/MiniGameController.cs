@@ -52,13 +52,14 @@ namespace KeyboardModeling
 
         [Header("Fever")]
         [SerializeField, Min(0.1f)] private float _feverDuration = 15f;
+        [SerializeField] private int _feverDamageMultiplier = 4;
         private int _feverClears;
         private float _feverRemaining;
         public bool IsFeverActive => _feverRemaining > 0f;
         public float FeverRemaining => _feverRemaining;
         public float FeverDuration => _feverDuration;
         public float FeverCharge => _feverClears * 0.5f;
-        public int DamageMultiplier => IsFeverActive ? 2 : 1;
+        public int DamageMultiplier => IsFeverActive ? _feverDamageMultiplier : 1;
 
         void Awake()
         {
