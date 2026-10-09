@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 27118943}
   - component: {fileID: 27118944}
   - component: {fileID: 27118945}
+  - component: {fileID: 27118946}
   m_Layer: 0
   m_Name: SmashModeTrigger
   m_TagString: Untagged
@@ -208,6 +209,23 @@ MonoBehaviour:
   _keyboardFragmentsPrefab: {fileID: 100, guid: 5dc9afe1dd0444239ccf712060e436a9, type: 3}
   _controller: {fileID: 0}
   _shopView: {fileID: 0}
+--- !u!114 &27118946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27118942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a483dfdc7c314d3d9acd9fd728df7a80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardFeedbackManager
+  _interactionController: {fileID: 27118945}
+  _previewKeyboard: {fileID: 0}
+  _enableHitStop: 1
+  _hitStopDuration: 0.25
+  _hitStopCooldown: 0.35
 --- !u!1 &250938437
 GameObject:
   m_ObjectHideFlags: 0
@@ -1878,6 +1896,10 @@ PrefabInstance:
     - target: {fileID: 6087872409866529466, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
       propertyPath: m_Name
       value: Keyboard_TKL_87
+      objectReference: {fileID: 0}
+    - target: {fileID: 6087872409866529466, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6971031978401606262, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
       propertyPath: m_LocalPosition.x
