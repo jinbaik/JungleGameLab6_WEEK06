@@ -83,11 +83,14 @@ public sealed class KeyboardInteractionController : MonoBehaviour
 
     void Awake()
     {
+        _gameSession = FindAnyObjectByType<GameSession>();
+        _rewardController = FindAnyObjectByType<KeyboardRewardController>();
+        _controller = FindAnyObjectByType<MiniGameController>();
         _padPosition = _referenceKeyboard.transform.position;
         _padRotation = _referenceKeyboard.transform.rotation;
         _keyboardBounds = CalculateKeyboardBounds(_referenceKeyboard.transform);
         _padCollider = GetComponent<BoxCollider>();
-        _controller = FindAnyObjectByType<MiniGameController>();
+        
         _padCollider.isTrigger = true;
         _fixedCam.Priority = 0;
         Cursor.lockState = CursorLockMode.Locked;
