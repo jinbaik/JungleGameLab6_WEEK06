@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 using Game.Shop;
+using Unity.Cinemachine;
 
 public class MonitorController : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class MonitorController : MonoBehaviour
     [SerializeField] private GameObject _shopCanvas;
     [Tooltip("상점 전용 씬에서는 비워 둘 수 있습니다.")]
     [SerializeField] private GameObject _miniGameCanvas;
+    [SerializeField] private CinemachineCamera monitorCam;
 
     [Header("Shop")]
     [SerializeField] private ShopView _shopView;
@@ -49,6 +51,8 @@ public class MonitorController : MonoBehaviour
     {
         if (_shopView.IsOpen && !_allowTabClose)
             return;
+
+        monitorCam.Priority = monitorCam.Priority == 0 ? 30 : 0;
 
         _shopView.Toggle();
     }
