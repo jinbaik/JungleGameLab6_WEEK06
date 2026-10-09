@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c1b2e05253f6b842a48cee7e44c75db, type: 3}
-  m_Name: SmashDamage
+  m_Name: AreaDamage
   m_EditorClassIdentifier: Assembly-CSharp::Game.Upgrades.UpgradeDefinition
-  _id: 0
-  _displayName: Smash Damage
-  _description: Add 1 damage per level. Applies before the fever multiplier.
+  _id: 3
+  _displayName: Area Damage
+  _description: Increase nearby-key damage independently from direct smash damage.
+    Applies before the fever multiplier.
   _levelCosts: 0a0000000000000019000000000000003c00000000000000
   _damageBonuses: 010000000200000003000000
   _areaRadii:

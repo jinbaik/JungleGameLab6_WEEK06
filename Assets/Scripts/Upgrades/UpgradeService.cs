@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Game.Economy;
+using KeyboardModeling;
 
 namespace Game.Upgrades
 {
@@ -29,6 +30,11 @@ namespace Game.Upgrades
             for (int i = 0; i < definitions.Count; i++)
             {
                 UpgradeDefinition definition = definitions[i];
+                if (definition.Id == UpgradeId.RareKeycapQuality)
+                {
+                    definition.ValidateRarityProgression();
+                }
+
                 _definitions.Add(definition.Id, definition);
                 _levels.Add(definition.Id, 0);
             }
@@ -41,6 +47,55 @@ namespace Game.Upgrades
         public int GetLevel(UpgradeId id)
         {
             return _levels[id];
+        }
+
+        /// <summary>
+        /// 현재 SmashDamage 레벨과 강화 데이터로 누적 추가 피해를 조회한다.
+        /// 계산한 추가 피해를 반환하며 강화 레벨과 지갑 상태는 변경하지 않는다.
+        /// </summary>
+        public int GetDamageBonus()
+        {
+            return _definitions[UpgradeId.SmashDamage].GetDamageBonus(_levels[UpgradeId.SmashDamage]);
+        }
+
+        /// <summary>
+        /// 현재 AreaDamage 레벨과 강화 데이터로 광역 공격의 누적 추가 피해를 조회한다.
+        /// 광역 공격력 정의가 없는 기존 세션에서는 0을 반환하며 강화 레벨과 지갑은 변경하지 않는다.
+        /// </summary>
+        public int GetAreaDamageBonus()
+        {
+            if (!_definitions.TryGetValue(UpgradeId.AreaDamage, out UpgradeDefinition definition))
+            {
+                return 0;
+            }
+
+            return definition.GetDamageBonus(_levels[UpgradeId.AreaDamage]);
+        }
+
+        /// <summary>
+        /// 현재 AreaSmash 레벨과 강화 데이터로 키 간격 단위의 타격 반경을 조회한다.
+        /// 미구매 상태에서는 0을 반환하며 강화 레벨과 지갑 상태는 변경하지 않는다.
+        /// </summary>
+        public float GetAreaRadius()
+        {
+            return _definitions[UpgradeId.AreaSmash].GetAreaRadius(_levels[UpgradeId.AreaSmash]);
+        }
+
+        /// <summary>현재 품질 강화 레벨을 반환하며 품질 강화가 없는 기존 세션에서는 0을 반환한다.</summary>
+        public int GetKeycapQualityLevel()
+        {
+            return _levels.TryGetValue(UpgradeId.RareKeycapQuality, out int level) ? level : 0;
+        }
+
+        /// <summary>
+        /// 현재 품질 강화 레벨의 일반부터 전설까지의 분포를 반환한다.
+        /// 품질 정의가 없는 기존 세션에서는 일반만 등장하는 분포를 반환하며 구매 상태는 변경하지 않는다.
+        /// </summary>
+        public KeycapRarityDistribution GetRarityDistribution()
+        {
+            return _definitions.TryGetValue(UpgradeId.RareKeycapQuality, out UpgradeDefinition definition)
+                ? definition.GetRarityDistribution(GetKeycapQualityLevel())
+                : new KeycapRarityDistribution(100f, 0f, 0f, 0f);
         }
 
         /// <summary>

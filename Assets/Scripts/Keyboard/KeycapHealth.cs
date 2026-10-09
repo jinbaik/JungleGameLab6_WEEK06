@@ -3,6 +3,8 @@ using System;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
+using KeyboardModeling;
+
 using Random = UnityEngine.Random;
 
 public sealed class KeycapHealth : MonoBehaviour
@@ -17,6 +19,14 @@ public sealed class KeycapHealth : MonoBehaviour
     public int CurrentHP => _currentHP;
     public event Action<KeycapHealth> Broken;
     public event Action<KeycapDamage> Damaged;
+
+    [Header("Runtime Rarity")]
+    private bool _hasSpawnData;
+    private KeycapRarity _rarity;
+    private long _reward;
+    public bool HasSpawnData => _hasSpawnData;
+    public KeycapRarity Rarity => _rarity;
+    public long Reward => _reward;
 
     [Header("Damage decal")]
     [SerializeField] private DecalProjector _damageDecal;
@@ -44,6 +54,60 @@ public sealed class KeycapHealth : MonoBehaviour
         UpdateDamageDecal();
         _renderers = GetComponentsInChildren<Renderer>();
         _colliders = GetComponentsInChildren<Collider>();
+    }
+
+    /// <summary>
+    /// data의 확정된 등급·체력·보상을 새 키캡에 한 번 적용한다.
+    /// 최대·현재 체력과 등급 상태를 저장하고 희귀 키캡의 색상 및 균열 표시를 갱신한다.
+    /// </summary>
+    public void InitializeSpawnData(KeyboardSpawnProfile.KeycapData data)
+    {
+        if (_hasSpawnData || _broken || _currentHP != _maxHP)
+        {
+            throw new InvalidOperationException("Spawn data can only initialize an untouched keycap once.");
+        }
+
+        _maxHP = data.MaxHP;
+        _currentHP = data.MaxHP;
+        _rarity = data.Rarity;
+        _reward = data.Reward;
+        _hasSpawnData = true;
+        if (_rarity != KeycapRarity.Common)
+        {
+            ApplyRarityColor(data.Color);
+        }
+
+        UpdateDamageDecal();
+    }
+
+    /// <summary>
+    /// color를 키캡 메시의 재질 속성에 적용하여 희귀 등급을 표현한다.
+    /// 기존 공유 재질과 문자 렌더러는 유지하고 Renderer별 색상 속성만 변경한다.
+    /// </summary>
+    private void ApplyRarityColor(Color color)
+    {
+        MaterialPropertyBlock properties = new MaterialPropertyBlock();
+        foreach (Renderer renderer in _renderers)
+        {
+            if (!(renderer is MeshRenderer) || renderer.GetComponent<MeshFilter>() == null)
+            {
+                continue;
+            }
+
+            Material material = renderer.sharedMaterial;
+            renderer.GetPropertyBlock(properties);
+            if (material.HasProperty("_BaseColor"))
+            {
+                properties.SetColor("_BaseColor", material.GetColor("_BaseColor") * color);
+            }
+            else if (material.HasProperty("_Color"))
+            {
+                properties.SetColor("_Color", material.GetColor("_Color") * color);
+            }
+
+            renderer.SetPropertyBlock(properties);
+            properties.Clear();
+        }
     }
 
     /// <summary>양수 damage로 체력을 줄이고 요청량, 실제 감소량과 월드 위치를 Damaged로 알린 뒤 체력이 0이면 파괴한다. 이미 파괴된 키캡은 무시한다.</summary>

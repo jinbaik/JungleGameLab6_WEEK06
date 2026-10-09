@@ -706,6 +706,7 @@ GameObject:
   - component: {fileID: 2612928670998550527}
   - component: {fileID: 5098958360283032277}
   - component: {fileID: 8823056269604226751}
+  - component: {fileID: 9165275900183240889}
   m_Layer: 0
   m_Name: Screen
   m_TagString: Untagged
@@ -747,6 +748,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9aa211f0cf0e32f45b6916573844effd, type: 2}
   - {fileID: 11400000, guid: 61d81da62fab48c44a3868935f7e152b, type: 2}
   - {fileID: 11400000, guid: df4cf494358af934a802f8eacb253c81, type: 2}
+  - {fileID: 11400000, guid: 508188f373d5f5e43a6a9bb3ba3de547, type: 2}
+  - {fileID: 11400000, guid: 8f7df6a30a49f234689f14977bbbf359, type: 2}
 --- !u!114 &2612928670998550527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -795,6 +798,24 @@ MonoBehaviour:
   _rewardController: {fileID: 5098958360283032277}
   _toastPool: {fileID: 0}
   _showRequestedDamage: 0
+--- !u!114 &9165275900183240889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8012220062700350010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d08300b35ad40164fa605ee179d0e022, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardAttackController
+  _interactionController: {fileID: 0}
+  _keyboard: {fileID: 0}
+  _gameSession: {fileID: 1979642950152958313}
+  _miniGameController: {fileID: 2940396781710385079}
+  _baseDamage: 1
+  _baseAreaDamage: 1
 --- !u!1 &8469913425420804115
 GameObject:
   m_ObjectHideFlags: 0
@@ -1376,6 +1397,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 298dd09b174288249bd1bdab08e410b3, type: 3}
+--- !u!114 &2940396781710385079 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 498755381938961326, guid: 298dd09b174288249bd1bdab08e410b3, type: 3}
+  m_PrefabInstance: {fileID: 3325218019730629657}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7372345893925918935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e02571f5689b9e46ade058e611a414f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.MiniGameController
 --- !u!224 &3626166633513007008 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2051169163492135865, guid: 298dd09b174288249bd1bdab08e410b3, type: 3}

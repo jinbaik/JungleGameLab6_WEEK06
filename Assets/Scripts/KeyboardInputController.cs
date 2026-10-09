@@ -22,6 +22,7 @@ namespace KeyboardModeling
         private Key _lastPressedKey;
         private KeycapButton[] _keycapButtons;
         private KeycapHealth[] _keycapHealths;
+        private KeyboardSpawnProfile _spawnProfile;
 
         public event Action<Key> KeyPressed;
         public event Action<KeycapHealth> AttackRequested;
@@ -56,6 +57,60 @@ namespace KeyboardModeling
         public bool ShortcutCaptureActive => _captureInput;
         public Key LastPressedKey => _lastPressedKey;
         public string CurrentPressedKeys => _currentPressedKeys;
+        public KeyboardSpawnProfile SpawnProfile => _spawnProfile;
+
+        /// <summary>
+        /// profile의 키 식별자를 layout과 연결하여 새 키보드의 등급·체력·보상을 한 번 초기화한다.
+        /// 모든 식별자를 먼저 검사하고 적용이 끝난 프로필을 SpawnProfile로 보관한다.
+        /// </summary>
+        public void InitializeSpawnProfile(KeyboardSpawnProfile profile, IReadOnlyDictionary<Key, KeycapHealth> layout)
+        {
+            if (_spawnProfile != null || profile.Keycaps.Count != layout.Count)
+            {
+                throw new InvalidOperationException("Spawn profile must initialize a matching new keyboard once.");
+            }
+
+            foreach (KeyboardSpawnProfile.KeycapData data in profile.Keycaps)
+            {
+                if (!layout.ContainsKey(data.Key))
+                {
+                    throw new InvalidOperationException($"Spawn profile key is missing: {data.Key}.");
+                }
+            }
+
+            foreach (KeyboardSpawnProfile.KeycapData data in profile.Keycaps)
+            {
+                layout[data.Key].InitializeSpawnData(data);
+            }
+
+            _spawnProfile = profile;
+        }
+
+        /// <summary>
+        /// 현재 키 바인딩을 사용하여 식별자별 키캡 체력의 읽기 전용 매핑을 반환한다.
+        /// 중복 식별자와 체력 없는 바인딩은 생성 설정 오류로 거부한다.
+        /// </summary>
+        public IReadOnlyDictionary<Key, KeycapHealth> GetKeycapLayout()
+        {
+            Dictionary<Key, KeycapHealth> layout = new Dictionary<Key, KeycapHealth>();
+            foreach (KeyBinding binding in _bindings)
+            {
+                KeycapHealth health = binding.Keycap.GetComponent<KeycapHealth>();
+                if (health == null)
+                {
+                    throw new InvalidOperationException($"Key {binding.Key} requires KeycapHealth.");
+                }
+
+                layout.Add(binding.Key, health);
+            }
+
+            if (layout.Count == 0)
+            {
+                throw new InvalidOperationException("Playable keyboard requires key bindings.");
+            }
+
+            return layout;
+        }
 
         /// <summary>현재 바인딩에서 영문, 숫자, 지정 기호 및 F1~F12에 해당하는 키캡 체력 목록을 반환한다.</summary>
         public List<KeycapHealth> GetDestructionKeycaps()

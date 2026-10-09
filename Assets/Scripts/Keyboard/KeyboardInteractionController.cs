@@ -3,14 +3,15 @@ using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 using Unity.Cinemachine;
 
-using KeyboardModeling;
-
-using Random = UnityEngine.Random;
+using Game.Economy;
+using Game.Session;
 using Game.Shop;
-
+using Game.Upgrades;
+using KeyboardModeling;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -60,6 +61,13 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     [SerializeField, Min(0)] private int _behindCount = 40;
     private Transform _spawnRoot;
 
+    [Header("Keycap Quality")]
+    [SerializeField] private GameSession _gameSession;
+    [SerializeField] private KeyboardRewardController _rewardController;
+    [SerializeField] private KeycapRaritySettings _raritySettings;
+    private readonly System.Random _qualityRandom = new System.Random();
+    private bool _isPlacingKeyboard;
+
     [Header("Keyboard destruction")]
     [SerializeField] private GameObject _keyboardFragmentsPrefab;
     [Header("monitor")]
@@ -75,11 +83,14 @@ public sealed class KeyboardInteractionController : MonoBehaviour
 
     void Awake()
     {
+        _gameSession = FindAnyObjectByType<GameSession>();
+        _rewardController = FindAnyObjectByType<KeyboardRewardController>();
+        _controller = FindAnyObjectByType<MiniGameController>();
         _padPosition = _referenceKeyboard.transform.position;
         _padRotation = _referenceKeyboard.transform.rotation;
         _keyboardBounds = CalculateKeyboardBounds(_referenceKeyboard.transform);
         _padCollider = GetComponent<BoxCollider>();
-        _controller = FindAnyObjectByType<MiniGameController>();
+        
         _padCollider.isTrigger = true;
         _fixedCam.Priority = 0;
         Cursor.lockState = CursorLockMode.Locked;
@@ -181,8 +192,11 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         }
     }
 
-    /// <summary>입력과 키캡 Collider를 끄고 keyboard에 들기용 Rigidbody와 BoxCollider를 구성하여 등록된 상태를 반환한다.</summary>
-    private KeyboardState RegisterKeyboard(KeyboardInputController keyboard)
+    /// <summary>
+    /// keyboard의 입력과 키캡 Collider를 끄고 들기용 물리 상태를 구성하여 등록 상태를 반환한다.
+    /// isPlayable이 true인 경우에만 실제 입력 키캡의 전체 파괴 판정을 초기화한다.
+    /// </summary>
+    private KeyboardState RegisterKeyboard(KeyboardInputController keyboard, bool isPlayable = false)
     {
 
         keyboard.SetInputEnabled(false);
@@ -203,8 +217,11 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         body.interpolation = RigidbodyInterpolation.Interpolate;
         KeyboardState state = new KeyboardState(keyboard, body, collider, colliders, colliderEnabled);
         _keyboards.Add(body, state);
-        KeyboardDestruction destruction = keyboard.gameObject.AddComponent<KeyboardDestruction>();
-        destruction.Initialize(keyboard.GetDestructionKeycaps(), _keyboardFragmentsPrefab, () => HandleKeyboardBreaking(state), () => HandleKeyboardDestroyed(state));
+        if (isPlayable)
+        {
+            KeyboardDestruction destruction = keyboard.gameObject.AddComponent<KeyboardDestruction>();
+            destruction.Initialize(keyboard.GetDestructionKeycaps(), _keyboardFragmentsPrefab, () => HandleKeyboardBreaking(state), () => HandleKeyboardDestroyed(state));
+        }
         return state;
     }
 
@@ -267,6 +284,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
             return;
         }
         _heldKeyboard = state;
+        state.AllowPlacementRetry();
         _pickupPosition = state.Body.position;
         _pickupRotation = state.Body.rotation;
         if (!state.Body.isKinematic) { state.Body.linearVelocity = Vector3.zero; state.Body.angularVelocity = Vector3.zero; }
@@ -287,10 +305,13 @@ public sealed class KeyboardInteractionController : MonoBehaviour
 
     }
 
-    /// <summary>other가 들고 있는 키보드이면 Pad 기준 위치와 회전으로 놓고, 기존 키보드는 집었던 위치로 옮긴 뒤 SmashMode를 시작한다.</summary>
+    /// <summary>
+    /// other가 배치 가능한 월드 키보드이면 현재 품질 강화 분포로 플레이용 키보드를 생성한다.
+    /// 새 객체 준비가 성공하면 원본 등록을 제거하고 패드에 배치하여 SmashMode를 시작한다.
+    /// </summary>
     private void TryPlaceKeyboard(Collider other)
     {
-        if (_isShopFocused)
+        if (_isShopFocused || _isPlacingKeyboard)
             return;
 
         if (other.gameObject != lastDroped) return;
@@ -301,36 +322,94 @@ public sealed class KeyboardInteractionController : MonoBehaviour
             return;
         }
 
-        //if (_placedKeyboard != null)
-        //{
+        if (!_keyboards.TryGetValue(other.attachedRigidbody, out KeyboardState source) || source.PlacementFailed)
+        {
+            return;
+        }
 
-        //    SetKeyboardInput(_placedKeyboard, false);
-        //    _placedKeyboard.Body.position = _pickupPosition;
-        //    _placedKeyboard.Body.rotation = _pickupRotation;
-        //}
+        _isPlacingKeyboard = true;
+        KeyboardState target;
+        try
+        {
+            target = CreatePlayableKeyboard(source);
+        }
+        catch (Exception exception)
+        {
+            source.MarkPlacementFailed();
+            Debug.LogException(exception, this);
+            _isPlacingKeyboard = false;
+            return;
+        }
 
-        GameObject temp = Instantiate(_inGameKeyBoardPrefab);
-        _placedKeyboard = RegisterKeyboard(temp.GetComponent<KeyboardInputController>());
-        Destroy(other.gameObject);
-        _heldKeyboard = null;
-
-        _controller.SetKeyBoard(_placedKeyboard.Collider.GetComponent<KeyboardInputController>());
-        _placedKeyboard.Body.position = _padPosition;
-        _placedKeyboard.Body.rotation = _padRotation;
-
-        //_placedKeyboard.Body.isKinematic = true;
-
-        Rigidbody body = _placedKeyboard.Body;
-
-        // 먼저 물리 모드를 확정하고, 보간 없이 최종 위치를 지정한다.
+        _placedKeyboard = target;
+        Rigidbody body = target.Body;
         body.interpolation = RigidbodyInterpolation.None;
         body.isKinematic = true;
         body.useGravity = false;
-
         body.position = _padPosition;
         body.rotation = _padRotation;
+        _controller.SetKeyBoard(target.Keyboard);
 
+        _keyboards.Remove(source.Body);
+        source.Collider.enabled = false;
+        lastDroped = null;
+        _heldKeyboard = null;
+        Destroy(source.Keyboard.gameObject);
+        _isPlacingKeyboard = false;
         OnEnterSmashMode();
+    }
+
+    /// <summary>
+    /// source의 최초 배치에서 현재 강화 분포로 생성 결과를 확정하고 플레이용 객체에 적용한다.
+    /// 재시도는 같은 프로필을 사용하며 준비 실패 시 새 객체를 정리하고 월드 원본을 유지한다.
+    /// </summary>
+    private KeyboardState CreatePlayableKeyboard(KeyboardState source)
+    {
+        UpgradeService upgrades = _gameSession.Upgrades;
+        if (upgrades == null)
+        {
+            throw new InvalidOperationException(
+                $"Cannot place a keyboard because GameSession '{_gameSession.name}' failed to initialize its UpgradeService. " +
+                "Resolve the earlier GameSession.Awake exception and restart Play Mode.");
+        }
+
+        GameObject instance = Instantiate(_inGameKeyBoardPrefab);
+        try
+        {
+            KeyboardInputController keyboard = instance.GetComponent<KeyboardInputController>();
+            keyboard.SetInputEnabled(false);
+            keyboard.enabled = false;
+            IReadOnlyDictionary<UnityEngine.InputSystem.Key, KeycapHealth> layout = keyboard.GetKeycapLayout();
+            List<KeycapHealth> requiredKeys = keyboard.GetDestructionKeycaps();
+            if (requiredKeys.Count == 0 || _keyboardFragmentsPrefab == null)
+            {
+                throw new InvalidOperationException("Playable keyboard requires destruction keys and fragments.");
+            }
+
+            if (source.PendingProfile == null)
+            {
+                KeyboardSpawnProfile profile = KeyboardProfileGenerator.GenerateProfile(
+                    layout, new HashSet<KeycapHealth>(requiredKeys), upgrades.GetRarityDistribution(),
+                    _raritySettings, _rewardController.RewardPerKeycap,
+                    upgrades.GetKeycapQualityLevel(), _qualityRandom.Next());
+                source.StoreProfile(profile);
+            }
+
+            keyboard.InitializeSpawnProfile(source.PendingProfile, layout);
+            return RegisterKeyboard(keyboard, true);
+        }
+        catch
+        {
+            Rigidbody body = instance.GetComponent<Rigidbody>();
+            if (body != null)
+            {
+                _keyboards.Remove(body);
+            }
+
+            instance.SetActive(false);
+            Destroy(instance);
+            throw;
+        }
     }
 
     /// 배치된 키보드와 고정 카메라를 사용해 부수기 모드에 진입한다.
@@ -356,16 +435,32 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         ActiveKeyboardChanged?.Invoke(null);
     }
 
-    /// <summary>state의 입력 컨트롤러와 원래 키캡 Collider를 active에 따라 켜거나 끈다. 파괴된 키캡의 Collider는 복구하지 않는다.</summary>
+    /// <summary>
+    /// state의 입력 컨트롤러와 원래 키캡 Collider를 active에 따라 켜거나 끈다.
+    /// 파괴된 키캡의 Collider는 복구하지 않으며 객체 정리 중 소멸한 참조는 건너뛴다.
+    /// </summary>
     private void SetKeyboardInput(KeyboardState state, bool active)
     {
+        if (state.Keyboard == null)
+        {
+            return;
+        }
+
         for (int index = 0; index < state.Colliders.Length; index++)
         {
+            if (state.Colliders[index] == null)
+            {
+                continue;
+            }
+
             KeycapHealth health = state.Colliders[index].GetComponentInParent<KeycapHealth>();
             state.Colliders[index].enabled = active && state.ColliderEnabled[index] && (health == null || health.CurrentHP > 0);
         }
         KeyboardDestruction destruction = state.Keyboard.GetComponent<KeyboardDestruction>();
-        state.Collider.enabled = destruction == null || !destruction.IsBroken;
+        if (state.Collider != null)
+        {
+            state.Collider.enabled = destruction == null || !destruction.IsBroken;
+        }
         state.Keyboard.SetInputEnabled(active);
         state.Keyboard.enabled = active;
     }
@@ -410,11 +505,33 @@ public sealed class KeyboardInteractionController : MonoBehaviour
 
     private sealed class KeyboardState
     {
+        private KeyboardSpawnProfile _pendingProfile;
+        private bool _placementFailed;
         public KeyboardInputController Keyboard { get; }
         public Rigidbody Body { get; }
         public BoxCollider Collider { get; }
         public Collider[] Colliders { get; }
         public bool[] ColliderEnabled { get; }
+        public KeyboardSpawnProfile PendingProfile => _pendingProfile;
+        public bool PlacementFailed => _placementFailed;
+
+        /// <summary>profile을 최초 배치 결과로 보관하여 실패 후 재시도에서도 추첨 결과를 유지한다.</summary>
+        public void StoreProfile(KeyboardSpawnProfile profile)
+        {
+            _pendingProfile = profile;
+        }
+
+        /// <summary>이번 배치를 실패 상태로 표시하여 반복 Trigger에서 같은 오류가 계속 발생하지 않게 한다.</summary>
+        public void MarkPlacementFailed()
+        {
+            _placementFailed = true;
+        }
+
+        /// <summary>다시 집은 월드 키보드의 배치 실패 상태만 해제하고 기존 추첨 결과는 유지한다.</summary>
+        public void AllowPlacementRetry()
+        {
+            _placementFailed = false;
+        }
 
         /// <summary>keyboard, body, collider와 기존 colliders 및 활성 상태를 저장하여 입력과 들기에 사용할 키보드 상태를 구성한다.</summary>
         public KeyboardState(KeyboardInputController keyboard, Rigidbody body, BoxCollider collider, Collider[] colliders, bool[] colliderEnabled)

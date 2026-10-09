@@ -113,7 +113,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: -38}
-  m_SizeDelta: {x: 608, y: 232}
+  m_SizeDelta: {x: 608, y: 436}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &7159073104943542965
 MonoBehaviour:
@@ -264,6 +264,7 @@ MonoBehaviour:
   _balanceText: {fileID: 5523775982260472183}
   _toggleText: {fileID: 5171802473190492546}
   _toggleButton: {fileID: 8795829527528746839}
+  _interactionController: {fileID: 0}
 --- !u!225 &9181285615095818109
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -349,7 +350,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 16, y: -54}
-  m_SizeDelta: {x: 608, y: 270}
+  m_SizeDelta: {x: 608, y: 474}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &354650986955711066
 CanvasRenderer:

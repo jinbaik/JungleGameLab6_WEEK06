@@ -206,6 +206,9 @@ MonoBehaviour:
   _leftCount: 30
   _rightCount: 30
   _behindCount: 30
+  _gameSession: {fileID: 0}
+  _rewardController: {fileID: 0}
+  _raritySettings: {fileID: 11400000, guid: b0111cb3a889f40449fb9a61f694451f, type: 2}
   _keyboardFragmentsPrefab: {fileID: 100, guid: 5dc9afe1dd0444239ccf712060e436a9, type: 3}
   _controller: {fileID: 0}
   _shopView: {fileID: 641087396}
@@ -1354,7 +1357,7 @@ MonoBehaviour:
   _gameSession: {fileID: 641087395}
   _miniGameController: {fileID: 1351410458}
   _baseDamage: 1
-  _damagePerLevel: 1
+  _baseAreaDamage: 1
 --- !u!1 &1097689382
 GameObject:
   m_ObjectHideFlags: 0
