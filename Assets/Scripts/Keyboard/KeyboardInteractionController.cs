@@ -227,6 +227,11 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         if (!Physics.Raycast(ray, out RaycastHit hit, _rayDistance, _pickupLayers, QueryTriggerInteraction.Ignore)) return;
         if (hit.rigidbody == null || !_keyboards.TryGetValue(hit.rigidbody, out KeyboardState state)) return;
+        if (state == _placedKeyboard)
+        {
+            OnEnterSmashMode();
+            return;
+        }
         _heldKeyboard = state;
         _pickupPosition = state.Body.position;
         _pickupRotation = state.Body.rotation;
@@ -256,29 +261,45 @@ public sealed class KeyboardInteractionController : MonoBehaviour
 
         if (other.gameObject != lastDroped) return;
 
-        if (!_canPlaceHeldKeyboard)
+        if (!_canPlaceHeldKeyboard || _placedKeyboard != null || _heldKeyboard != null)
         {
 
             return;
         }
-        if (_placedKeyboard != null)
+
+        //if (_placedKeyboard != null)
+        //{
+
+        //    SetKeyboardInput(_placedKeyboard, false);
+        //    _placedKeyboard.Body.position = _pickupPosition;
+        //    _placedKeyboard.Body.rotation = _pickupRotation;
+        //}
+        else
         {
+            // 교체 부분
 
-            SetKeyboardInput(_placedKeyboard, false);
-            _placedKeyboard.Body.position = _pickupPosition;
-            _placedKeyboard.Body.rotation = _pickupRotation;
+
+            GameObject temp = Instantiate(_inGameKeyBoardPrefab);
+            _placedKeyboard = RegisterKeyboard(temp.GetComponent<KeyboardInputController>());
+            Destroy(other.gameObject);
+            _heldKeyboard = null;
+
+            _controller.SetKeyBoard(_placedKeyboard.Collider.GetComponent<KeyboardInputController>());
+            _placedKeyboard.Body.position = _padPosition;
+            _placedKeyboard.Body.rotation = _padRotation;
+
+            //_placedKeyboard.Body.isKinematic = true;
+
+            Rigidbody body = _placedKeyboard.Body;
+
+            // 먼저 물리 모드를 확정하고, 보간 없이 최종 위치를 지정한다.
+            body.interpolation = RigidbodyInterpolation.None;
+            body.isKinematic = true;
+            body.useGravity = false;
+
+            body.position = _padPosition;
+            body.rotation = _padRotation;
         }
-        // 교체 부분
-
-
-        GameObject temp = Instantiate(_inGameKeyBoardPrefab);
-        _placedKeyboard = RegisterKeyboard(temp.GetComponent<KeyboardInputController>());
-        Destroy(other.gameObject);
-        _heldKeyboard = null;
-
-        _controller.SetKeyBoard(_placedKeyboard.Collider.GetComponent<KeyboardInputController>());
-        _placedKeyboard.Body.position = _padPosition;
-        _placedKeyboard.Body.rotation = _padRotation;
 
         OnEnterSmashMode();
     }
