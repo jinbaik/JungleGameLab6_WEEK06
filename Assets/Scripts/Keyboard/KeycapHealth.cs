@@ -16,6 +16,7 @@ public sealed class KeycapHealth : MonoBehaviour
     public int MaxHP => _maxHP;
     public int CurrentHP => _currentHP;
     public event Action<KeycapHealth> Broken;
+    public event Action<KeycapDamage> Damaged;
 
     [Header("Damage decal")]
     [SerializeField] private DecalProjector _damageDecal;
@@ -40,12 +41,15 @@ public sealed class KeycapHealth : MonoBehaviour
         _colliders = GetComponentsInChildren<Collider>();
     }
 
-    /// <summary>양수 damage만큼 현재 체력을 줄이고, 체력이 0이면 키캡을 파괴한다. 이미 파괴된 키캡은 무시한다.</summary>
+    /// <summary>양수 damage로 체력을 줄이고 요청량, 실제 감소량과 월드 위치를 Damaged로 알린 뒤 체력이 0이면 파괴한다. 이미 파괴된 키캡은 무시한다.</summary>
     public void TakeDamage(int damage)
     {
         if (_broken || damage <= 0) return;
+        int previousHP = _currentHP;
+        Vector3 worldPosition = transform.position;
         _currentHP = Mathf.Max(0, _currentHP - damage);
         UpdateDamageDecal();
+        Damaged?.Invoke(new KeycapDamage(damage, previousHP - _currentHP, worldPosition));
         if (_currentHP == 0) Break();
     }
 
@@ -63,8 +67,10 @@ public sealed class KeycapHealth : MonoBehaviour
     [ContextMenu("Take 1 Damage")]
     private void TakeOneDamage() { if (Application.isPlaying) TakeDamage(1); }
 
+    /// <summary>
     /// 파괴 효과 설정을 사용해 키캡을 파괴 상태로 변경하고 Renderer와 Collider를 끈다.
-    /// Broken 이벤트로 이 키캡을 알린 뒤 파괴 효과를 생성하고 지정 수명 후 제거한다.
+    /// Broken 이벤트로 이 키캡을 한 번 알린 뒤 파괴 효과를 생성하고 지정 수명 후 제거한다.
+    /// </summary>
     private void Break()
     {
         _broken = true;
@@ -81,6 +87,5 @@ public sealed class KeycapHealth : MonoBehaviour
             body.AddTorque(Random.insideUnitSphere * _fragmentSpin, ForceMode.VelocityChange);
         }
         Destroy(effect, _effectLifetime);
-        Broken?.Invoke(this);
     }
 }
