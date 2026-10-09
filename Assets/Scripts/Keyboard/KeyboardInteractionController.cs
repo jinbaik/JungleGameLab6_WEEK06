@@ -85,7 +85,8 @@ public sealed class KeyboardInteractionController : MonoBehaviour
 
     void Start()
     {
-        _placedKeyboard = RegisterKeyboard(_referenceKeyboard.GetComponent<KeyboardInputController>());
+        //_placedKeyboard = RegisterKeyboard(_referenceKeyboard.GetComponent<KeyboardInputController>());
+        _placedKeyboard = null;
         _spawnRoot = new GameObject("SpawnedKeyboards").transform;
         SpawnKeyboards(_front, _frontCount, "front");
         SpawnKeyboards(_left, _leftCount, "left");
@@ -261,7 +262,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
 
         if (other.gameObject != lastDroped) return;
 
-        if (!_canPlaceHeldKeyboard)
+        if (!_canPlaceHeldKeyboard || _placedKeyboard != null)
         {
 
             return;
@@ -284,7 +285,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         _placedKeyboard.Body.position = _padPosition;
         _placedKeyboard.Body.rotation = _padRotation;
 
-            //_placedKeyboard.Body.isKinematic = true;
+        //_placedKeyboard.Body.isKinematic = true;
 
         Rigidbody body = _placedKeyboard.Body;
 

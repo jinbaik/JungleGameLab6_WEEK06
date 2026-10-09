@@ -1,0 +1,8 @@
+Tool: built-in image_gen
+Output intent: enlarged pixel-art assets based on a logical 64x64 canvas per frame; generated raster dimensions are larger than 64x64.
+
+ASSET 1
+undefined
+
+ASSET 2
+Use case: stylized-concept. Generate asset 2: ONE single game sprite on transparent background. A 64x64 logical pixel-art design displayed greatly enlarged, square canvas. Use the user's third attachment as reference for chunky simplified pixel-art hand rendering. Use the user's fourth attachment, KakaoTalk_20261009_153931413_03.jpg, for POSE: a bare forearm enters from the TOP, narrowing into the wrist, and ends in a clenched fist pointing DOWN at the bottom; palm-facing view, four curled fingers along the bottom, thumb on viewer left. Include substantial forearm above wrist exactly like that photograph, but simplified. Center the arm and fist; entire fist fits canvas with small clear margins. No other objects from the photograph. Match a simple retro hand game sprite. Fill colors exclusively from attached palettes 1 and 2: #601D49 #BD5579 #EA9D9D #FFEBB8 #EA7B7B #D25353 #9E3B3B #FFEAD3. Warm cream highlights, salmon base, red and plum shadow clusters. Clean pure #000000 outline, consistent one logical pixel thickness, stepped block edges, no antialiasing, no gradients, no texture. Pixel shapes must be large and clear like nearest-neighbor enlargement of a 64x64 sprite. No text, labels, frame, desk, monitor, sleeve, extra fingers, shadow or background. EXACTLY ONE frame.

@@ -1,0 +1,8 @@
+Tool: built-in image_gen
+Enlarged pixel-art designs; not literal 64x64 output files.
+
+32 FRAME SHEET
+undefined
+
+SINGLE FRAME
+undefined
