@@ -49,7 +49,7 @@ public sealed class KeycapHealth : MonoBehaviour
         Vector3 worldPosition = transform.position;
         _currentHP = Mathf.Max(0, _currentHP - damage);
         UpdateDamageDecal();
-        Damaged?.Invoke(new KeycapDamage(damage, previousHP - _currentHP, worldPosition));
+        //Damaged?.Invoke(new KeycapDamage(damage, previousHP - _currentHP, worldPosition));
         if (_currentHP == 0) Break();
     }
 

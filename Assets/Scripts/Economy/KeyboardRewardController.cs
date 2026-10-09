@@ -79,7 +79,7 @@ namespace Game.Economy
         {
             Vector3 worldPosition = keycap.transform.position;
             _gameSession.Wallet.Add(_rewardPerKeycap);
-            RewardGranted?.Invoke(_rewardPerKeycap, worldPosition);
+            //RewardGranted?.Invoke(_rewardPerKeycap, worldPosition);
         }
     }
 }
