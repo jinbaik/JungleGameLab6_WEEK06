@@ -26,6 +26,7 @@ namespace KeyboardModeling
 
         public event Action<Key> KeyPressed;
         public event Action<KeycapHealth> AttackRequested;
+        public event Action<Transform> KeycapPressed;
 
         [Header("Key Travel")]
         [SerializeField, Min(0f)] private float _pressDistance = 0.15f;
@@ -33,6 +34,7 @@ namespace KeyboardModeling
         private Vector3[] _restPositions;
         private float[] _pressAmounts;
         private float _lastPressDistance;
+        private bool _hitStopEnabled;
 
         [Header("Debug")]
         [SerializeField] private bool _logInput = true;
@@ -174,10 +176,11 @@ namespace KeyboardModeling
                 {
                     _lastPressedKey = _bindings[index].Key;
                 }
-                AnimateKey(index, isPressed, Time.unscaledDeltaTime);
+                AnimateKey(index, isPressed, _hitStopEnabled && Time.timeScale == 0f ? 0f : Time.unscaledDeltaTime);
 
                 if (pressedThisFrame)
                 {
+                    KeycapPressed?.Invoke(_bindings[index].Keycap);
                     KeyPressed?.Invoke(_bindings[index].Key);
                     if (!_inputEnabled || !isActiveAndEnabled)
                     {
@@ -313,7 +316,14 @@ namespace KeyboardModeling
             _pressAmounts[index] = Mathf.MoveTowards(_pressAmounts[index], targetAmount, _animationSpeed * deltaTime);
             _bindings[index].Keycap.localPosition = _restPositions[index] + Vector3.down * (_pressDistance * _pressAmounts[index]);
         }
-
+        /// <summary>
+        /// 키캡 애니메이션의 히트스톱 연동 여부를 설정한다.
+        /// enabled를 저장하여 시간 배율이 0인 동안 연동된 키캡의 움직임을 멈춘다.
+        /// </summary>
+        public void SetHitStopEnabled(bool enabled)
+        {
+            _hitStopEnabled = enabled;
+        }
         /// <summary>
         /// 현재 눌린 키 목록을 문자열로 갱신한다.
         /// _previousPressed와 _bindings를 사용하여 입력 변화 시에만 _currentPressedKeys를 다시 만든다.
@@ -365,3 +375,4 @@ namespace KeyboardModeling
         }
     }
 }
+

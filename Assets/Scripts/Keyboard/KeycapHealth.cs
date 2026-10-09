@@ -43,8 +43,13 @@ public sealed class KeycapHealth : MonoBehaviour
     private Renderer[] _renderers;
     private Collider[] _colliders;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private AudioClip _breakSound;
+
     void Awake()
     {
+        if (_audioSource == null || !_audioSource.gameObject.scene.IsValid()) _audioSource = GetComponentInParent<AudioSource>();
         _currentHP = _maxHP;
         UpdateDamageDecal();
         _renderers = GetComponentsInChildren<Renderer>();
@@ -143,6 +148,9 @@ public sealed class KeycapHealth : MonoBehaviour
         Broken?.Invoke(this);
         GameObject effect = Instantiate(_breakMode == BreakMode.Fragments ? _fragmentsPrefab : _particlesPrefab, transform.position, transform.rotation);
         effect.transform.localScale = transform.lossyScale;
+
+        if (_audioSource != null) _audioSource.PlayOneShot(_breakSound);
+
         foreach (Rigidbody body in effect.GetComponentsInChildren<Rigidbody>())
         {
             Vector3 outward = body.worldCenterOfMass - transform.TransformPoint(new Vector3(0f, 0.26f, 0f));
