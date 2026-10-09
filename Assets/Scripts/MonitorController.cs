@@ -54,18 +54,21 @@ public class MonitorController : MonoBehaviour
         if (_shopView.IsOpen && !_allowTabClose)
             return;
 
-        monitorCam.Priority = monitorCam.Priority == 0 ? 30 : 0;
+        //monitorCam.Priority = monitorCam.Priority == 0 ? 30 : 0;
 
         _shopView.Toggle();
     }
 
     /// <summary>
-    /// 상점 표시 상태에 따라 두 캔버스의 활성 상태를 반대로 설정한다.
-    /// isShopOpen을 상점 캔버스에 반영하고 연결된 미니게임 캔버스에는 반대 상태를 적용한다.
+    /// isShopOpen으로 상점과 미니게임 캔버스의 표시 상태를 변경한다.
+    /// 실제 상점 상태에 맞춰 모니터 카메라의 우선순위를 설정한다.
     /// </summary>
     private void SetCanvasState(bool isShopOpen)
     {
+        monitorCam.Priority = isShopOpen ? 30 : 0;
+
         _shopCanvas.SetActive(isShopOpen);
+
         if (_miniGameCanvas != null)
         {
             _miniGameCanvas.SetActive(!isShopOpen);

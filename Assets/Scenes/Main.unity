@@ -207,7 +207,7 @@ MonoBehaviour:
   _behindCount: 40
   _keyboardFragmentsPrefab: {fileID: 100, guid: 5dc9afe1dd0444239ccf712060e436a9, type: 3}
   _controller: {fileID: 0}
-  _shopView: {fileID: 0}
+  _shopView: {fileID: 641087396}
 --- !u!1 &250938437
 GameObject:
   m_ObjectHideFlags: 0
@@ -702,6 +702,10 @@ PrefabInstance:
       propertyPath: monitorCam
       value: 
       objectReference: {fileID: 1097689383}
+    - target: {fileID: 2612928670998550527, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+      propertyPath: _allowTabClose
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2940396781710385079, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
       propertyPath: _keyboard
       value: 
@@ -762,6 +766,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7425521347323571261, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+      propertyPath: _interactionController
+      value: 
+      objectReference: {fileID: 27118945}
     - target: {fileID: 8823056269604226751, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
       propertyPath: _interactionController
       value: 
@@ -790,6 +798,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665555be6ee1c4c4e91a0c715db2b176, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Session.GameSession
+--- !u!114 &641087396 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7425521347323571261, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+  m_PrefabInstance: {fileID: 641087393}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbbb187652d1c4844bceb0b976dde3c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Shop.ShopView
 --- !u!1 &729915526
 GameObject:
   m_ObjectHideFlags: 0
@@ -1914,6 +1933,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1935904842214423556, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
       propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5033408809425400753, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
+      propertyPath: _inputEnabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6087872409866529466, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}

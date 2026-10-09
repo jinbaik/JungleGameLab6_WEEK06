@@ -25,6 +25,9 @@ namespace Game.Shop
         [Header("Input")]
         private bool _isInputEnabled = true;
 
+        [Header("Gameplay")]
+        [SerializeField] private KeyboardInteractionController _interactionController;
+
         [Header("Runtime State")]
         private readonly List<ShopItemView> _items = new List<ShopItemView>();
 
@@ -76,12 +79,19 @@ namespace Game.Shop
         }
 
         /// <summary>
-        /// isOpen에 따라 상점 패널과 열기 버튼 문구를 변경한다.
-        /// 상점을 열면 강화 상태를 다시 표시하고, 표시 상태가 바뀌면 OpenStateChanged로 알린다.
+        /// isOpen에 따라 상점 패널과 버튼 문구를 변경한다.
+        /// 연결된 플레이 컨트롤러가 진입을 허용할 때만 상점을 열고,
+        /// 표시 상태가 변경되면 OpenStateChanged로 알린다.
         /// </summary>
         public void SetOpen(bool isOpen)
         {
             bool wasOpen = IsOpen;
+
+            if (isOpen && !wasOpen && _interactionController != null && !_interactionController.CanEnterShop)
+            {
+                return;
+            }
+
             _shopPanel.SetActive(isOpen);
             _toggleText.text = isOpen ? "Close [Tab]" : "Shop [Tab]";
 

@@ -64,6 +64,9 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     [SerializeField] private GameObject _keyboardFragmentsPrefab;
     [Header("monitor")]
     [SerializeField] private MiniGameController _controller;
+    public bool IsMiniGameRunning => _controller.CurrentGame != MiniGameController.MiniGameKind.Idle;
+    private bool IsKeyboardBreaking => _placedKeyboard != null && _placedKeyboard.Keyboard.GetComponent<KeyboardDestruction>().IsBroken;
+    public bool CanEnterShop => IsSmashMode && !IsMiniGameRunning && !IsKeyboardBreaking;
     [Header("Shop Focus")]
     [SerializeField] private ShopView _shopView;
     private bool _isShopFocused;
@@ -104,20 +107,14 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         bool escapePressed = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
         if (_isShopFocused)
         {
-            if (escapePressed)
-            {
-                _shopView.SetOpen(false);
-            }
-
             return;
         }
 
         if (_resumeSmashInput)
         {
-            bool escapeHeld = Keyboard.current != null
-                && Keyboard.current.escapeKey.isPressed;
+            bool tabPressedOrHeld = Keyboard.current != null && (Keyboard.current.tabKey.wasPressedThisFrame || Keyboard.current.tabKey.isPressed);
 
-            if (escapePressed || escapeHeld)
+            if (tabPressedOrHeld)
             {
                 return;
             }
@@ -126,8 +123,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
 
             if (IsSmashMode && _placedKeyboard != null)
             {
-                KeyboardDestruction destruction =
-                    _placedKeyboard.Keyboard.GetComponent<KeyboardDestruction>();
+                KeyboardDestruction destruction = _placedKeyboard.Keyboard.GetComponent<KeyboardDestruction>();
 
                 if (!destruction.IsBroken)
                 {
@@ -135,7 +131,15 @@ public sealed class KeyboardInteractionController : MonoBehaviour
                 }
             }
         }
-        if (IsSmashMode && escapePressed) { OnExitSmashMode(); return; }
+        if (IsSmashMode && escapePressed)
+        {
+            if (!IsMiniGameRunning && !IsKeyboardBreaking)
+            {
+                OnExitSmashMode();
+            }
+
+            return;
+        }
         if (IsSmashMode || Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame) return;
         if (_heldKeyboard != null) DropKeyboard();
         else PickUpKeyboard();
@@ -156,10 +160,25 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     void OnTriggerStay(Collider other) { TryPlaceKeyboard(other); }
     void OnTriggerExit(Collider other) { if (_heldKeyboard != null && other.attachedRigidbody == _heldKeyboard.Body) _canPlaceHeldKeyboard = true; }
 
+    void OnEnable()
+    {
+        _shopView.OpenStateChanged += ApplyShopFocus;
+        ApplyShopFocus(_shopView.IsOpen);
+    }
+
     void OnDisable()
     {
-        if (_heldKeyboard != null) DropKeyboard();
-        if (IsSmashMode) OnExitSmashMode();
+        _shopView.OpenStateChanged -= ApplyShopFocus;
+
+        if (_heldKeyboard != null)
+        {
+            DropKeyboard();
+        }
+
+        if (IsSmashMode)
+        {
+            OnExitSmashMode();
+        }
     }
 
     /// <summary>입력과 키캡 Collider를 끄고 keyboard에 들기용 Rigidbody와 BoxCollider를 구성하여 등록된 상태를 반환한다.</summary>
@@ -189,12 +208,26 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         return state;
     }
 
-    /// <summary>state의 입력을 끄고 들기 목록에서 제거하여 파괴 중인 키보드를 다시 집지 못하게 한다.</summary>
+    /// <summary>
+    /// state의 입력을 끄고 들기 목록에서 제거한다.
+    /// 배치된 키보드가 파괴되는 경우 입력 복원 예약을 해제하고,
+    /// 진행 중인 미니게임을 클리어 보상 없이 종료한다.
+    /// </summary>
     private void HandleKeyboardBreaking(KeyboardState state)
     {
         SetKeyboardInput(state, false);
         _keyboards.Remove(state.Body);
-        if (_heldKeyboard == state) _heldKeyboard = null;
+
+        if (_heldKeyboard == state)
+        {
+            _heldKeyboard = null;
+        }
+
+        if (_placedKeyboard == state)
+        {
+            _resumeSmashInput = false;
+            _controller.CancelMiniGame();
+        }
     }
 
     /// <summary>state가 Pad 키보드이면 파편의 -Z 이동 시작 후 SmashMode를 종료하고 배치 참조를 비운다.</summary>

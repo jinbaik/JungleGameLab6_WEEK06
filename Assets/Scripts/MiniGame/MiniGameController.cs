@@ -110,9 +110,17 @@ namespace KeyboardModeling
 
             if (_currentGame == MiniGameKind.Idle)
             {
+                if (!_keyboard.InputEnabled || !_keyboard.isActiveAndEnabled)
+                {
+                    return;
+                }
+
                 _nextEventRemaining = Mathf.Max(0f, _nextEventRemaining - Time.deltaTime);
+
                 if (_nextEventRemaining == 0f)
+                {
                     BeginMiniGame();
+                }
             }
             else if (_currentGame == MiniGameKind.Hacking)
             {
@@ -216,6 +224,32 @@ namespace KeyboardModeling
             _feverClears = Mathf.Min(2, _feverClears + 1);
             if (_feverClears == 2 && !IsFeverActive)
                 _feverRemaining = _feverDuration;
+        }
+
+        /// <summary>
+        /// 현재 미니게임이 실행 중이면 클리어 보상 없이 종료한다.
+        /// 진행도와 입력 내용을 초기화하고 다음 이벤트 대기 시간을 재설정하며,
+        /// 기존 피버 상태를 유지한 채 StateChanged로 변경을 알린다.
+        /// </summary>
+        public void CancelMiniGame()
+        {
+            if (_currentGame == MiniGameKind.Idle)
+            {
+                return;
+            }
+
+            _currentGame = MiniGameKind.Idle;
+            _nextEventRemaining = _eventInterval;
+
+            _hackingProgress = 0f;
+            _commandLog = "";
+
+            _completedWords = 0;
+            _wordIndex = -1;
+            _typedWord = "";
+            _typingFeedback = "";
+
+            StateChanged?.Invoke();
         }
     }
 }
