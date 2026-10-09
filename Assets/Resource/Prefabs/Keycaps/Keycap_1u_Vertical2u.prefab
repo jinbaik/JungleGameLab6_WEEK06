@@ -329,6 +329,8 @@ MonoBehaviour:
   _upwardSpeed: 10
   _fragmentSpin: 8
   _effectLifetime: 3
+  _audioSource: {fileID: -1542669809135472032, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
+  _breakSound: {fileID: 8300000, guid: 281d45ed6f84eb047804522d782ece88, type: 3}
 --- !u!114 &3469933320751950783
 MonoBehaviour:
   m_ObjectHideFlags: 0
