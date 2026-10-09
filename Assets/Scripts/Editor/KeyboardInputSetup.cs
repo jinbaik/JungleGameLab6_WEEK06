@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor;
-using UnityEditor.Events;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
+
+using UnityEditor;
+using UnityEditor.Events;
 
 namespace KeyboardModeling.Editor
 {
@@ -34,8 +36,8 @@ namespace KeyboardModeling.Editor
         }
 
         /// <summary>
-        /// 저장된 키캡 프리팹에 누름 이벤트를 추가한다.
-        /// 기존 Keycaps 폴더의 프리팹을 사용하여 버튼과 HP 이벤트 연결을 저장한다.
+        /// 저장된 키캡 프리팹의 누름 컴포넌트를 준비하고 기존 피해 이벤트를 제거한다.
+        /// 기존 Keycaps 폴더의 프리팹을 사용하여 입력 컴포넌트와 이벤트 정리 결과를 저장한다.
         /// </summary>
         private static void ConfigureExistingKeycaps()
         {
@@ -57,31 +59,40 @@ namespace KeyboardModeling.Editor
         }
 
         /// <summary>
-        /// 키캡에 누름 기능을 연결한다.
-        /// keycap의 버튼을 준비하고 기존 KeycapHealth가 있으면 1회당 피해 1 이벤트를 중복 없이 등록한다.
+        /// keycap에 누름 컴포넌트를 준비하고 기존 체력 감소 바인딩을 제거한다.
+        /// 입력 시 피해는 AttackRequested로 처리하며 다른 누름 이벤트는 유지한다.
         /// </summary>
-        /// 
-
         public static void ConfigureKeycap(GameObject keycap)
         {
             KeycapButton button = keycap.GetComponent<KeycapButton>();
             if (button == null)
                 button = keycap.AddComponent<KeycapButton>();
 
-            KeycapHealth health = keycap.GetComponent<KeycapHealth>();
-            if (health == null)
-                return;
+            RemoveLegacyDamageBindings(keycap);
+        }
 
-            for (int index = 0; index < button.OnPressed.GetPersistentEventCount(); index++)
+        /// <summary>
+        /// root 아래 버튼에 저장된 KeycapHealth.TakeDamage 바인딩만 제거한다.
+        /// 다른 이벤트는 유지하고 변경한 버튼을 저장 대상으로 표시하며 제거한 개수를 반환한다.
+        /// </summary>
+        public static int RemoveLegacyDamageBindings(GameObject root)
+        {
+            int removedCount = 0;
+            foreach (KeycapButton button in root.GetComponentsInChildren<KeycapButton>(true))
             {
-                if (button.OnPressed.GetPersistentTarget(index) == health && button.OnPressed.GetPersistentMethodName(index) == nameof(KeycapHealth.TakeDamage))
-                    return;
+                for (int index = button.OnPressed.GetPersistentEventCount() - 1; index >= 0; index--)
+                {
+                    if (button.OnPressed.GetPersistentTarget(index) is KeycapHealth
+                        && button.OnPressed.GetPersistentMethodName(index) == nameof(KeycapHealth.TakeDamage))
+                    {
+                        UnityEventTools.RemovePersistentListener(button.OnPressed, index);
+                        EditorUtility.SetDirty(button);
+                        removedCount++;
+                    }
+                }
             }
 
-
-            //여기서 밑 코드로 추가하면 인스팩터에서 수정가능
-            UnityEventTools.AddIntPersistentListener(button.OnPressed, health.TakeDamage, 1);
-            EditorUtility.SetDirty(button);
+            return removedCount;
         }
 
         /// <summary>

@@ -21,8 +21,10 @@ namespace KeyboardModeling
         private bool _captureInput;
         private Key _lastPressedKey;
         private KeycapButton[] _keycapButtons;
+        private KeycapHealth[] _keycapHealths;
 
         public event Action<Key> KeyPressed;
+        public event Action<KeycapHealth> AttackRequested;
 
         [Header("Key Travel")]
         [SerializeField, Min(0f)] private float _pressDistance = 0.15f;
@@ -69,11 +71,13 @@ namespace KeyboardModeling
             _pressAmounts = new float[_bindings.Length];
             _previousPressed = new bool[_bindings.Length];
             _keycapButtons = new KeycapButton[_bindings.Length];
+            _keycapHealths = new KeycapHealth[_bindings.Length];
             _lastPressDistance = _pressDistance;
             for (int index = 0; index < _bindings.Length; index++)
             {
                 _restPositions[index] = _bindings[index].Keycap.localPosition;
                 _keycapButtons[index] = _bindings[index].Keycap.GetComponent<KeycapButton>();
+                _keycapHealths[index] = _bindings[index].Keycap.GetComponent<KeycapHealth>();
             }
             _hasFocus = Application.isFocused;
         }
@@ -132,6 +136,16 @@ namespace KeyboardModeling
                 {
                     RestoreKeys();
                     return;
+                }
+
+                if (pressedThisFrame && _keycapButtons[index].isActiveAndEnabled && _keycapHealths[index] != null)
+                {
+                    AttackRequested?.Invoke(_keycapHealths[index]);
+                    if (!_inputEnabled || !isActiveAndEnabled)
+                    {
+                        RestoreKeys();
+                        return;
+                    }
                 }
 
                 if (_logInput && stateChanged)

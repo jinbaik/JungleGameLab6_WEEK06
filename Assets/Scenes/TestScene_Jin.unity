@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 27118943}
   - component: {fileID: 27118944}
   - component: {fileID: 27118945}
+  - component: {fileID: 27118946}
   m_Layer: 0
   m_Name: SmashModeTrigger
   m_TagString: Untagged
@@ -185,7 +186,47 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c43f93a45b41b294fb37e738db343bfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Temp
+  _camera: {fileID: 0}
   _fixedCam: {fileID: 1022828482}
+  _referenceKeyboard: {fileID: 0}
+  _rayDistance: 12
+  _holdDistance: 3
+  _followSpeed: 12
+  _holdEulerAngles: {x: -75, y: 0, z: 0}
+  _pickupLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  _keyboardPrefab: {fileID: 0}
+  _inGameKeyBoardPrefab: {fileID: 0}
+  _front: {fileID: 0}
+  _left: {fileID: 0}
+  _right: {fileID: 0}
+  _behind: {fileID: 0}
+  _frontCount: 20
+  _leftCount: 20
+  _rightCount: 20
+  _behindCount: 40
+  _keyboardFragmentsPrefab: {fileID: 0}
+  _controller: {fileID: 0}
+  _shopView: {fileID: 0}
+--- !u!114 &27118946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27118942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d08300b35ad40164fa605ee179d0e022, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardAttackController
+  _interactionController: {fileID: 27118945}
+  _keyboard: {fileID: 0}
+  _gameSession: {fileID: 0}
+  _miniGameController: {fileID: 0}
+  _baseDamage: 1
+  _damagePerLevel: 1
 --- !u!1 &250938437
 GameObject:
   m_ObjectHideFlags: 0

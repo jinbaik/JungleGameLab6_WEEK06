@@ -124,7 +124,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1979642950152958313, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
   m_PrefabInstance: {fileID: 1093203550}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1093203552}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 665555be6ee1c4c4e91a0c715db2b176, type: 3}
@@ -1022,13 +1022,50 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8012220062700350010, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1093203554}
   m_SourcePrefab: {fileID: 100100000, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
 --- !u!4 &1093203551 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4511183639531934824, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
   m_PrefabInstance: {fileID: 1093203550}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1093203552 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8012220062700350010, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+  m_PrefabInstance: {fileID: 1093203550}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1093203553 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2940396781710385079, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+  m_PrefabInstance: {fileID: 1093203550}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e02571f5689b9e46ade058e611a414f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.MiniGameController
+--- !u!114 &1093203554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1093203552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d08300b35ad40164fa605ee179d0e022, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardAttackController
+  _interactionController: {fileID: 390676246}
+  _keyboard: {fileID: 141431190}
+  _gameSession: {fileID: 121334686}
+  _miniGameController: {fileID: 1093203553}
+  _baseDamage: 1
+  _damagePerLevel: 1
 --- !u!1 &1241556773
 GameObject:
   m_ObjectHideFlags: 0

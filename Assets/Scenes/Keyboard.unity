@@ -343,8 +343,45 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6087872409866529466, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 835982598}
   m_SourcePrefab: {fileID: 100100000, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
+--- !u!1 &835982596 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6087872409866529466, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
+  m_PrefabInstance: {fileID: 835982595}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &835982597 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5033408809425400753, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
+  m_PrefabInstance: {fileID: 835982595}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835982596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c34a4fcdd9e7394daa9de6b2cf24be4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardInputController
+--- !u!114 &835982598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835982596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d08300b35ad40164fa605ee179d0e022, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardAttackController
+  _interactionController: {fileID: 0}
+  _keyboard: {fileID: 835982597}
+  _gameSession: {fileID: 0}
+  _miniGameController: {fileID: 0}
+  _baseDamage: 1
+  _damagePerLevel: 1
 --- !u!1 &1034101055
 GameObject:
   m_ObjectHideFlags: 0

@@ -28,7 +28,9 @@ public class MonitorController : MonoBehaviour
 
     void Start()
     {
-        SetCanvasState(_shopView.IsOpen);
+        monitorCam.Priority = 0;
+        _shopView.SetOpen(false);
+        SetCanvasState(false);
     }
 
     void OnDisable()
