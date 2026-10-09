@@ -39,7 +39,11 @@ namespace KeyboardModeling
         private bool[] _previousPressed;
         private string _currentPressedKeys = "None";
         private int _lastStatusFlags = -1;
-        private float _nextStatusLogTime;
+        private float _nextStatusLogTime; 
+        
+        [Header("Audio")]
+        [SerializeField] private AudioSource _audioSource;
+        [SerializeField] private AudioClip _pressSound;
 
         public bool InputEnabled
         {
@@ -123,6 +127,7 @@ namespace KeyboardModeling
 
                 if (pressedThisFrame)
                 {
+                    _audioSource.PlayOneShot(_pressSound);
                     KeyPressed?.Invoke(_bindings[index].Key);
                     if (!_inputEnabled || !isActiveAndEnabled)
                     {
