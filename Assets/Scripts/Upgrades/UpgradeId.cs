@@ -4,6 +4,8 @@ namespace Game.Upgrades
     {
         SmashDamage = 0,
         AreaSmash = 1,
-        AutoClick = 2
+        AutoClick = 2,
+        AreaDamage = 3,
+        RareKeycapQuality = 4
     }
 }

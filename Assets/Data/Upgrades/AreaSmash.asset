@@ -14,5 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Upgrades.UpgradeDefinition
   _id: 1
   _displayName: Area Smash
-  _description: Increase the area smash upgrade level.
+  _description: Hit keys within a radius of 1.5 / 2 / 2.5 key spacings. Nearby keys
+    take the same damage.
   _levelCosts: 19000000000000003c000000000000009600000000000000
+  _damageBonuses: 010000000200000003000000
+  _areaRadii:
+  - 1.5
+  - 2
+  - 2.5

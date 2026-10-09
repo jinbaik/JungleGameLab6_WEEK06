@@ -205,8 +205,11 @@ MonoBehaviour:
   _leftCount: 20
   _rightCount: 20
   _behindCount: 40
+  _gameSession: {fileID: 641087395}
+  _rewardController: {fileID: 641087397}
+  _raritySettings: {fileID: 11400000, guid: b0111cb3a889f40449fb9a61f694451f, type: 2}
   _keyboardFragmentsPrefab: {fileID: 100, guid: 5dc9afe1dd0444239ccf712060e436a9, type: 3}
-  _controller: {fileID: 0}
+  _controller: {fileID: 1351410458}
   _shopView: {fileID: 641087396}
 --- !u!1 &250938437
 GameObject:
@@ -809,6 +812,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbbb187652d1c4844bceb0b976dde3c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Shop.ShopView
+--- !u!114 &641087397 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5098958360283032277, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+  m_PrefabInstance: {fileID: 641087393}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1068726008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 320dfc8c5016fb149a29786bc2bd5d3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Economy.KeyboardRewardController
 --- !u!1 &729915526
 GameObject:
   m_ObjectHideFlags: 0
@@ -1121,7 +1135,6 @@ MonoBehaviour:
   _gameSession: {fileID: 641087395}
   _miniGameController: {fileID: 1351410458}
   _baseDamage: 1
-  _damagePerLevel: 1
 --- !u!1 &1097689382
 GameObject:
   m_ObjectHideFlags: 0

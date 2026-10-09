@@ -20,6 +20,7 @@ namespace Game.Economy
         private KeyboardInputController _activeKeyboard;
         private KeycapHealth[] _keycaps = Array.Empty<KeycapHealth>();
         public event Action<long, Vector3> RewardGranted;
+        public long RewardPerKeycap => _rewardPerKeycap;
 
         void OnEnable()
         {
@@ -74,13 +75,12 @@ namespace Game.Economy
 
         /// <summary>
         /// keycap의 파괴 알림을 받아 설정된 키캡당 보상을 지급한다.
-        /// _rewardPerKeycap을 지갑에 더한 뒤 지급량과 발생 위치를 RewardGranted로 알린다.
+        /// 생성 데이터의 보상 또는 기존 고정 보상을 지갑에 더하고 체력과 등급은 변경하지 않는다.
         /// </summary>
         private void OnKeycapBroken(KeycapHealth keycap)
         {
-            Vector3 worldPosition = keycap.transform.position;
-            _gameSession.Wallet.Add(_rewardPerKeycap);
-            //RewardGranted?.Invoke(_rewardPerKeycap, worldPosition);
+            long reward = keycap.HasSpawnData ? keycap.Reward : _rewardPerKeycap;
+            _gameSession.Wallet.Add(reward);
         }
     }
 }

@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c1b2e05253f6b842a48cee7e44c75db, type: 3}
+  m_Name: KeycapQuality
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Upgrades.UpgradeDefinition
+  _id: 4
+  _displayName: Keycap Quality
+  _description: Improve the Common, Rare, Epic and Legendary distribution for the
+    next keyboard placement.
+  _levelCosts: 32000000000000007d000000000000002c010000000000005802000000000000
+  _damageBonuses: 010000000200000003000000
+  _areaRadii:
+  - 1.5
+  - 2
+  - 2.5
+  _rarityDistributions:
+  - _weights:
+    - 100
+    - 0
+    - 0
+    - 0
+  - _weights:
+    - 70
+    - 30
+    - 0
+    - 0
+  - _weights:
+    - 30
+    - 40
+    - 30
+    - 0
+  - _weights:
+    - 10
+    - 35
+    - 50
+    - 5
+  - _weights:
+    - 0
+    - 25
+    - 60
+    - 15
