@@ -43,6 +43,10 @@ namespace KeyboardModeling
         private int _lastStatusFlags = -1;
         private float _nextStatusLogTime;
 
+        [Header("Audio")]
+        [SerializeField] private AudioSource _audioSource;
+        [SerializeField] private AudioClip _pressSound;
+
         public bool InputEnabled
         {
             get => _inputEnabled;
@@ -125,6 +129,9 @@ namespace KeyboardModeling
 
                 if (pressedThisFrame)
                 {
+                    float volumeScale = _keycapHealths[index] != null && _keycapHealths[index].CurrentHP == 0 ? 0.05f : 1f;
+                    _audioSource.PlayOneShot(_pressSound, volumeScale);
+
                     KeycapPressed?.Invoke(_bindings[index].Keycap);
                     KeyPressed?.Invoke(_bindings[index].Key);
                     if (!_inputEnabled || !isActiveAndEnabled)
