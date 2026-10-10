@@ -48,6 +48,8 @@ namespace KeyboardModeling
         {
             foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>(true))
                 renderer.enabled = true;
+            if (_interactionController == null)
+                _interactionController = FindFirstObjectByType<KeyboardInteractionController>();
             if (_interactionController != null)
             {
                 _interactionController.ActiveKeyboardChanged += BindKeyboard;
