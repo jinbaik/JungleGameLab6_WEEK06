@@ -10,7 +10,6 @@ using Unity.Cinemachine;
 using Game.Economy;
 using Game.Session;
 using Game.Shop;
-using Game.Upgrades;
 using KeyboardModeling;
 
 #if UNITY_EDITOR
@@ -213,7 +212,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     /// keyboard의 입력과 키캡 Collider를 끄고 들기용 물리 상태를 구성하여 등록 상태를 반환한다.
     /// isPlayable이 true인 경우에만 실제 입력 키캡의 전체 파괴 판정을 초기화한다.
     /// </summary>
-    private KeyboardState RegisterKeyboard(KeyboardInputController keyboard, bool isPlayable = false)
+    public KeyboardState RegisterKeyboard(KeyboardInputController keyboard, bool isPlayable = false)
     {
 
         keyboard.SetInputEnabled(false);
@@ -577,7 +576,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         Cursor.visible = isOpen;
     }
 
-    private sealed class KeyboardState
+    public sealed class KeyboardState
     {
         private KeyboardSpawnProfile _pendingProfile;
         private bool _placementFailed;

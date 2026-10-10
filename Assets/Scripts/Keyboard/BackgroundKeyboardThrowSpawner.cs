@@ -1,3 +1,4 @@
+using KeyboardModeling;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -13,6 +14,8 @@ public sealed class BackgroundKeyboardThrowSpawner : MonoBehaviour
     [SerializeField, Min(0.01f)] private float _keyboardScale = 0.15f;
     [SerializeField, Range(1, 20)] private int _maximumAlive = 6;
     [SerializeField, Min(0.1f)] private float _lifetime = 10f;
+
+    [SerializeField] private KeyboardInteractionController _keyboardInteractionController;
     private readonly Queue<GameObject> _spawned = new Queue<GameObject>();
     private Bounds _modelBounds;
     private float _remaining;
@@ -125,7 +128,8 @@ public sealed class BackgroundKeyboardThrowSpawner : MonoBehaviour
         body.linearVelocity = forward * Random.Range(_forwardSpeed.x, _forwardSpeed.y) + up * upwardSpeed;
         body.angularVelocity = Random.insideUnitSphere * _spinSpeed;
         _spawned.Enqueue(keyboard);
-        Destroy(keyboard, _lifetime);
+        _keyboardInteractionController.RegisterKeyboard(keyboard.GetComponent<KeyboardInputController>());
+        //Destroy(keyboard, _lifetime);
     }
 
     void OnDrawGizmosSelected()
