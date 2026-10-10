@@ -19,8 +19,8 @@ namespace KeyboardModeling
         private Vector3 _shoulderOrigin;
 
         [Header("Temporary Smash Input")]
-        [SerializeField] private KeyboardInteractionController _interactionController;
         [SerializeField] private bool _temporarySmashInput = true;
+        private KeyboardInteractionController _interactionController;
         private KeyboardInputController _activeKeyboard;
 
         [Header("Press Motion")]
@@ -48,8 +48,8 @@ namespace KeyboardModeling
         {
             foreach (MeshRenderer renderer in GetComponentsInChildren<MeshRenderer>(true))
                 renderer.enabled = true;
-            if (_interactionController == null)
-                _interactionController = FindFirstObjectByType<KeyboardInteractionController>();
+            KeyboardAutoAttackManager manager = KeyboardAutoAttackManager.Instance;
+            _interactionController = manager != null ? manager.InteractionController : null;
             if (_interactionController != null && _temporarySmashInput)
             {
                 _interactionController.ActiveKeyboardChanged += BindKeyboard;

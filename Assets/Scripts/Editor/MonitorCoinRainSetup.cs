@@ -21,11 +21,35 @@ public static class MonitorCoinRainSetup
     /// </summary>
     public static void RestoreSceneReferences()
     {
+        RestoreScene("Assets/Scenes/Main.unity");
+    }
+
+    /// <summary>
+    /// 두 메인씬의 기존 돈 낙하 효과와 공통 자동공격 참조를 복구한다.
+    /// 각 씬의 현재 배치를 유지하고 지갑, 화면 및 기존 코인 에셋 연결을 저장한다.
+    /// </summary>
+    public static void RestoreBothScenes()
+    {
+        foreach (string path in new[] { "Assets/Scenes/Main.unity", "Assets/Scenes/Main_AutoAttack.unity" })
+        {
+            RestoreScene(path);
+            KeyboardModeling.Editor.KeyboardAutoAttackManagerSetup.ConfigureCurrentScene();
+            KeyboardModeling.Editor.KeyboardAutoAttackRewardSetup.ConfigureCurrentScene();
+            EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+        }
+    }
+
+    /// <summary>
+    /// scenePath의 돈 낙하 효과에 현재 세션과 기존 UI 에셋을 연결한다.
+    /// 지정 씬을 열고 효과를 활성화하여 저장하며 다른 공유 에셋은 변경하지 않는다.
+    /// </summary>
+    private static void RestoreScene(string scenePath)
+    {
         if (!Application.isBatchMode) throw new InvalidOperationException("복사 프로젝트 배치에서 실행합니다.");
         GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Resource/Prefabs/MonitorCoin.prefab");
         AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Resource/Sprites/CoinUI.anim");
         if (prefab == null || clip == null) throw new InvalidOperationException("기존 코인 에셋을 찾을 수 없습니다.");
-        var scene = EditorSceneManager.OpenScene("Assets/Scenes/Main.unity", OpenSceneMode.Single);
+        var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
         GameSession session = UnityEngine.Object.FindFirstObjectByType<GameSession>();
         MiniGameScreenView view = UnityEngine.Object.FindObjectsByType<MiniGameScreenView>(FindObjectsInactive.Include, FindObjectsSortMode.None).First();
         RectTransform background = view.transform.Find("Background").GetComponent<RectTransform>();

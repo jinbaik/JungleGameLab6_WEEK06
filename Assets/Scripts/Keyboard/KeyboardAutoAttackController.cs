@@ -1,10 +1,8 @@
-using System.Collections.Generic;
-
-using UnityEngine;
-using UnityEngine.InputSystem;
-
 using Game.Session;
 using Game.Upgrades;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace KeyboardModeling
 {
@@ -12,11 +10,11 @@ namespace KeyboardModeling
     public sealed class KeyboardAutoAttackController : MonoBehaviour
     {
         [Header("Dependencies")]
-        [SerializeField] private GameSession _gameSession;
-        [SerializeField] private KeyboardInteractionController _interactionController;
         [SerializeField] private KeyboardTypingArmController _arm;
         [SerializeField] private KeyboardAutomaticStation _station;
         [SerializeField] private KeyboardFeedbackManager _stationFeedback;
+        private GameSession _gameSession;
+        private KeyboardInteractionController _interactionController;
         private UpgradeService _upgrades;
         private KeyboardInputController _keyboard;
         private KeyboardDestruction _destruction;
@@ -32,7 +30,9 @@ namespace KeyboardModeling
 
         void Awake()
         {
-            _manager = GetComponentInParent<KeyboardAutoAttackManager>();
+            _manager = KeyboardAutoAttackManager.Instance;
+            _gameSession = _manager.GameSession;
+            _interactionController = _manager.InteractionController;
             _attackInterval = _manager.AttackInterval;
         }
 

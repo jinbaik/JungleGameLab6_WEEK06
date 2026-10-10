@@ -1231,8 +1231,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21bfba2ea2281984a9b7be51032a873f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardAutoAttackController
-  _gameSession: {fileID: 641087395}
-  _interactionController: {fileID: 27118945}
   _arm: {fileID: 1381510555}
   _station: {fileID: 585728500}
   _stationFeedback: {fileID: 1092257599}
@@ -1249,11 +1247,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f44238b8f4df544b36e5e449d944e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardAutomaticStation
-  _interactionController: {fileID: 27118945}
   _placement: {fileID: 2048096865}
   _viewCamera: {fileID: 403096432}
-  _rewards: {fileID: 641087397}
-  _keyboardFragmentsPrefab: {fileID: 100, guid: 5dc9afe1dd0444239ccf712060e436a9, type: 3}
 --- !u!65 &585728501
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1402,17 +1397,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbbb187652d1c4844bceb0b976dde3c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Shop.ShopView
---- !u!114 &641087397 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5098958360283032277, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+--- !u!224 &641087397 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8163749001187560232, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
   m_PrefabInstance: {fileID: 641087393}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1068726008}
+--- !u!114 &641087398 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4990798316346721103, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+  m_PrefabInstance: {fileID: 641087393}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 320dfc8c5016fb149a29786bc2bd5d3b, type: 3}
+  m_Script: {fileID: 11500000, guid: ad84914b4890af14e81519e2515db80c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Game.Economy.KeyboardRewardController
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.MiniGameScreenView
 --- !u!1001 &665891877
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1881,8 +1881,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21bfba2ea2281984a9b7be51032a873f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardAutoAttackController
-  _gameSession: {fileID: 641087395}
-  _interactionController: {fileID: 27118945}
   _arm: {fileID: 342393341}
   _station: {fileID: 893323224}
   _stationFeedback: {fileID: 1759421603}
@@ -1899,11 +1897,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f44238b8f4df544b36e5e449d944e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardAutomaticStation
-  _interactionController: {fileID: 27118945}
   _placement: {fileID: 734941546}
   _viewCamera: {fileID: 946444058}
-  _rewards: {fileID: 641087397}
-  _keyboardFragmentsPrefab: {fileID: 100, guid: 5dc9afe1dd0444239ccf712060e436a9, type: 3}
 --- !u!65 &893323225
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2397,7 +2392,7 @@ MonoBehaviour:
   _interactionController: {fileID: 27118945}
   _keyboard: {fileID: 2000000001}
   _gameSession: {fileID: 641087395}
-  _miniGameController: {fileID: 1351410458}
+  _feverController: {fileID: 0}
   _baseDamage: 1
   _baseAreaDamage: 1
 --- !u!1 &1092257597
@@ -2614,6 +2609,64 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 115b471ba068d3d4099eb91c58191044, type: 3}
+--- !u!1 &1198220492
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1198220494}
+  - component: {fileID: 1198220493}
+  m_Layer: 0
+  m_Name: MonitorCoinRain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1198220493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1198220492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61ff503714d14bafa44f90b227d3cf01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonitorCoinRain
+  _gameSession: {fileID: 641087395}
+  _screenView: {fileID: 641087398}
+  _background: {fileID: 641087397}
+  _coinPrefab: {fileID: 6984344256650909965, guid: 6bb43625029d65442b254948407d438b, type: 3}
+  _coinAnimation: {fileID: 7400000, guid: 2e18ef22c867ab94a90a35441523b96d, type: 2}
+  _effectEnabled: 1
+  _poolSize: 24
+  _amountPerCoin: 10
+  _maximumCoinsPerIncome: 6
+  _coinSize: 28
+  _lifetime: 2
+  _screenWidth: 1
+  _gravity: 500
+  _initialFallSpeed: 70
+--- !u!4 &1198220494
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1198220492}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1200543320
 GameObject:
   m_ObjectHideFlags: 0
@@ -2832,17 +2885,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2979240927338688092, guid: 652c438e3b7c20e4cbcfdcaea1e88c60, type: 3}
   m_PrefabInstance: {fileID: 909695095}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1351410458 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2940396781710385079, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
-  m_PrefabInstance: {fileID: 641087393}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e02571f5689b9e46ade058e611a414f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.MiniGameController
 --- !u!1 &1381470435
 GameObject:
   m_ObjectHideFlags: 0
@@ -3479,6 +3521,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1927827888}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1971862103 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5098958360283032277, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+  m_PrefabInstance: {fileID: 641087393}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1068726008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 320dfc8c5016fb149a29786bc2bd5d3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Economy.KeyboardRewardController
 --- !u!114 &2000000001 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5033408809425400753, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
@@ -3607,6 +3660,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b1e3a726caf4e50af7c91e266af28b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interactionController: {fileID: 27118945}
+  _gameSession: {fileID: 641087395}
+  _rewardController: {fileID: 1971862103}
+  _keyboardFragmentsPrefab: {fileID: 100, guid: 5dc9afe1dd0444239ccf712060e436a9, type: 3}
   _damage: 1
   _attacksPerSecond: 1
 --- !u!1001 &3000000000
@@ -3715,3 +3772,4 @@ SceneRoots:
   - {fileID: 3000000000}
   - {fileID: 1387935175}
   - {fileID: 665891877}
+  - {fileID: 1198220494}

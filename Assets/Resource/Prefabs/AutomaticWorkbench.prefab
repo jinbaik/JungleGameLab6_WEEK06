@@ -1078,7 +1078,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6796795038645031112, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8181452537449830944, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
       propertyPath: _temporarySmashInput

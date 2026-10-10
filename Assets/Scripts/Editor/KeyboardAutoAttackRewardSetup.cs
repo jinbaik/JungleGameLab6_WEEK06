@@ -20,6 +20,16 @@ namespace KeyboardModeling.Editor
             if (!Application.isBatchMode)
                 throw new InvalidOperationException("Run this repair in the isolated batch project.");
             var scene = EditorSceneManager.OpenScene("Assets/Scenes/Main_AutoAttack.unity");
+            ConfigureCurrentScene();
+        }
+
+        /// <summary>
+        /// 현재 씬의 보상 Presenter와 기존 ToastCanvas 및 메인 카메라를 연결한다.
+        /// 누락된 풀을 재사용 프리팹으로 구성하고 변경된 씬 참조를 저장한다.
+        /// </summary>
+        public static void ConfigureCurrentScene()
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             ToastPool pool = UnityEngine.Object.FindFirstObjectByType<ToastPool>();
             if (pool == null)
             {
