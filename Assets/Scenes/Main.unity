@@ -2283,13 +2283,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9100000001}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -4, y: 0.8, z: 1.25}
+  m_LocalRotation: {x: -0, y: 0.8294389, z: -0, w: -0.5585973}
+  m_LocalPosition: {x: -0.637, y: 9.55, z: 13.829}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 247.918, z: 0}
 --- !u!114 &9100000003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2300,19 +2300,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 54a0741b2acd45a79c79de77e33cd510, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BackgroundKeyboardThrowSpawner
-  _keyboardPrefab: {fileID: 6004080589864425764, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
+  _keyboardPrefab: {fileID: 7260896916683266010, guid: ca63a45e01c0b4c4f89b728045d40b8e, type: 3}
   _spawningEnabled: 1
   _spawnInterval: 2.5
   _firstSpawnDelay: 1
   _keyboardScale: 0.15
   _maximumAlive: 6
   _lifetime: 10
-  _forwardSpeed: {x: 2.8, y: 3.6}
+  _forwardSpeed: {x: 5, y: 8}
   _arcHeight: {x: 0.45, y: 0.8}
   _directionSpread: 8
-  _spinSpeed: 1
+  _spinSpeed: 5
   _modelEulerAngles: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -2329,4 +2329,3 @@ SceneRoots:
   - {fileID: 1328267138}
   - {fileID: 909695095}
   - {fileID: 9100000002}
-
