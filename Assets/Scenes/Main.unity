@@ -229,6 +229,10 @@ MonoBehaviour:
   _enableHitStop: 0
   _enableDebris: 1
   _enableWhiteFlash: 1
+  _enableKeyboardBounce: 0
+  _keyboardBounceDistance: 0.18
+  _keyboardBouncePressDuration: 0.045
+  _keyboardBounceReturnDuration: 0.14
   _whiteFlashMaterial: {fileID: 2100000, guid: d1d390a20db744e0acb7c1e0ea6d0705, type: 3}
   _whiteFlashDuration: 0.12
   _debrisPrefab: {fileID: 1497636642769053249, guid: d1d390a20db744e0acb7c1e0ea6d0704, type: 3}

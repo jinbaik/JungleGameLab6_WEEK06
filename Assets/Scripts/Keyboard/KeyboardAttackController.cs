@@ -15,7 +15,6 @@ namespace KeyboardModeling
         [Tooltip("키보드 교체를 사용하지 않는 씬의 입력 대상을 연결합니다.")]
         [SerializeField] private KeyboardInputController _keyboard;
         private KeyboardInputController _activeKeyboard;
-        private KeyboardDestruction _keyboardDestruction;
         private KeycapHealth[] _keycaps = Array.Empty<KeycapHealth>();
         private Vector2[] _keycapPositions = Array.Empty<Vector2>();
 
@@ -69,13 +68,11 @@ namespace KeyboardModeling
             }
 
             _activeKeyboard = keyboard;
-            _keyboardDestruction = null;
             _keycaps = Array.Empty<KeycapHealth>();
             _keycapPositions = Array.Empty<Vector2>();
 
             if (_activeKeyboard != null)
             {
-                _keyboardDestruction = _activeKeyboard.GetComponent<KeyboardDestruction>();
                 _keycaps = _activeKeyboard.GetComponentsInChildren<KeycapHealth>(true);
                 _keycapPositions = new Vector2[_keycaps.Length];
                 for (int index = 0; index < _keycaps.Length; index++)
@@ -89,20 +86,19 @@ namespace KeyboardModeling
         }
 
         /// <summary>
-        /// health의 저장된 위치를 중심으로 같은 키보드의 살아 있는 키캡을 한 번씩 타격한다.
-        /// 깨진 중심 키는 직접 피해를 생략하고 광역을 발동하며, 강화와 피버 배율로 피해를 계산하되 키보드 파괴가 시작되면 중단한다.
+        /// health와 같은 키보드의 반경 안에 있는 살아 있는 키캡을 한 번씩 타격한다.
+        /// 직접 및 광역 공격력 강화와 피버 배율로 각 피해량을 계산하여 대상 체력과 파괴 상태를 변경한다.
         /// </summary>
         private void OnAttackRequested(KeycapHealth health)
         {
-            KeyboardInputController keyboard = _activeKeyboard;
-            KeyboardDestruction destruction = _keyboardDestruction;
-            if (keyboard == null || !keyboard.InputEnabled || !keyboard.isActiveAndEnabled || (destruction != null && destruction.IsBroken))
+            if (health.CurrentHP <= 0)
             {
                 return;
             }
 
             KeycapHealth[] keycaps = _keycaps;
             Vector2[] positions = _keycapPositions;
+            KeyboardInputController keyboard = _activeKeyboard;
             int targetIndex = Array.IndexOf(keycaps, health);
             if (targetIndex < 0)
             {
@@ -125,18 +121,16 @@ namespace KeyboardModeling
             int areaDamage = Mathf.CeilToInt((_baseAreaDamage + areaDamageBonus) * multiplier);
             Vector2 center = positions[targetIndex];
 
-            if (health.CurrentHP > 0)
-            {
-                health.TakeDamage(damage);
-            }
-            ApplyAreaDamage(keyboard, destruction, keycaps, positions, targetIndex, center, radius, areaDamage);
+            // 파괴 콜백이 현재 키보드를 해제해도 이번 타격은 보관한 대상과 위치를 사용한다.
+            health.TakeDamage(damage);
+            ApplyAreaDamage(keyboard, keycaps, positions, targetIndex, center, radius, areaDamage);
         }
 
         /// <summary>
-        /// keyboard의 keycaps와 positions에서 center와 radius 안의 살아 있는 주변 키캡에 연출과 damage를 적용한다.
-        /// targetIndex는 제외하고 destruction의 파괴가 시작되면 남은 처리를 중단하며, 추가 공격 요청은 발생시키지 않는다.
+        /// keyboard에 범위 타격 효과를 알리고 keycaps와 positions에서 center와 radius 안의 살아 있는 주변 키캡을 타격한다.
+        /// targetIndex의 직접 타격 대상은 제외하고 damage를 한 번씩 적용하며 추가 공격 요청은 발생시키지 않는다.
         /// </summary>
-        private void ApplyAreaDamage(KeyboardInputController keyboard, KeyboardDestruction destruction, KeycapHealth[] keycaps, Vector2[] positions, int targetIndex, Vector2 center, float radius, int damage)
+        private void ApplyAreaDamage(KeyboardInputController keyboard, KeycapHealth[] keycaps, Vector2[] positions, int targetIndex, Vector2 center, float radius, int damage)
         {
             if (radius <= 0f || damage <= 0)
             {
@@ -146,11 +140,6 @@ namespace KeyboardModeling
             float radiusSquared = radius * radius;
             for (int index = 0; index < keycaps.Length; index++)
             {
-                if (destruction != null && destruction.IsBroken)
-                {
-                    return;
-                }
-
                 if (index == targetIndex || keycaps[index].CurrentHP <= 0)
                 {
                     continue;
