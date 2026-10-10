@@ -5,10 +5,22 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class KeyboardFeedbackManager : MonoBehaviour
 {
+    /// <summary>
+    /// 별도 자동작업대의 키보드를 기존 이펙트 대상으로 연결한다.
+    /// keyboard를 사용해 이전 효과 구독을 정리하고 자동 및 기존 키 피드백의 대상 참조를 변경한다.
+    /// </summary>
+    public void SetAutomaticKeyboard(KeyboardInputController keyboard)
+    {
+        BindKeyboard(keyboard);
+        _automaticTarget = keyboard != null;
+    }
+
+
     [Header("Target")]
     [SerializeField] private KeyboardInteractionController _interactionController;
     [SerializeField] private KeyboardInputController _previewKeyboard;
     private KeyboardInputController _keyboard;
+    private bool _automaticTarget;
 
     [Header("Live Options")]
     [SerializeField] private bool _enableHitStop = true;
@@ -128,6 +140,7 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
         if (_keyboard != null)
         {
             _keyboard.KeycapPressed -= HandleKeycapPressed;
+            _keyboard.AutomaticKeycapHit -= HandleKeycapPressed;
             _keyboard.SetHitStopEnabled(false);
         }
         EndHitStop();
@@ -158,6 +171,7 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
         }
         _keyboard.SetHitStopEnabled(_enableHitStop);
         _keyboard.KeycapPressed += HandleKeycapPressed;
+        _keyboard.AutomaticKeycapHit += HandleKeycapPressed;
     }
 
     /// <summary>
@@ -168,7 +182,7 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
     {
         KeycapHealth health = keycap.GetComponent<KeycapHealth>();
         if (health != null && health.CurrentHP <= 0) return;
-        if (_enableKeyboardBounce)
+        if (_enableKeyboardBounce && !_automaticTarget)
         {
             _keyboardBounceStartDepth = _keyboardBounceDepth;
             _keyboardBounceElapsed = 0f;
@@ -193,7 +207,7 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
     private void UpdateKeyboardBounce()
     {
         if (!_isKeyboardBouncing) return;
-        if (_keyboard == null || !_enableKeyboardBounce || !_keyboard.InputEnabled ||
+        if (_keyboard == null || !_enableKeyboardBounce || (!_keyboard.InputEnabled && !_automaticTarget) ||
             (_keyboardDestruction != null && _keyboardDestruction.IsBroken))
         {
             ClearKeyboardBounce();

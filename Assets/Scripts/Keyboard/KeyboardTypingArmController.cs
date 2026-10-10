@@ -50,7 +50,7 @@ namespace KeyboardModeling
                 renderer.enabled = true;
             if (_interactionController == null)
                 _interactionController = FindFirstObjectByType<KeyboardInteractionController>();
-            if (_interactionController != null)
+            if (_interactionController != null && _temporarySmashInput)
             {
                 _interactionController.ActiveKeyboardChanged += BindKeyboard;
                 BindKeyboard(_interactionController.ActiveKeyboard);
@@ -93,6 +93,41 @@ namespace KeyboardModeling
         /// keycap의 윗면과 방향을 사용해 이전 누름을 교체하며 대상이 없거나 도달 불가능하면 false를 반환한다.
         /// </summary>
         public bool PressKey(Transform keycap)
+        {
+            return BeginPress(keycap);
+        }
+
+        /// <summary>
+        /// 자동공격에서 지정한 키캡을 기계팔로 누른다.
+        /// keycap을 공통 관절 애니메이션에 전달하며 플레이어 입력 이벤트나 데미지는 발생시키지 않고 요청 성공 여부를 반환한다.
+        /// </summary>
+        public bool PressKeyAutomatically(Transform keycap)
+        {
+            return BeginPress(keycap);
+        }
+
+        /// <summary>
+        /// 플레이어의 임시 스매쉬 입력 연결을 켜거나 끈다.
+        /// enabled를 저장하고 기존 키보드와 교체 이벤트 구독을 정리하며 활성화한 경우에만 다시 구독한다.
+        /// </summary>
+        public void SetTemporaryInputEnabled(bool enabled)
+        {
+            if (_interactionController != null)
+                _interactionController.ActiveKeyboardChanged -= BindKeyboard;
+            BindKeyboard(null);
+            _temporarySmashInput = enabled;
+            if (enabled && isActiveAndEnabled && _interactionController != null)
+            {
+                _interactionController.ActiveKeyboardChanged += BindKeyboard;
+                BindKeyboard(_interactionController.ActiveKeyboard);
+            }
+        }
+
+        /// <summary>
+        /// 지정한 키캡의 윗면으로 이동하고 짧은 누름 동작을 시작한다.
+        /// keycap의 위치와 Collider를 사용해 관절과 키캡 표시를 변경하며 도달 가능 여부를 반환한다.
+        /// </summary>
+        private bool BeginPress(Transform keycap)
         {
             if (!isActiveAndEnabled || keycap == null)
                 return false;
