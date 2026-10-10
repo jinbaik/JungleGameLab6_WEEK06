@@ -121,6 +121,15 @@ namespace Game.Upgrades
         }
 
         /// <summary>
+        /// id의 현재 구매 조건을 평가한다.
+        /// id와 강화 레벨·잔액을 사용하며 상태를 변경하지 않고 구매 결과를 반환한다.
+        /// </summary>
+        public PurchaseResult GetPurchaseStatus(UpgradeId id)
+        {
+            return EvaluatePurchase(id);
+        }
+
+        /// <summary>
         /// id의 등록 여부, 최대 레벨, 현재 잔액을 확인한다.
         /// 다음 레벨을 구매할 수 있으면 true를 반환하며 상태는 변경하지 않는다.
         /// </summary>
@@ -158,8 +167,8 @@ namespace Game.Upgrades
         }
 
         /// <summary>
-        /// id의 등록 여부와 현재 레벨 및 잔액을 사용하여 구매 조건을 판단한다.
-        /// 성공 가능 여부 또는 구매할 수 없는 이유를 PurchaseResult로 반환한다.
+        /// id의 등록 여부, 최대 레벨, 선행 강화와 잔액을 확인한다.
+        /// 현재 상태를 변경하지 않고 구매 가능 여부를 PurchaseResult로 반환한다.
         /// </summary>
         private PurchaseResult EvaluatePurchase(UpgradeId id)
         {
@@ -175,9 +184,13 @@ namespace Game.Upgrades
                 return PurchaseResult.MaxLevel;
             }
 
-            return _wallet.Balance >= definition.GetCost(currentLevel)
-                ? PurchaseResult.Success
-                : PurchaseResult.InsufficientCurrency;
+            if (id == UpgradeId.AreaDamage &&
+                (!_levels.TryGetValue(UpgradeId.AreaSmash, out int areaSmashLevel) || areaSmashLevel < 1))
+            {
+                return PurchaseResult.RequiresAreaSmash;
+            }
+
+            return _wallet.Balance >= definition.GetCost(currentLevel) ? PurchaseResult.Success : PurchaseResult.InsufficientCurrency;
         }
     }
 }

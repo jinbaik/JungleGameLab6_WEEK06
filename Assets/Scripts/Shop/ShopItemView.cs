@@ -57,12 +57,13 @@ namespace Game.Shop
         {
             int level = _upgrades.GetLevel(_definition.Id);
             bool isMaxLevel = level >= _definition.MaxLevel;
-            bool canPurchase = _upgrades.CanPurchase(_definition.Id);
+            PurchaseResult purchaseStatus = _upgrades.GetPurchaseStatus(_definition.Id);
+            bool requiresAreaSmash = purchaseStatus == PurchaseResult.RequiresAreaSmash;
 
             _levelText.text = $"Lv {level}/{_definition.MaxLevel}";
-            _costText.text = isMaxLevel ? string.Empty : $"{_definition.GetCost(level):N0}";
-            _buttonText.text = isMaxLevel ? "MAX" : "Buy";
-            _purchaseButton.interactable = canPurchase;
+            _costText.text = isMaxLevel ? string.Empty : requiresAreaSmash ? "Area Smash Lv 1" : $"{_definition.GetCost(level):N0}";
+            _buttonText.text = isMaxLevel ? "MAX" : requiresAreaSmash ? "LOCKED" : "Buy";
+            _purchaseButton.interactable = purchaseStatus == PurchaseResult.Success;
 
             if (_definition.Id == UpgradeId.RareKeycapQuality)
             {
