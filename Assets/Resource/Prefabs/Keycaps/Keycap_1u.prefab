@@ -493,6 +493,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeycapHealth
   _maxHP: 5
+  _supportsRarity: 0
   _damageDecal: {fileID: 910000002}
   _crackMaterials:
   - {fileID: 2100000, guid: dc7a7ffc367742dd9aec2c831a47acd2, type: 2}

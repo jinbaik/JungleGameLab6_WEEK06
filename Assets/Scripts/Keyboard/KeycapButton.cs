@@ -8,16 +8,7 @@ public sealed class KeycapButton : MonoBehaviour
     [SerializeField] private UnityEvent _onPressed = new UnityEvent();
     private bool _isPressed;
 
-    public UnityEvent OnPressed => _onPressed;
-
-    /// <summary>
-    /// source에 설정된 기존 누름 동작을 새 키캡 버튼으로 전달한다.
-    /// 이벤트 객체를 유지하여 프리팹 교체 후에도 사용자 지정 동작을 보존한다.
-    /// </summary>
-    public void PreservePressAction(KeycapButton source)
-    {
-        _onPressed = source._onPressed;
-    }
+    public UnityEvent OnPressed => _onPressed;    
 
     void OnDisable()
     {

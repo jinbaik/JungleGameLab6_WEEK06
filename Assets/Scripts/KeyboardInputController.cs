@@ -63,62 +63,35 @@ namespace KeyboardModeling
         public KeyboardSpawnProfile SpawnProfile => _spawnProfile;
 
         /// <summary>
-        /// profile의 키 식별자를 layout과 연결하여 새 키보드의 등급·체력·보상을 한 번 초기화한다.
-        /// 모든 식별자를 먼저 검사하고 적용이 끝난 프로필을 SpawnProfile로 보관한다.
+        /// profile의 키 식별자를 layout과 연결하여 키캡의 등급·체력·보상·외피 재질을 초기화한다.
+        /// 모든 식별자를 검사한 뒤 적용된 profile을 _spawnProfile에 저장한다.
         /// </summary>
-        public void InitializeSpawnProfile(KeyboardSpawnProfile profile, IReadOnlyDictionary<Key, KeycapHealth> layout)
+        public void InitializeSpawnProfile(
+            KeyboardSpawnProfile profile,
+            IReadOnlyDictionary<Key, KeycapHealth> layout)
         {
             if (_spawnProfile != null || profile.Keycaps.Count != layout.Count)
             {
-                throw new InvalidOperationException("Spawn profile must initialize a matching new keyboard once.");
+                throw new InvalidOperationException(
+                    "Spawn profile must initialize a matching new keyboard once.");
             }
 
             foreach (KeyboardSpawnProfile.KeycapData data in profile.Keycaps)
             {
                 if (!layout.ContainsKey(data.Key))
                 {
-                    throw new InvalidOperationException($"Spawn profile key is missing: {data.Key}.");
+                    throw new InvalidOperationException(
+                        $"Spawn profile key is missing: {data.Key}.");
                 }
             }
 
             foreach (KeyboardSpawnProfile.KeycapData data in profile.Keycaps)
             {
-                int index = Array.FindIndex(_bindings, binding => binding.Key == data.Key);
-                if (data.Prefab != null)
-                    ReplaceKeycap(index, data.Prefab);
-                _keycapHealths[index].InitializeSpawnData(data);
+                layout[data.Key].InitializeSpawnData(data);
             }
 
             _spawnProfile = profile;
-        }
-
-        /// <summary>
-        /// index의 기존 키캡을 같은 형상의 prefab 인스턴스로 교체한다.
-        /// 위치, 각인과 누름 동작을 보존하고 바인딩, 체력, 버튼 및 복귀 위치 캐시를 갱신한다.
-        /// </summary>
-        private void ReplaceKeycap(int index, GameObject prefab)
-        {
-            Transform previous = _bindings[index].Keycap;
-            GameObject replacement = Instantiate(prefab, previous.parent, false);
-            Transform keycap = replacement.transform;
-            replacement.name = previous.name;
-            keycap.localPosition = previous.localPosition;
-            keycap.localRotation = previous.localRotation;
-            keycap.localScale = previous.localScale;
-            keycap.SetSiblingIndex(previous.GetSiblingIndex());
-            foreach (TextMesh legend in previous.GetComponentsInChildren<TextMesh>(true))
-                legend.transform.SetParent(keycap, true);
-
-            KeycapButton button = replacement.GetComponent<KeycapButton>();
-            button.PreservePressAction(_keycapButtons[index]);
-            _bindings[index].SetKeycap(keycap);
-            _keycapButtons[index] = button;
-            _keycapHealths[index] = replacement.GetComponent<KeycapHealth>();
-            _restPositions[index] = keycap.localPosition;
-            previous.gameObject.SetActive(false);
-            previous.SetParent(null, true);
-            Destroy(previous.gameObject);
-        }
+        }        
 
         /// <summary>
         /// 현재 키 바인딩을 사용하여 식별자별 키캡 체력의 읽기 전용 매핑을 반환한다.

@@ -22,12 +22,15 @@ public sealed class KeycapHealth : MonoBehaviour
     public event Action<KeycapHealth> DamageApplied;
 
     [Header("Runtime Rarity")]
+    [SerializeField] private bool _supportsRarity;
+    public bool SupportsRarity => _supportsRarity;
     private bool _hasSpawnData;
     private KeycapRarity _rarity;
     private long _reward;
     public bool HasSpawnData => _hasSpawnData;
     public KeycapRarity Rarity => _rarity;
     public long Reward => _reward;
+    private MeshRenderer _shellRenderer;
 
     [Header("Damage decal")]
     [SerializeField] private DecalProjector _damageDecal;
@@ -50,16 +53,20 @@ public sealed class KeycapHealth : MonoBehaviour
 
     void Awake()
     {
-        if (_audioSource == null || !_audioSource.gameObject.scene.IsValid()) _audioSource = GetComponentInParent<AudioSource>();
+        if (_audioSource == null || !_audioSource.gameObject.scene.IsValid())
+            _audioSource = GetComponentInParent<AudioSource>();
+
         _currentHP = _maxHP;
         UpdateDamageDecal();
+
+        _shellRenderer = transform.Find("PBT_SculptedShell").GetComponent<MeshRenderer>();
         _renderers = GetComponentsInChildren<Renderer>();
         _colliders = GetComponentsInChildren<Collider>();
     }
 
     /// <summary>
-    /// data의 확정된 등급·체력·보상을 새 키캡에 한 번 적용한다.
-    /// 최대·현재 체력과 등급 상태를 저장하고 파괴 대상 렌더러 및 균열 표시를 갱신한다.
+    /// data의 등급·체력·보상·외피 재질을 새 키캡에 한 번 적용한다.
+    /// 최대·현재 체력과 등급 상태를 저장하고 외피 및 균열 표시를 갱신한다.
     /// </summary>
     public void InitializeSpawnData(KeyboardSpawnProfile.KeycapData data)
     {
@@ -73,8 +80,11 @@ public sealed class KeycapHealth : MonoBehaviour
         _rarity = data.Rarity;
         _reward = data.Reward;
         _hasSpawnData = true;
-        _renderers = GetComponentsInChildren<Renderer>();
 
+        if (_supportsRarity)
+        {
+            _shellRenderer.sharedMaterial = data.ShellMaterial;
+        }
         UpdateDamageDecal();
     }
 

@@ -17,9 +17,10 @@ namespace KeyboardModeling
             new Tier(KeycapRarity.Legendary, 4f, 8f)
         };
 
-
-
-        /// <summary>rarity에 대응하는 체력·보상 배율과 교체 프리팹 설정을 반환하며 설정을 변경하지 않는다.</summary>
+        /// <summary>
+        /// rarity에 대응하는 체력·보상 배율과 외피 머티리얼 설정을 반환한다.
+        /// 설정은 변경하지 않는다.
+        /// </summary>
         public Tier GetTier(KeycapRarity rarity)
         {
             for (int index = 0; index < _tiers.Length; index++)
@@ -65,33 +66,19 @@ namespace KeyboardModeling
             [Header("Rarity")]
             [SerializeField] private KeycapRarity _rarity;
             [SerializeField, Min(1f)] private float _healthMultiplier;
-            [SerializeField, Min(1f)] private float _rewardMultiplier;
-            [SerializeField] private PrefabVariant[] _prefabVariants = Array.Empty<PrefabVariant>();
+            [SerializeField, Min(1f)] private float _rewardMultiplier;            
+            [SerializeField] private Material _shellMaterial;
+
 
             public KeycapRarity Rarity => _rarity;
             public float HealthMultiplier => _healthMultiplier;
             public float RewardMultiplier => _rewardMultiplier;
+            public Material ShellMaterial => _shellMaterial;
 
-            /// <summary>
-            /// sourceMesh와 같은 크기 및 형상을 사용하는 등급별 키캡 프리팹을 조회한다.
-            /// 교체 설정이 없는 일반 등급은 null을 반환하고 희귀 등급의 형상이 누락되면 오류를 알린다.
-            /// </summary>
-            public GameObject GetPrefab(Mesh sourceMesh)
-            {
-                if (_rarity == KeycapRarity.Common && _prefabVariants.Length == 0)
-                    return null;
-
-                foreach (PrefabVariant variant in _prefabVariants)
-                {
-                    if (variant.SourceMesh == sourceMesh)
-                        return variant.Prefab;
-                }
-                throw new InvalidOperationException($"Missing {_rarity} keycap prefab for {sourceMesh.name}.");
-            }
 
             /// <summary>
             /// rarity, healthMultiplier, rewardMultiplier로 등급 기본 설정을 만든다.
-            /// 등급과 체력·보상 배율을 저장하며 교체 프리팹은 Inspector에서 지정한다.
+            /// 등급과 배율을 저장하며 외피 머티리얼은 Inspector에서 지정한다.
             /// </summary>
             public Tier(KeycapRarity rarity, float healthMultiplier, float rewardMultiplier)
             {
@@ -100,7 +87,10 @@ namespace KeyboardModeling
                 _rewardMultiplier = rewardMultiplier;
             }
 
-            /// <summary>체력·보상 배율과 희귀 등급의 교체 프리팹 설정을 검사하고 잘못된 설정이면 예외를 발생시킨다.</summary>
+            /// <summary>
+            /// 체력·보상 배율과 외피 재질을 검사한다.
+            /// 현재 등급의 설정이 잘못되면 예외를 발생시킨다.
+            /// </summary>
             public void Validate()
             {
                 if (float.IsNaN(_healthMultiplier) || float.IsInfinity(_healthMultiplier) || _healthMultiplier < 1f ||
@@ -108,34 +98,12 @@ namespace KeyboardModeling
                 {
                     throw new InvalidOperationException("Keycap rarity multipliers must be finite and at least one.");
                 }
-                if (_rarity != KeycapRarity.Common && _prefabVariants.Length == 0)
+
+                if (_shellMaterial == null)
                 {
-                    throw new InvalidOperationException($"Missing rarity keycap prefabs: {_rarity}.");
-                }
-                foreach (PrefabVariant variant in _prefabVariants)
-                    variant.Validate();
+                    throw new InvalidOperationException($"Missing keycap shell material: {_rarity}.");
+                }                
             }
-        }
-
-        [Serializable]
-        private sealed class PrefabVariant
-        {
-            [Header("Matching Shape")]
-            [SerializeField] private Mesh _sourceMesh;
-            [SerializeField] private GameObject _prefab;
-            public Mesh SourceMesh => _sourceMesh;
-            public GameObject Prefab => _prefab;
-
-            /// <summary>
-            /// 원본 메시와 교체 프리팹의 체력 및 버튼 설정을 확인한다.
-            /// 참조 또는 필수 컴포넌트가 없으면 배치 전에 설정 오류를 발생시킨다.
-            /// </summary>
-            public void Validate()
-            {
-                if (_sourceMesh == null || _prefab == null || _prefab.GetComponent<KeycapHealth>() == null
-                    || _prefab.GetComponent<KeycapButton>() == null)
-                    throw new InvalidOperationException("Keycap prefab variants require a source mesh, health and button.");
-            }
-        }
+        }        
     }
 }

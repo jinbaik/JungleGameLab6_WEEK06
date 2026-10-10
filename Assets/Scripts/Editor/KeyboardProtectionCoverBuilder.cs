@@ -21,8 +21,8 @@ namespace KeyboardModeling.Editor
         private const int CORNER_SEGMENTS = 8;
 
         /// <summary>
-        /// 기존 키캡 경계로 아크릴 커버를 생성하고 배경용 키보드 및 등급별 프리팹 설정에 연결한다.
-        /// 원본 메시와 재질 참조를 보존하며 커버 에셋, 모델 집계와 미리보기를 저장한다.
+        /// 기존 키캡 경계로 아크릴 커버를 생성해 배경용 키보드에 연결한다.
+        /// 원본 메시와 재질 참조를 보존하고 커버 에셋, 모델 집계와 미리보기를 저장한다.
         /// </summary>
         [MenuItem("Tools/Keyboard/Build Acrylic Protection Cover")]
         public static void Build()
@@ -65,7 +65,6 @@ namespace KeyboardModeling.Editor
                     pickup.size = bounds.size;
                 }
                 PrefabUtility.SaveAsPrefabAsset(background, BACKGROUND_PATH);
-                ConfigureRarityPrefabs();
                 AssetDatabase.SaveAssets();
 
                 string report = "Background before\n" + before + "\nBackground after\n" + DescribeModel(background)
@@ -250,40 +249,7 @@ namespace KeyboardModeling.Editor
             EditorUtility.SetDirty(existing);
             UnityEngine.Object.DestroyImmediate(mesh);
             return existing;
-        }
-
-        /// <summary>
-        /// 기존 등급 설정에 같은 형상의 Wood, Gold 및 Celestial 키캡 Variant를 연결한다.
-        /// 기존 확률과 체력, 보상 및 이펙트 재질은 유지하고 프리팹 매칭 배열만 저장한다.
-        /// </summary>
-        private static void ConfigureRarityPrefabs()
-        {
-            KeycapRaritySettings settings = AssetDatabase.LoadAssetAtPath<KeycapRaritySettings>("Assets/Data/KeycapRaritySettings.asset");
-            SerializedObject serialized = new SerializedObject(settings);
-            SerializedProperty tiers = serialized.FindProperty("_tiers");
-            string[] themes = { "", "Wood", "Gold", "Celestial" };
-            string[] sizes = { "1u", "1_25u", "1_5u", "1_75u", "2u", "2_25u", "2_75u", "6_25u" };
-            for (int index = 0; index < tiers.arraySize; index++)
-            {
-                SerializedProperty tier = tiers.GetArrayElementAtIndex(index);
-                int rarity = tier.FindPropertyRelative("_rarity").enumValueIndex;
-                SerializedProperty variants = tier.FindPropertyRelative("_prefabVariants");
-                variants.arraySize = rarity == 0 ? 0 : sizes.Length;
-                for (int size = 0; size < variants.arraySize; size++)
-                {
-                    string stem = "Keycap_" + sizes[size];
-                    GameObject original = AssetDatabase.LoadAssetAtPath<GameObject>(RESOURCE_ROOT + "Prefabs/Keycaps/" + stem + ".prefab");
-                    GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(RESOURCE_ROOT + "Prefabs/Keycaps/" + themes[rarity] + "/" + stem + "_" + themes[rarity] + ".prefab");
-                    if (original == null || prefab == null)
-                        throw new InvalidOperationException("Missing keycap prefab: " + stem + " / " + themes[rarity]);
-                    SerializedProperty entry = variants.GetArrayElementAtIndex(size);
-                    entry.FindPropertyRelative("_sourceMesh").objectReferenceValue = original.transform.Find("PBT_SculptedShell").GetComponent<MeshFilter>().sharedMesh;
-                    entry.FindPropertyRelative("_prefab").objectReferenceValue = prefab;
-                }
-            }
-            serialized.ApplyModifiedPropertiesWithoutUndo();
-            settings.Validate();
-        }
+        }        
 
         /// <summary>
         /// model 한 개의 메시 정점, 삼각형, 활성 Renderer와 그림자 투사 수를 집계한다.
