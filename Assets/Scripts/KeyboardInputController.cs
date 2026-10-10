@@ -35,6 +35,7 @@ namespace KeyboardModeling
         private float[] _pressAmounts;
         private float _lastPressDistance;
         private bool _hitStopEnabled;
+        private bool[] _actuatedKeys;
 
         [Header("Debug")]
         [SerializeField] private bool _logInput = true;
@@ -124,6 +125,7 @@ namespace KeyboardModeling
 
         void Awake()
         {
+            _actuatedKeys = new bool[_bindings.Length];
             _restPositions = new Vector3[_bindings.Length];
             _pressAmounts = new float[_bindings.Length];
             _previousPressed = new bool[_bindings.Length];
@@ -176,7 +178,7 @@ namespace KeyboardModeling
                 {
                     _lastPressedKey = _bindings[index].Key;
                 }
-                AnimateKey(index, isPressed, _hitStopEnabled && Time.timeScale == 0f ? 0f : Time.unscaledDeltaTime);
+                AnimateKey(index, isPressed || _actuatedKeys[index], _hitStopEnabled && Time.timeScale == 0f ? 0f : Time.unscaledDeltaTime);
 
                 if (pressedThisFrame)
                 {
@@ -324,6 +326,24 @@ namespace KeyboardModeling
         {
             _hitStopEnabled = enabled;
         }
+
+        /// <summary>
+        /// 기계팔에 눌린 키캡의 표시 상태를 변경한다.
+        /// keycap과 pressed를 바인딩 및 표시 위치에 즉시 반영하며 물리 키 입력, 버튼 이벤트와 피해 요청은 추가로 발생시키지 않는다.
+        /// </summary>
+        public void SetKeycapActuated(Transform keycap, bool pressed)
+        {
+            for (int index = 0; index < _bindings.Length; index++)
+            {
+                if (_bindings[index].Keycap != keycap)
+                    continue;
+                _actuatedKeys[index] = pressed;
+                float amount = pressed || _previousPressed[index] ? 1f : 0f;
+                _pressAmounts[index] = amount;
+                keycap.localPosition = _restPositions[index] + Vector3.down * (_pressDistance * amount);
+                return;
+            }
+        }
         /// <summary>
         /// 현재 눌린 키 목록을 문자열로 갱신한다.
         /// _previousPressed와 _bindings를 사용하여 입력 변화 시에만 _currentPressedKeys를 다시 만든다.
@@ -356,6 +376,7 @@ namespace KeyboardModeling
                 if (_logInput && _previousPressed[index])
                     Debug.Log("[Keyboard][Model] RESET " + _bindings[index].Key, this);
                 _previousPressed[index] = false;
+                _actuatedKeys[index] = false;
                 if (_pressAmounts[index] != 0f)
                     _bindings[index].Keycap.localPosition = _restPositions[index];
                 _pressAmounts[index] = 0f;
