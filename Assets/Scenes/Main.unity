@@ -2258,6 +2258,62 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
+--- !u!1 &9100000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9100000002}
+  - component: {fileID: 9100000003}
+  m_Layer: 0
+  m_Name: BackgroundKeyboardThrowPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9100000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9100000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -4, y: 0.8, z: 1.25}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &9100000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9100000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54a0741b2acd45a79c79de77e33cd510, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::BackgroundKeyboardThrowSpawner
+  _keyboardPrefab: {fileID: 6004080589864425764, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
+  _spawningEnabled: 1
+  _spawnInterval: 2.5
+  _firstSpawnDelay: 1
+  _keyboardScale: 0.15
+  _maximumAlive: 6
+  _lifetime: 10
+  _forwardSpeed: {x: 2.8, y: 3.6}
+  _arcHeight: {x: 0.45, y: 0.8}
+  _directionSpread: 8
+  _spinSpeed: 1
+  _modelEulerAngles: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2272,3 +2328,5 @@ SceneRoots:
   - {fileID: 2026616912}
   - {fileID: 1328267138}
   - {fileID: 909695095}
+  - {fileID: 9100000002}
+
