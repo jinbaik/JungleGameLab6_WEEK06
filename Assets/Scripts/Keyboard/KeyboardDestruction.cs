@@ -10,7 +10,7 @@ public sealed class KeyboardDestruction : MonoBehaviour
     [SerializeField, Min(0f)] private float _upwardSpeed = 1.5f;
     [SerializeField, Min(0f)] private float _outwardSpeed = 0.8f;
     [SerializeField, Min(0f)] private float _spin = 3f;
-    [SerializeField, Min(0f)] private float _pushDelay = 3f;
+    [SerializeField, Min(0f)] private float _pushDelay = 1f;
     [SerializeField, Min(0f)] private float _backwardSpeed = 8f;
     [SerializeField, Min(0.1f)] private float _lifetimeAfterPush = 5f;
     private List<KeycapHealth> _requiredKeycaps;
