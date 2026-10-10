@@ -16,6 +16,18 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
     [SerializeField] private bool _enableHitStop = true;
     [SerializeField] private bool _enableDebris = true;
     [SerializeField] private bool _enableWhiteFlash = true;
+    [SerializeField] private bool _enableKeyboardBounce = true;
+
+    [Header("Keyboard Bounce")]
+    [SerializeField, Min(0f)] private float _keyboardBounceDistance = 0.18f;
+    [SerializeField, Min(0.01f)] private float _keyboardBouncePressDuration = 0.045f;
+    [SerializeField, Min(0.01f)] private float _keyboardBounceReturnDuration = 0.14f;
+    private KeyboardDestruction _keyboardDestruction;
+    private Vector3 _keyboardBounceOffset;
+    private float _keyboardBounceDepth;
+    private float _keyboardBounceStartDepth;
+    private float _keyboardBounceElapsed;
+    private bool _isKeyboardBouncing;
 
     [Header("White Flash")]
     [SerializeField] private Material _whiteFlashMaterial;
@@ -89,6 +101,11 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
         EndHitStop();
     }
 
+    void LateUpdate()
+    {
+        UpdateKeyboardBounce();
+    }
+
     void OnDestroy()
     {
         if (_debrisRoot != null) Destroy(_debrisRoot);
@@ -96,7 +113,11 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
 
     void OnApplicationFocus(bool focused)
     {
-        if (!focused) EndHitStop();
+        if (!focused)
+        {
+            EndHitStop();
+            ClearKeyboardBounce();
+        }
     }
 
     /// <summary>
@@ -105,6 +126,7 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
     /// </summary>
     private void BindKeyboard(KeyboardInputController keyboard)
     {
+        ClearKeyboardBounce();
         if (_keyboard != null)
         {
             _keyboard.KeycapPressed -= HandleKeycapPressed;
@@ -115,6 +137,7 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
         ClearWhiteFlashes();
         _keyboard = keyboard;
         if (_keyboard == null) return;
+        _keyboardDestruction = _keyboard.GetComponent<KeyboardDestruction>();
         CacheWhiteFlashTargets();
         BoxCollider collider = _keyboard.GetComponent<BoxCollider>();
         if (collider != null)
@@ -140,13 +163,19 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 살아 있는 keycap의 새 눌림에서 부스러기와 히트스톱을 시작한다.
-    /// 키캡 위치와 현재 옵션으로 작은 조각을 방출하고 재발동 조건이 맞으면 시간 배율을 잠시 정지한다.
+    /// 살아 있는 keycap의 새 눌림에서 키보드 바운스, 부스러기, 흰색 점멸과 히트스톱을 시작한다.
+    /// 키캡 위치와 현재 옵션을 사용하여 각 효과의 재생 상태를 변경한다.
     /// </summary>
     private void HandleKeycapPressed(Transform keycap)
     {
         KeycapHealth health = keycap.GetComponent<KeycapHealth>();
         if (health != null && health.CurrentHP <= 0) return;
+        if (_enableKeyboardBounce)
+        {
+            _keyboardBounceStartDepth = _keyboardBounceDepth;
+            _keyboardBounceElapsed = 0f;
+            _isKeyboardBouncing = true;
+        }
         if (_enableDebris) PlayDebris(keycap);
         if (_enableWhiteFlash) PlayWhiteFlash(keycap);
         if (_enableHitStop && !_isHitStopped && Time.timeScale > 0f && Time.unscaledTime >= _nextHitStop)
@@ -157,6 +186,61 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
             _isHitStopped = true;
             Time.timeScale = 0f;
         }
+    }
+
+    /// <summary>
+    /// 눌림 시간과 복귀 시간 및 이동량으로 키보드 전체를 아래로 눌렀다가 원위치로 복귀시킨다.
+    /// 실제 경과 시간과 현재 깊이를 사용하며 이전 이동분을 교체하여 연타 시 위치 누적을 막는다.
+    /// </summary>
+    private void UpdateKeyboardBounce()
+    {
+        if (!_isKeyboardBouncing) return;
+        if (_keyboard == null || !_enableKeyboardBounce || !_keyboard.InputEnabled ||
+            (_keyboardDestruction != null && _keyboardDestruction.IsBroken))
+        {
+            ClearKeyboardBounce();
+            return;
+        }
+
+        _keyboardBounceElapsed += Time.unscaledDeltaTime;
+        float pressDuration = Mathf.Max(0.01f, _keyboardBouncePressDuration);
+        float returnDuration = Mathf.Max(0.01f, _keyboardBounceReturnDuration);
+        if (_keyboardBounceElapsed >= pressDuration + returnDuration)
+        {
+            ClearKeyboardBounce();
+            return;
+        }
+
+        if (_keyboardBounceElapsed < pressDuration)
+        {
+            _keyboardBounceDepth = Mathf.Lerp(_keyboardBounceStartDepth, _keyboardBounceDistance,
+                Mathf.SmoothStep(0f, 1f, _keyboardBounceElapsed / pressDuration));
+        }
+        else
+        {
+            _keyboardBounceDepth = Mathf.Lerp(_keyboardBounceDistance, 0f,
+                Mathf.SmoothStep(0f, 1f, (_keyboardBounceElapsed - pressDuration) / returnDuration));
+        }
+
+        Transform target = _keyboard.transform;
+        Vector3 offset = target.TransformVector(Vector3.down * _keyboardBounceDepth);
+        target.position += offset - _keyboardBounceOffset;
+        _keyboardBounceOffset = offset;
+    }
+
+    /// <summary>
+    /// 현재 키보드에 적용한 이동분을 제거하고 눌림 효과의 깊이와 재생 상태를 초기화한다.
+    /// 저장된 이동분을 사용하여 대상 교체, 비활성화 또는 효과 종료 시 원래 위치를 복원한다.
+    /// </summary>
+    private void ClearKeyboardBounce()
+    {
+        if (_keyboard != null)
+            _keyboard.transform.position -= _keyboardBounceOffset;
+        _keyboardBounceOffset = Vector3.zero;
+        _keyboardBounceDepth = 0f;
+        _keyboardBounceStartDepth = 0f;
+        _keyboardBounceElapsed = 0f;
+        _isKeyboardBouncing = false;
     }
 
     /// <summary>

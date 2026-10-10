@@ -229,6 +229,10 @@ MonoBehaviour:
   _enableHitStop: 0
   _enableDebris: 1
   _enableWhiteFlash: 1
+  _enableKeyboardBounce: 0
+  _keyboardBounceDistance: 0.18
+  _keyboardBouncePressDuration: 0.045
+  _keyboardBounceReturnDuration: 0.14
   _whiteFlashMaterial: {fileID: 2100000, guid: d1d390a20db744e0acb7c1e0ea6d0705, type: 3}
   _whiteFlashDuration: 0.12
   _debrisPrefab: {fileID: 1497636642769053249, guid: d1d390a20db744e0acb7c1e0ea6d0704, type: 3}
@@ -800,6 +804,64 @@ Transform:
   - {fileID: 1583888831}
   - {fileID: 918914754}
   m_Father: {fileID: 350501781}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &619705067
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 619705069}
+  - component: {fileID: 619705068}
+  m_Layer: 0
+  m_Name: MonitorCoinRain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &619705068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 619705067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61ff503714d14bafa44f90b227d3cf01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonitorCoinRain
+  _gameSession: {fileID: 641087395}
+  _screenView: {fileID: 641087397}
+  _background: {fileID: 641087398}
+  _coinPrefab: {fileID: 6984344256650909965, guid: 6bb43625029d65442b254948407d438b, type: 3}
+  _coinAnimation: {fileID: 7400000, guid: 2e18ef22c867ab94a90a35441523b96d, type: 2}
+  _effectEnabled: 1
+  _poolSize: 24
+  _amountPerCoin: 10
+  _maximumCoinsPerIncome: 6
+  _coinSize: 28
+  _lifetime: 2
+  _screenWidth: 1
+  _gravity: 500
+  _initialFallSpeed: 70
+--- !u!4 &619705069
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 619705067}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &641087393
 PrefabInstance:
@@ -2314,6 +2376,22 @@ MonoBehaviour:
   _directionSpread: 8
   _spinSpeed: 5
   _modelEulerAngles: {x: 0, y: 0, z: 0}
+--- !u!114 &641087397 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4990798316346721103, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+  m_PrefabInstance: {fileID: 641087393}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad84914b4890af14e81519e2515db80c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.MiniGameScreenView
+--- !u!224 &641087398 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8163749001187560232, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+  m_PrefabInstance: {fileID: 641087393}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2329,3 +2407,10 @@ SceneRoots:
   - {fileID: 1328267138}
   - {fileID: 909695095}
   - {fileID: 9100000002}
+  - {fileID: 619705069}
+
+
+
+
+
+
