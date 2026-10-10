@@ -641,6 +641,7 @@ GameObject:
   - component: {fileID: 3519137165552478582}
   - component: {fileID: -8367809337546354188}
   - component: {fileID: 5966197544304746265}
+  - component: {fileID: 8509208610725753864}
   m_Layer: 0
   m_Name: Keyboard_TKL_87_Background
   m_TagString: Untagged
@@ -721,6 +722,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 19.249996, y: 1.55, z: 7.4099994}
   m_Center: {x: 9.249998, y: 0.8949999, z: 2.7949998}
+--- !u!114 &8509208610725753864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6004080589864425764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ca849b7ae9ee24e8ecd649b89a25c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardPlayableVariant
+  _definition: {fileID: 11400000, guid: ea08a8a0d180fd8498be24141aafdea4, type: 2}
 --- !u!1 &7815094674149799696
 GameObject:
   m_ObjectHideFlags: 0
