@@ -15,4 +15,36 @@ MonoBehaviour:
   _id: 2
   _displayName: Auto Click
   _description: Increase the auto click upgrade level.
-  _levelCosts: 32000000000000007d000000000000002c01000000000000
+  _levelCosts: c8000000000000002003000000000000800c000000000000
+  _damageBonuses: 010000000200000003000000
+  _areaRadii:
+  - 1.5
+  - 2
+  - 2.5
+  _feverDurations: []
+  _baseFeverDuration: 5
+  _feverDurationPerLevel: 2
+  _feverDamageMultipliers: []
+  _baseFeverDamageMultiplier: 2
+  _feverDamageMultiplierPerLevel: 0.3
+  _rarityDistributions:
+  - _weights:
+    - 90
+    - 8
+    - 1.8
+    - 0.2
+  - _weights:
+    - 85
+    - 10.5
+    - 3.75
+    - 0.75
+  - _weights:
+    - 80
+    - 12
+    - 6
+    - 2
+  - _weights:
+    - 70
+    - 15
+    - 10
+    - 5
