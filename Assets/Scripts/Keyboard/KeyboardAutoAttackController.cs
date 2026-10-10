@@ -33,7 +33,7 @@ namespace KeyboardModeling
             _manager = KeyboardAutoAttackManager.Instance;
             _gameSession = _manager.GameSession;
             _interactionController = _manager.InteractionController;
-            _attackInterval = _manager.AttackInterval;
+            _attackInterval = 1f;
         }
 
         void OnEnable()
@@ -59,6 +59,7 @@ namespace KeyboardModeling
         {
             _upgrades = _gameSession.Upgrades;
             _upgrades.LevelChanged += HandleUpgradeChanged;
+            RefreshAttackInterval();
             SetUnlocked(_upgrades.GetLevel(UpgradeId.AutoClick) > 0);
         }
 
@@ -114,7 +115,7 @@ namespace KeyboardModeling
                 return false;
             AdvanceAttackClock();
             _keyboard.NotifyAutomaticKeycapHit(target.transform);
-            target.TakeDamage(_manager.Damage);
+            target.TakeDamage(_upgrades.GetAutoAttackDamage());
             return true;
         }
 
@@ -147,7 +148,10 @@ namespace KeyboardModeling
         private void HandleUpgradeChanged(UpgradeId id, int level)
         {
             if (id == UpgradeId.AutoClick)
+            {
+                RefreshAttackInterval();
                 SetUnlocked(level > 0);
+            }
         }
 
         /// <summary>
@@ -175,12 +179,13 @@ namespace KeyboardModeling
         }
 
         /// <summary>
-        /// 매니저의 공격 속도 변경을 현재 공격 예약에 반영한다.
-        /// 공통 주기와 남은 대기 비율을 사용해 _attackInterval과 _nextAttackAt을 갱신한다.
+        /// 자동클릭 데이터의 현재 레벨 최종 속도를 공격 예약에 반영한다.
+        /// 설정된 초당 횟수와 남은 대기 비율을 사용해 _attackInterval과 _nextAttackAt을 갱신한다.
         /// </summary>
         private void RefreshAttackInterval()
         {
-            float interval = _manager.AttackInterval;
+            float speed = _upgrades != null ? _upgrades.GetAutoAttackSpeed() : 0f;
+            float interval = speed > 0f ? 1f / speed : _attackInterval;
             if (interval == _attackInterval)
                 return;
             double now = Time.unscaledTimeAsDouble;

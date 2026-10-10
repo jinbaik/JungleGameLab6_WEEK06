@@ -50,7 +50,7 @@ namespace KeyboardModeling.Editor
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
             MonitorCoinRainSetup.RestoreSceneReferences();
-            Debug.Log($"MAIN_AUTO_ATTACK_RECOVERED managers={UnityEngine.Object.FindObjectsByType<KeyboardAutoAttackManager>(FindObjectsSortMode.None).Length} damage={selected.Damage} interval={selected.AttackInterval} slots={UnityEngine.Object.FindObjectsByType<KeyboardAutomaticStation>(FindObjectsSortMode.None).Length}");
+            Debug.Log($"MAIN_AUTO_ATTACK_RECOVERED managers={UnityEngine.Object.FindObjectsByType<KeyboardAutoAttackManager>(FindObjectsSortMode.None).Length} slots={UnityEngine.Object.FindObjectsByType<KeyboardAutomaticStation>(FindObjectsSortMode.None).Length}");
         }
     }
 }

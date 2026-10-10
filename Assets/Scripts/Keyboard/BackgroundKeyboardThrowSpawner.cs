@@ -9,6 +9,7 @@ public sealed class BackgroundKeyboardThrowSpawner : MonoBehaviour
     [Header("Spawn")]
     [SerializeField] private GameObject _keyboardPrefab;
     [SerializeField] private bool _spawningEnabled = true;
+    [SerializeField] private bool _externalSequence;
     [SerializeField, Min(0.1f)] private float _spawnInterval = 2.5f;
     [SerializeField, Min(0f)] private float _firstSpawnDelay = 1f;
     [SerializeField, Min(0.01f)] private float _keyboardScale = 0.15f;
@@ -39,7 +40,7 @@ public sealed class BackgroundKeyboardThrowSpawner : MonoBehaviour
 
     void Update()
     {
-        if (!_spawningEnabled) return;
+        if (!_spawningEnabled || _externalSequence) return;
         _remaining -= Time.deltaTime;
         if (_remaining > 0f) return;
         SpawnAndThrow();
@@ -83,7 +84,7 @@ public sealed class BackgroundKeyboardThrowSpawner : MonoBehaviour
     /// 속도, 상승 높이와 랜덤 회전을 사용해 중력 포물선의 초기 속도를 설정하고 개수 및 수명 제한을 적용한다.
     /// </summary>
     [ContextMenu("Spawn And Throw")]
-    private void SpawnAndThrow()
+    public void SpawnAndThrow()
     {
         if (!Application.isPlaying) return;
         while (_spawned.Count > 0 && _spawned.Peek() == null) _spawned.Dequeue();
