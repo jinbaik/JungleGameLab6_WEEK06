@@ -9,6 +9,8 @@ using Unity.Cinemachine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
+using Game.Session;
+
 namespace KeyboardModeling.Editor
 {
     public static class MiniGameSceneSetup
@@ -20,8 +22,8 @@ namespace KeyboardModeling.Editor
         private static readonly Color _muted = new Color(0.48f, 0.65f, 0.70f);
 
         /// <summary>
-        /// 열린 개발 씬의 Screen에 미니게임과 피버 UI를 설치한다.
-        /// Dev_MiniGame의 Screen, 키보드 및 카메라를 사용하여 월드 캔버스와 HUD 참조를 저장한다.
+        /// 열린 개발 씬의 Screen에 미니게임 화면과 분리된 피버 상태를 설치한다.
+        /// Dev_MiniGame의 Screen, 키보드 및 카메라를 사용하여 월드 캔버스와 피버 상태 참조를 저장한다.
         /// </summary>
         [MenuItem("Tools/Mini Game/Configure Dev_MiniGame")]
         public static void Configure()
@@ -40,8 +42,11 @@ namespace KeyboardModeling.Editor
             Undo.RegisterCreatedObjectUndo(system, "Create mini game system");
             MiniGameController controller = system.AddComponent<MiniGameController>();
             SetReference(controller, "_keyboard", keyboard);
-            Undo.RecordObject(keyboard, "Connect fever damage");
-            SetReference(keyboard, "_miniGame", controller);
+            FeverController fever = system.AddComponent<FeverController>();
+            GameSession session = UnityEngine.Object.FindFirstObjectByType<GameSession>();
+            FeverHudSceneSetup.ConnectState(controller, fever, session);
+            KeyboardAttackController attack = UnityEngine.Object.FindFirstObjectByType<KeyboardAttackController>();
+            if (attack != null) SetReference(attack, "_feverController", fever);
 
             RectTransform world = CreateRect("MiniGameScreen", screen, Vector2.zero, new Vector2(960f, 600f));
             Undo.RegisterCreatedObjectUndo(world.gameObject, "Create monitor UI");
@@ -62,7 +67,7 @@ namespace KeyboardModeling.Editor
             RectTransform idle = CreateRect("Standby", world, new Vector2(0f, -8f), new Vector2(860f, 330f));
             CreateText("Icon", idle, new Vector2(0f, 100f), new Vector2(600f, 60f), "[ + ]", 54, _green);
             Text idleTitle = CreateText("Title", idle, new Vector2(0f, 20f), new Vector2(800f, 64f), "SYSTEM SECURE", 46, _green);
-            Text idleDetails = CreateText("Details", idle, new Vector2(0f, -82f), new Vector2(820f, 100f), "Next event in 15s\nClear two events to activate FEVER.", 26, _muted);
+            Text idleDetails = CreateText("Details", idle, new Vector2(0f, -82f), new Vector2(820f, 100f), "Next event in 15s\nComplete events to restore security.", 26, _muted);
 
             RectTransform hacking = CreateRect("Hacking", world, new Vector2(0f, -8f), new Vector2(860f, 330f));
             Color red = new Color(1f, 0.27f, 0.32f);
@@ -83,27 +88,6 @@ namespace KeyboardModeling.Editor
             hacking.gameObject.SetActive(false);
             typing.gameObject.SetActive(false);
 
-            CreateImage("FeverDivider", world, new Vector2(0f, -204f), new Vector2(860f, 2f), _surface);
-            Text feverLabel = CreateText("FeverStatus", world, new Vector2(0f, -235f), new Vector2(860f, 36f), "FEVER CHARGE / 0% / +50% PER CLEAR", 23, _green, TextAnchor.MiddleLeft);
-            Slider feverFill = CreateFeverSlider("FeverCharge", world, new Vector2(0f, -272f), new Vector2(860f, 18f), _green);
-
-            RectTransform hud = CreateRect("MiniGameHUD", system.transform, Vector2.zero, Vector2.zero);
-            Canvas hudCanvas = hud.gameObject.AddComponent<Canvas>();
-            hudCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            hudCanvas.sortingOrder = 10;
-            CanvasScaler scaler = hud.gameObject.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920f, 1080f);
-            scaler.matchWidthOrHeight = 0.5f;
-            RectTransform card = CreateRect("FeverHUD", hud, new Vector2(-240f, -90f), new Vector2(400f, 130f));
-            card.anchorMin = Vector2.one;
-            card.anchorMax = Vector2.one;
-            Image hudPanel = card.gameObject.AddComponent<Image>();
-            hudPanel.color = _background;
-            hudPanel.raycastTarget = false;
-            Text hudLabel = CreateText("Status", card, new Vector2(0f, 15f), new Vector2(350f, 80f), "FEVER  0%\nTWO CLEARS TO ACTIVATE", 27, _green, TextAnchor.MiddleLeft);
-            Slider hudFill = CreateFeverSlider("RemainingTime", card, new Vector2(0f, -45f), new Vector2(350f, 8f), _green);
-
             MiniGameScreenView view = system.AddComponent<MiniGameScreenView>();
             SetReference(view, "_controller", controller);
             SetReference(view, "_idlePanel", idle.gameObject);
@@ -119,17 +103,14 @@ namespace KeyboardModeling.Editor
             SetReference(view, "_targetWord", target);
             SetReference(view, "_typedWord", typed);
             SetReference(view, "_typingFeedback", feedback);
-            SetReference(view, "_feverFill", feverFill);
-            SetReference(view, "_feverLabel", feverLabel);
-            SetReference(view, "_hudPanel", hudPanel);
-            SetReference(view, "_hudFill", hudFill);
-            SetReference(view, "_hudLabel", hudLabel);
+            if (session != null) WalletHudSceneSetup.Configure();
+            FeverHudSceneSetup.ConfigureCurrentScene();
 
             FrameMonitorAndKeyboard();
             Undo.CollapseUndoOperations(undoGroup);
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
-            Debug.Log("MINIGAME_CONFIGURED WorldSpace=Monitor/Screen/MiniGameScreen HUD=MiniGameSystem/MiniGameHUD");
+            Debug.Log("MINIGAME_CONFIGURED WorldSpace=Monitor/Screen/MiniGameScreen Fever=MiniGameSystem Overlay=WalletHUDCanvas");
         }
 
         /// <summary>
@@ -191,32 +172,6 @@ namespace KeyboardModeling.Editor
             fill.fillOrigin = 0;
             fill.fillAmount = 0f;
             return fill;
-        }
-
-        /// <summary>
-        /// 충전량과 남은 시간을 표시하는 피버 Slider를 생성한다.
-        /// 이름, 부모, 위치, 크기와 색상을 사용하여 조작 불가한 0~1 범위의 Slider를 반환한다.
-        /// </summary>
-        private static Slider CreateFeverSlider(string name, Transform parent, Vector2 position, Vector2 size, Color color)
-        {
-            Image fill = CreateBar(name, parent, position, size, color);
-            fill.type = Image.Type.Sliced;
-            fill.rectTransform.anchorMin = Vector2.zero;
-            fill.rectTransform.anchorMax = Vector2.one;
-            fill.rectTransform.offsetMin = Vector2.zero;
-            fill.rectTransform.offsetMax = Vector2.zero;
-            Slider slider = fill.transform.parent.gameObject.AddComponent<Slider>();
-            slider.fillRect = fill.rectTransform;
-            slider.targetGraphic = fill;
-            slider.minValue = 0f;
-            slider.maxValue = 1f;
-            slider.wholeNumbers = false;
-            slider.direction = Slider.Direction.LeftToRight;
-            slider.interactable = false;
-            slider.transition = Selectable.Transition.None;
-            slider.navigation = new Navigation { mode = Navigation.Mode.None };
-            slider.SetValueWithoutNotify(0f);
-            return slider;
         }
 
         /// <summary>

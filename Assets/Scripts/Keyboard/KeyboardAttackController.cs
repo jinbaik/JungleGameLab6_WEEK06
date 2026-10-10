@@ -23,7 +23,7 @@ namespace KeyboardModeling
         [Tooltip("강화가 없는 씬에서는 비워 둘 수 있습니다.")]
         [SerializeField] private GameSession _gameSession;
         [Tooltip("피버가 없는 씬에서는 비워 둘 수 있습니다.")]
-        [SerializeField] private MiniGameController _miniGameController;
+        [SerializeField] private FeverController _feverController;
 
         [Header("Attack")]
         [SerializeField, Min(1)] private int _baseDamage = 1;
@@ -118,8 +118,8 @@ namespace KeyboardModeling
             float radius = _gameSession != null
                 ? _gameSession.Upgrades.GetAreaRadius()
                 : 0f;
-            float multiplier = _miniGameController != null
-                ? _miniGameController.DamageMultiplier
+            float multiplier = _feverController != null
+                ? _feverController.DamageMultiplier
                 : 1f;
             int damage = Mathf.CeilToInt((_baseDamage + damageBonus) * multiplier);
             int areaDamage = Mathf.CeilToInt((_baseAreaDamage + areaDamageBonus) * multiplier);

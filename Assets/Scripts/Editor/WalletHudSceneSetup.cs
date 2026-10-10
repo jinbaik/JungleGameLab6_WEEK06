@@ -47,6 +47,9 @@ namespace KeyboardModeling.Editor
                 hud = instance.GetComponent<WalletHudController>();
             }
             SetReference(hud, "_gameSession", session);
+            FeverController fever = FindInScene<FeverController>(scene);
+            FeverHudView feverView = hud.GetComponentInChildren<FeverHudView>(true);
+            if (feverView != null) SetReference(feverView, "_controller", fever);
             Undo.CollapseUndoOperations(undoGroup);
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
@@ -126,6 +129,7 @@ namespace KeyboardModeling.Editor
             SetReference(hud, "_balanceLabel", balance);
             SetReference(hud, "_toastRoot", toastRoot);
             SetReference(hud, "_toastPrefab", item);
+            FeverHudSceneSetup.AddFeverPanel(canvasObject);
             GameObject saved = PrefabUtility.SaveAsPrefabAsset(canvasObject, CANVAS_PATH);
             UnityEngine.Object.DestroyImmediate(canvasObject);
             return saved;

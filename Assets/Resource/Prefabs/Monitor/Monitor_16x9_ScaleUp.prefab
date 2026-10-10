@@ -333,6 +333,71 @@ Transform:
   - {fileID: 3021322613835647214}
   m_Father: {fileID: 4511183639531934824}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4717234139346286838
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1847887377160172110}
+  - component: {fileID: 1933321807445377364}
+  - component: {fileID: 6937473625109612741}
+  m_Layer: 0
+  m_Name: MiniGameSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1847887377160172110
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4717234139346286838}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9097960147096061553}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1933321807445377364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4717234139346286838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e02571f5689b9e46ade058e611a414f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.MiniGameController
+  _keyboard: {fileID: 0}
+  _eventInterval: 10
+  _feverController: {fileID: 6937473625109612741}
+  _progressPerPress: 0.04
+  _progressDecayPerSecond: 1
+  _wordsToClear: 3
+--- !u!114 &6937473625109612741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4717234139346286838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 607804dc14421fa40bc6a7bb3484cd06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.FeverController
+  _miniGameController: {fileID: 1933321807445377364}
+  _gameSession: {fileID: 1979642950152958313}
 --- !u!1 &4735377520764066117
 GameObject:
   m_ObjectHideFlags: 0
@@ -729,6 +794,7 @@ Transform:
   m_Children:
   - {fileID: 7534008026599508626}
   - {fileID: 3626166633513007008}
+  - {fileID: 1847887377160172110}
   m_Father: {fileID: 5197080729801869724}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1979642950152958313
@@ -815,7 +881,7 @@ MonoBehaviour:
   _interactionController: {fileID: 0}
   _keyboard: {fileID: 0}
   _gameSession: {fileID: 1979642950152958313}
-  _miniGameController: {fileID: 2940396781710385079}
+  _feverController: {fileID: 6937473625109612741}
   _baseDamage: 1
   _baseAreaDamage: 1
 --- !u!1 &8469913425420804115
@@ -1294,10 +1360,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9097960147096061553}
     m_Modifications:
-    - target: {fileID: 498755381938961326, guid: 298dd09b174288249bd1bdab08e410b3, type: 3}
-      propertyPath: _gameSession
-      value: 
-      objectReference: {fileID: 1979642950152958313}
     - target: {fileID: 2051169163492135865, guid: 298dd09b174288249bd1bdab08e410b3, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1394,26 +1456,17 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8331086533253180525, guid: 298dd09b174288249bd1bdab08e410b3, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7739273831158867798, guid: 298dd09b174288249bd1bdab08e410b3, type: 3}
+      propertyPath: _controller
+      value: 
+      objectReference: {fileID: 1933321807445377364}
+    m_RemovedComponents:
+    - {fileID: 551516004374385614, guid: 298dd09b174288249bd1bdab08e410b3, type: 3}
+    - {fileID: 498755381938961326, guid: 298dd09b174288249bd1bdab08e410b3, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 298dd09b174288249bd1bdab08e410b3, type: 3}
---- !u!114 &2940396781710385079 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 498755381938961326, guid: 298dd09b174288249bd1bdab08e410b3, type: 3}
-  m_PrefabInstance: {fileID: 3325218019730629657}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7372345893925918935}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e02571f5689b9e46ade058e611a414f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.MiniGameController
 --- !u!224 &3626166633513007008 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2051169163492135865, guid: 298dd09b174288249bd1bdab08e410b3, type: 3}

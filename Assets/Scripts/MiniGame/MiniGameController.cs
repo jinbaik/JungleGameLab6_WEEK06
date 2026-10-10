@@ -3,8 +3,6 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-using Game.Session;
-
 namespace KeyboardModeling
 {
     [DefaultExecutionOrder(-100)]
@@ -26,13 +24,18 @@ namespace KeyboardModeling
         [Header("Schedule")]
         [SerializeField] private KeyboardInputController _keyboard;
         [SerializeField, Min(0.1f)] private float _eventInterval = 15f;
+        [SerializeField] private FeverController _feverController;
         private MiniGameKind _currentGame;
         private float _nextEventRemaining;
         private bool CanProcessInput => isActiveAndEnabled && _keyboard != null && _keyboard.InputEnabled && _keyboard.isActiveAndEnabled;
         public MiniGameKind CurrentGame => _currentGame;
         public float NextEventRemaining => _nextEventRemaining;
         public bool IsSuspended => _currentGame != MiniGameKind.Idle && !CanProcessInput;
+        public bool InputAvailable => CanProcessInput;
+        public bool HasKeyboard => _keyboard != null;
+        public bool IsEventTimerPaused => !CanProcessInput || (_feverController != null && _feverController.IsFeverActive);
         public event Action StateChanged;
+        public event Action Completed;
 
         [Header("Hacking")]
         [SerializeField, Range(0.01f, 1f)] private float _progressPerPress = 0.08f;
@@ -54,19 +57,6 @@ namespace KeyboardModeling
         public string TypedWord => _typedWord;
         public string TypingFeedback => _typingFeedback;
 
-        [Header("Fever")]
-        [Tooltip("피버 강화를 구매하는 세션을 연결합니다. 강화가 없는 개발 씬에서는 비워 둘 수 있습니다.")]
-        [SerializeField] private GameSession _gameSession;
-        private float _feverDuration = 5f;
-        private float _feverDamageMultiplier = 2f;
-        private int _feverClears;
-        private float _feverRemaining;
-        public bool IsFeverActive => _feverRemaining > 0f;
-        public float FeverRemaining => _feverRemaining;
-        public float FeverDuration => _feverDuration;
-        public float FeverCharge => _feverClears * 0.5f;
-        public float DamageMultiplier => IsFeverActive ? _feverDamageMultiplier : 1f;
-
         void Awake()
         {
             _nextEventRemaining = _eventInterval;
@@ -74,6 +64,8 @@ namespace KeyboardModeling
 
         void OnEnable()
         {
+            if (_feverController != null)
+                _feverController.Ended += HandleFeverEnded;
             if (_keyboard != null)
             {
                 _keyboard.KeyPressed += HandleKeyPressed;
@@ -82,6 +74,8 @@ namespace KeyboardModeling
 
         void OnDisable()
         {
+            if (_feverController != null)
+                _feverController.Ended -= HandleFeverEnded;
             if (_keyboard != null)
             {
                 _keyboard.KeyPressed -= HandleKeyPressed;
@@ -116,17 +110,8 @@ namespace KeyboardModeling
                 return;
             }
 
-            if (_feverRemaining > 0f)
-            {
-                _feverRemaining = Mathf.Max(0f, _feverRemaining - Time.deltaTime);
-                if (_feverRemaining == 0f)
-                {
-                    _feverClears = 0;
-                    _nextEventRemaining = _eventInterval;
-                    StateChanged?.Invoke();
-                }
+            if (_feverController != null && _feverController.IsFeverActive)
                 return;
-            }
 
             if (_currentGame == MiniGameKind.Idle)
             {
@@ -149,7 +134,7 @@ namespace KeyboardModeling
         /// </summary>
         private void BeginMiniGame()
         {
-            if (_currentGame != MiniGameKind.Idle || IsFeverActive)
+            if (_currentGame != MiniGameKind.Idle || (_feverController != null && _feverController.IsFeverActive))
                 return;
             _currentGame = UnityEngine.Random.Range(0, 2) == 0 ? MiniGameKind.Hacking : MiniGameKind.Typing;
             _hackingProgress = 0f;
@@ -229,20 +214,24 @@ namespace KeyboardModeling
         }
 
         /// <summary>
-        /// 실행 중인 미니게임을 클리어하고 다음 이벤트 대기 및 피버 보상을 적용한다.
-        /// 클리어 횟수로 게이지를 50% 올리고 두 번째 클리어 시 세션의 강화 값을 확정하여 피버를 시작한다.
+        /// 실행 중인 미니게임을 클리어하고 다음 이벤트 대기 시간을 초기화한다.
+        /// 현재 게임을 대기로 변경하고 Completed를 즉시 전달하여 같은 입력의 공격 전에 완료 보상을 적용한다.
         /// </summary>
         private void CompleteMiniGame()
         {
             _currentGame = MiniGameKind.Idle;
             _nextEventRemaining = _eventInterval;
-            _feverClears = Mathf.Min(2, _feverClears + 1);
-            if (_feverClears == 2 && !IsFeverActive)
-            {
-                _feverDuration = _gameSession != null ? _gameSession.Upgrades.GetFeverDuration() : 5f;
-                _feverDamageMultiplier = _gameSession != null ? _gameSession.Upgrades.GetFeverDamageMultiplier() : 2f;
-                _feverRemaining = _feverDuration;
-            }
+            Completed?.Invoke();
+        }
+
+        /// <summary>
+        /// 피버 종료 알림을 받아 다음 미니게임의 대기 시간을 초기화한다.
+        /// 설정된 이벤트 간격을 남은 시간에 저장하고 StateChanged로 화면 갱신을 요청한다.
+        /// </summary>
+        private void HandleFeverEnded()
+        {
+            _nextEventRemaining = _eventInterval;
+            StateChanged?.Invoke();
         }
 
         /// <summary>
