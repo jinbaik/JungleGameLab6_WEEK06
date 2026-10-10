@@ -27,6 +27,7 @@ namespace KeyboardModeling
         public event Action<Key> KeyPressed;
         public event Action<KeycapHealth> AttackRequested;
         public event Action<Transform> KeycapPressed;
+        public event Action<Transform> AreaKeycapHit;
 
         [Header("Key Travel")]
         [SerializeField, Min(0f)] private float _pressDistance = 0.15f;
@@ -221,6 +222,16 @@ namespace KeyboardModeling
             _lastPressDistance = _pressDistance;
             if (pressedKeysChanged)
                 RefreshPressedKeyNames();
+        }
+
+        /// <summary>
+        /// 살아 있는 범위 타격 대상 keycap의 효과음과 피드백 이벤트를 전달한다.
+        /// 대상 Transform으로 AreaKeycapHit를 호출하며 추가 키 입력이나 데미지를 발생시키지 않는다.
+        /// </summary>
+        public void NotifyAreaKeycapHit(Transform keycap)
+        {
+            _audioSource.PlayOneShot(_pressSound);
+            AreaKeycapHit?.Invoke(keycap);
         }
 
         void OnEnable()

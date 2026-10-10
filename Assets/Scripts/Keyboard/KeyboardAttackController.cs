@@ -98,6 +98,7 @@ namespace KeyboardModeling
 
             KeycapHealth[] keycaps = _keycaps;
             Vector2[] positions = _keycapPositions;
+            KeyboardInputController keyboard = _activeKeyboard;
             int targetIndex = Array.IndexOf(keycaps, health);
             if (targetIndex < 0)
             {
@@ -122,14 +123,14 @@ namespace KeyboardModeling
 
             // 파괴 콜백이 현재 키보드를 해제해도 이번 타격은 보관한 대상과 위치를 사용한다.
             health.TakeDamage(damage);
-            ApplyAreaDamage(keycaps, positions, targetIndex, center, radius, areaDamage);
+            ApplyAreaDamage(keyboard, keycaps, positions, targetIndex, center, radius, areaDamage);
         }
 
         /// <summary>
-        /// keycaps와 positions에서 center와 radius 안의 살아 있는 주변 키캡을 타격한다.
+        /// keyboard에 범위 타격 효과를 알리고 keycaps와 positions에서 center와 radius 안의 살아 있는 주변 키캡을 타격한다.
         /// targetIndex의 직접 타격 대상은 제외하고 damage를 한 번씩 적용하며 추가 공격 요청은 발생시키지 않는다.
         /// </summary>
-        private void ApplyAreaDamage(KeycapHealth[] keycaps, Vector2[] positions, int targetIndex, Vector2 center, float radius, int damage)
+        private void ApplyAreaDamage(KeyboardInputController keyboard, KeycapHealth[] keycaps, Vector2[] positions, int targetIndex, Vector2 center, float radius, int damage)
         {
             if (radius <= 0f || damage <= 0)
             {
@@ -146,6 +147,7 @@ namespace KeyboardModeling
 
                 if ((positions[index] - center).sqrMagnitude <= radiusSquared)
                 {
+                    keyboard.NotifyAreaKeycapHit(keycaps[index].transform);
                     keycaps[index].TakeDamage(damage);
                 }
             }
