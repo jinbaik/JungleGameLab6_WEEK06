@@ -384,7 +384,9 @@ MonoBehaviour:
   _feverController: {fileID: 6937473625109612741}
   _progressPerPress: 0.04
   _progressDecayPerSecond: 1
-  _wordsToClear: 3
+  _keyMashProgressPerPress: 0.08
+  _keyMashDecayPerSecond: 0.06
+  _keyMashDecayDelay: 0.4
 --- !u!114 &6937473625109612741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -836,6 +838,24 @@ MonoBehaviour:
   _miniGameCanvas: {fileID: 7372345893925918935}
   monitorCam: {fileID: 0}
   _shopView: {fileID: 7425521347323571261}
+  _toggleAction:
+    m_Name: Toggle
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 092dbf11-4474-4eda-9062-5e7ab6bf185c
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 31cdbd4b-7f14-4989-85d1-2d15048fd674
+      m_Path: <Keyboard>/tab
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Toggle
+      m_Flags: 0
+    m_Flags: 0
+    m_Priority: 0
   _allowTabClose: 1
 --- !u!114 &5098958360283032277
 MonoBehaviour:

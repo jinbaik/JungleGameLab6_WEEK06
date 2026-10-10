@@ -16,7 +16,7 @@ public class MonitorController : MonoBehaviour
     [SerializeField] private ShopView _shopView;
 
     [Header("Input")]
-    private readonly InputAction _toggleAction = new InputAction("ToggleShop", InputActionType.Button, "<Keyboard>/tab");
+    [SerializeField] private InputAction _toggleAction;
     [SerializeField] private bool _allowTabClose = true;
 
     void OnEnable()

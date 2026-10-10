@@ -16,6 +16,36 @@ using KeyboardModeling;
 public static class MonitorCoinRainSetup
 {
     /// <summary>
+    /// 원본 Main 씬에서 누락된 코인 수입 효과의 참조만 복구한다.
+    /// 기존 코인 프리팹, UI 클립, 지갑과 화면을 연결해 씬을 저장하며 공유 에셋과 다른 씬 설정은 변경하지 않는다.
+    /// </summary>
+    public static void RestoreSceneReferences()
+    {
+        if (!Application.isBatchMode) throw new InvalidOperationException("복사 프로젝트 배치에서 실행합니다.");
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Resource/Prefabs/MonitorCoin.prefab");
+        AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Resource/Sprites/CoinUI.anim");
+        if (prefab == null || clip == null) throw new InvalidOperationException("기존 코인 에셋을 찾을 수 없습니다.");
+        var scene = EditorSceneManager.OpenScene("Assets/Scenes/Main.unity", OpenSceneMode.Single);
+        GameSession session = UnityEngine.Object.FindFirstObjectByType<GameSession>();
+        MiniGameScreenView view = UnityEngine.Object.FindObjectsByType<MiniGameScreenView>(FindObjectsInactive.Include, FindObjectsSortMode.None).First();
+        RectTransform background = view.transform.Find("Background").GetComponent<RectTransform>();
+        MonitorCoinRain effect = UnityEngine.Object.FindObjectsByType<MonitorCoinRain>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault();
+        if (effect == null) effect = new GameObject("MonitorCoinRain").AddComponent<MonitorCoinRain>();
+        var settings = new SerializedObject(effect);
+        settings.FindProperty("_gameSession").objectReferenceValue = session;
+        settings.FindProperty("_screenView").objectReferenceValue = view;
+        settings.FindProperty("_background").objectReferenceValue = background;
+        settings.FindProperty("_coinPrefab").objectReferenceValue = prefab;
+        settings.FindProperty("_coinAnimation").objectReferenceValue = clip;
+        settings.FindProperty("_effectEnabled").boolValue = true;
+        settings.ApplyModifiedPropertiesWithoutUndo();
+        effect.enabled = true;
+        effect.gameObject.SetActive(true);
+        EditorSceneManager.SaveScene(scene);
+        Debug.Log("MONITOR_COIN_REFERENCES_RESTORED session=" + session.name + " canvas=" + view.name + " clip=" + clip.name);
+    }
+
+    /// <summary>
     /// 기존 코인 클립을 검사하고 재사용 프리팹과 메인 씬 수입 효과를 구성한다.
     /// 살아 있는 SpriteRenderer 프레임을 확인하며 원본 클립과 지갑 로직은 수정하지 않고 연결 및 렌더 결과를 저장한다.
     /// </summary>

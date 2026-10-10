@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c1b2e05253f6b842a48cee7e44c75db, type: 3}
+  m_Name: AutoAttackArmDemo
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Upgrades.UpgradeDefinition
+  _id: 2
+  _displayName: Auto Attack
+  _description: 'Unlock a robotic arm: one intact white key, 1 damage, every second.'
+  _levelCosts: 3200000000000000
+  _damageBonuses: 010000000200000003000000
+  _areaRadii:
+  - 1.5
+  - 2
+  - 2.5
+  _feverDurations: []
+  _baseFeverDuration: 5
+  _feverDurationPerLevel: 2
+  _feverDamageMultipliers: []
+  _baseFeverDamageMultiplier: 2
+  _feverDamageMultiplierPerLevel: 0.3
+  _rarityDistributions:
+  - _weights:
+    - 90
+    - 8
+    - 1.8
+    - 0.2
+  - _weights:
+    - 85
+    - 10.5
+    - 3.75
+    - 0.75
+  - _weights:
+    - 80
+    - 12
+    - 6
+    - 2
+  - _weights:
+    - 70
+    - 15
+    - 10
+    - 5

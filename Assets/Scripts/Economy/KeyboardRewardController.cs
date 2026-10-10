@@ -75,12 +75,22 @@ namespace Game.Economy
 
         /// <summary>
         /// keycap의 파괴 알림을 받아 설정된 키캡당 보상을 지급한다.
-        /// 생성 데이터의 보상 또는 기존 고정 보상을 지갑에 더하고 체력과 등급은 변경하지 않는다.
+        /// 생성 데이터의 보상 또는 기존 고정 보상을 지갑에 더하고 지급 금액과 키캡 위치를 RewardGranted로 알린다.
         /// </summary>
         private void OnKeycapBroken(KeycapHealth keycap)
         {
             long reward = keycap.HasSpawnData ? keycap.Reward : _rewardPerKeycap;
             _gameSession.Wallet.Add(reward);
+            RewardGranted?.Invoke(reward, keycap.transform.position);
+        }
+
+        /// <summary>
+        /// 자동작업대에서 파괴된 키캡의 보상을 기존 지갑에 지급한다.
+        /// keycap의 생성 보상 값을 사용하며 일반 키보드의 파괴 보상과 같은 지급 함수를 호출한다.
+        /// </summary>
+        public void GrantAutomaticKeycapReward(KeycapHealth keycap)
+        {
+            OnKeycapBroken(keycap);
         }
     }
 }

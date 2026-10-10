@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace KeyboardModeling
 {
     public sealed class MiniGameScreenView : MonoBehaviour
     {
+        private const float TARGET_PULSE_SCALE = 1.3f;
+
         [Header("State")]
         [SerializeField] private MiniGameController _controller;
         private float _refreshRemaining;
@@ -12,7 +15,8 @@ namespace KeyboardModeling
         [Header("Screen Panels")]
         [SerializeField] private GameObject _idlePanel;
         [SerializeField] private GameObject _hackingPanel;
-        [SerializeField] private GameObject _typingPanel;
+        [FormerlySerializedAs("_typingPanel")]
+        [SerializeField] private GameObject _keyMashPanel;
         [SerializeField] private Text _status;
         [SerializeField] private Text _idleTitle;
         [SerializeField] private Text _idleDetails;
@@ -22,25 +26,37 @@ namespace KeyboardModeling
         [SerializeField] private Text _hackingPercent;
         [SerializeField] private Text _commandLog;
 
-        [Header("Typing")]
-        [SerializeField] private Text _wordCount;
-        [SerializeField] private Text _targetWord;
-        [SerializeField] private Text _typedWord;
-        [SerializeField] private Text _typingFeedback;
+        [Header("Target Key Mash")]
+        [FormerlySerializedAs("_targetWord")]
+        [SerializeField] private Text _targetKey;
+        [SerializeField] private Image _keyMashFill;
+        [SerializeField] private Text _keyMashPercent;
+        [SerializeField, Min(0.01f)] private float _pulseDuration = 0.16f;
+        private Vector3 _targetKeyRestScale;
+        private float _pulseRemaining;
+
+        void Awake()
+        {
+            _targetKeyRestScale = _targetKey.rectTransform.localScale;
+        }
 
         void OnEnable()
         {
             _controller.StateChanged += RefreshView;
+            _controller.TargetKeyPressed += PulseTargetKey;
             RefreshView();
         }
 
         void OnDisable()
         {
             _controller.StateChanged -= RefreshView;
+            _controller.TargetKeyPressed -= PulseTargetKey;
+            ResetTargetPulse();
         }
 
         void Update()
         {
+            UpdateTargetPulse();
             _refreshRemaining -= Time.deltaTime;
             if (_refreshRemaining <= 0f)
             {
@@ -59,17 +75,16 @@ namespace KeyboardModeling
 
             RefreshIdlePanel(game);
             RefreshHackingPanel(game);
-            RefreshTypingPanel(game);
+            RefreshKeyMashPanel(game);
             RefreshStatus(game);
             RefreshIdleTitle();
             RefreshIdleDetails();
             RefreshHackingFill();
             RefreshHackingPercent();
             RefreshCommandLog();
-            RefreshWordCount();
-            RefreshTargetWord();
-            RefreshTypedWord();
-            RefreshTypingFeedback();
+            RefreshKeyMashProgress();
+            if (game != MiniGameController.MiniGameKind.KeyMash)
+                ResetTargetPulse();
         }
 
         /// <summary>
@@ -91,12 +106,12 @@ namespace KeyboardModeling
         }
 
         /// <summary>
-        /// 단어 입력 패널의 표시 여부를 갱신한다.
-        /// game을 사용하여 단어 입력 상태에서만 _typingPanel을 활성화한다.
+        /// 목표 키 연타 패널의 표시 여부를 갱신한다.
+        /// game을 사용하여 연타 상태에서만 _keyMashPanel을 활성화한다.
         /// </summary>
-        private void RefreshTypingPanel(MiniGameController.MiniGameKind game)
+        private void RefreshKeyMashPanel(MiniGameController.MiniGameKind game)
         {
-            _typingPanel.SetActive(game == MiniGameController.MiniGameKind.Typing);
+            _keyMashPanel.SetActive(game == MiniGameController.MiniGameKind.KeyMash);
         }
 
         /// <summary>
@@ -161,39 +176,47 @@ namespace KeyboardModeling
         }
 
         /// <summary>
-        /// 단어 정답 수를 갱신한다.
-        /// controller의 정답 수와 목표 개수를 사용하여 _wordCount에 진행 상황을 표시한다.
+        /// 목표 물리 키와 연타 진행도를 화면에 표시한다.
+        /// controller의 목표 문구와 0부터 1까지의 진행도를 읽어 텍스트와 게이지를 변경한다.
         /// </summary>
-        private void RefreshWordCount()
+        private void RefreshKeyMashProgress()
         {
-            _wordCount.text = $"WORDS ACCEPTED / {_controller.CompletedWords:00} / {_controller.WordsToClear:00}";
+            _targetKey.text = _controller.TargetKeyLabel;
+            _keyMashFill.fillAmount = _controller.KeyMashProgress;
+            _keyMashPercent.text = $"CHARGE / {_controller.KeyMashProgress * 100f:0}%";
         }
 
         /// <summary>
-        /// 목표 단어를 갱신한다.
-        /// controller의 TargetWord를 사용하여 _targetWord의 내용을 변경한다.
+        /// 정답 키 입력 알림으로 목표 텍스트를 기본 크기의 130%로 확대한다.
+        /// 펄스 시간을 초기화하여 연속 입력에서도 확대 비율이 누적되지 않도록 한다.
         /// </summary>
-        private void RefreshTargetWord()
+        private void PulseTargetKey()
         {
-            _targetWord.text = _controller.TargetWord;
+            _pulseRemaining = _pulseDuration;
+            _targetKey.rectTransform.localScale = _targetKeyRestScale * TARGET_PULSE_SCALE;
         }
 
         /// <summary>
-        /// 현재 입력 중인 단어를 갱신한다.
-        /// controller의 입력과 목표 길이를 사용하여 _typedWord에 입력 내용과 빈 칸을 표시한다.
+        /// Time.deltaTime과 남은 펄스 시간으로 목표 텍스트를 기본 크기로 복원한다.
+        /// 미니게임 정지 중에는 연출 시간을 유지하고 연타 상태에서만 크기를 변경한다.
         /// </summary>
-        private void RefreshTypedWord()
+        private void UpdateTargetPulse()
         {
-            _typedWord.text = _controller.TypedWord.PadRight(_controller.TargetWord.Length, '_');
+            if (_controller.CurrentGame != MiniGameController.MiniGameKind.KeyMash || _controller.IsSuspended || _pulseRemaining <= 0f)
+                return;
+            _pulseRemaining = Mathf.Max(0f, _pulseRemaining - Time.deltaTime);
+            float pulse = Mathf.SmoothStep(0f, 1f, _pulseRemaining / _pulseDuration);
+            _targetKey.rectTransform.localScale = _targetKeyRestScale * Mathf.Lerp(1f, TARGET_PULSE_SCALE, pulse);
         }
 
         /// <summary>
-        /// 단어 입력 결과 안내를 갱신한다.
-        /// controller의 TypingFeedback을 사용하여 _typingFeedback의 내용을 변경한다.
+        /// 남은 펄스 시간을 비우고 목표 텍스트를 기본 크기로 복원한다.
+        /// 게임 종료나 화면 비활성화 후에도 확대 상태가 남지 않도록 표시 상태만 변경한다.
         /// </summary>
-        private void RefreshTypingFeedback()
+        private void ResetTargetPulse()
         {
-            _typingFeedback.text = _controller.TypingFeedback;
+            _pulseRemaining = 0f;
+            _targetKey.rectTransform.localScale = _targetKeyRestScale;
         }
     }
 }

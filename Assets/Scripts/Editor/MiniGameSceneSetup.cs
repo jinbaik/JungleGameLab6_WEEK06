@@ -78,31 +78,31 @@ namespace KeyboardModeling.Editor
             CreateImage("CommandBackground", hacking, new Vector2(0f, -100f), new Vector2(850f, 142f), _surface);
             Text log = CreateText("CommandLog", hacking, new Vector2(0f, -100f), new Vector2(810f, 128f), "> intrusion detected\n> awaiting countermeasures...", 23, _green, TextAnchor.UpperLeft);
 
-            RectTransform typing = CreateRect("Typing", world, new Vector2(0f, -8f), new Vector2(860f, 330f));
-            Text wordCount = CreateText("Count", typing, new Vector2(0f, 128f), new Vector2(850f, 42f), "WORDS ACCEPTED / 00 / 06", 28, _muted);
-            CreateText("TargetLabel", typing, new Vector2(0f, 78f), new Vector2(800f, 30f), "TARGET WORD", 20, _muted);
-            Text target = CreateText("TargetWord", typing, new Vector2(0f, 25f), new Vector2(820f, 70f), "SPACE", 60, _green);
-            Text typed = CreateText("TypedWord", typing, new Vector2(0f, -56f), new Vector2(820f, 70f), "_____", 48, Color.white);
-            Text feedback = CreateText("Feedback", typing, new Vector2(0f, -117f), new Vector2(860f, 36f), "Complete the word to submit automatically.", 23, _muted);
-            CreateText("Help", typing, new Vector2(0f, -156f), new Vector2(860f, 32f), "A-Z / BACKSPACE to edit / mismatch replaces target", 21, _muted);
+            RectTransform keyMash = CreateRect("KeyMash", world, new Vector2(0f, -8f), new Vector2(860f, 330f));
+            CreateText("Title", keyMash, new Vector2(0f, 128f), new Vector2(850f, 38f), "TARGET KEY / RAPID PRESS", 30, _green);
+            CreateText("TargetLabel", keyMash, new Vector2(0f, 86f), new Vector2(800f, 30f), "MASH THIS KEY", 22, _muted);
+            Text target = CreateText("TargetKey", keyMash, new Vector2(0f, 12f), new Vector2(600f, 76f), "SPACE", 60, _green);
+            target.supportRichText = false;
+            Text keyMashPercent = CreateText("Progress", keyMash, new Vector2(0f, -64f), new Vector2(850f, 32f), "CHARGE / 0%", 26, _green);
+            Image keyMashFill = CreateBar("Charge", keyMash, new Vector2(0f, -98f), new Vector2(820f, 20f), _green);
+            CreateText("Help", keyMash, new Vector2(0f, -146f), new Vector2(850f, 54f), "Reach 100% / progress decays when you stop\nOther keys ignored / release and press again", 22, _muted);
             hacking.gameObject.SetActive(false);
-            typing.gameObject.SetActive(false);
+            keyMash.gameObject.SetActive(false);
 
             MiniGameScreenView view = system.AddComponent<MiniGameScreenView>();
             SetReference(view, "_controller", controller);
             SetReference(view, "_idlePanel", idle.gameObject);
             SetReference(view, "_hackingPanel", hacking.gameObject);
-            SetReference(view, "_typingPanel", typing.gameObject);
+            SetReference(view, "_keyMashPanel", keyMash.gameObject);
             SetReference(view, "_status", status);
             SetReference(view, "_idleTitle", idleTitle);
             SetReference(view, "_idleDetails", idleDetails);
             SetReference(view, "_hackingFill", hackingFill);
             SetReference(view, "_hackingPercent", percent);
             SetReference(view, "_commandLog", log);
-            SetReference(view, "_wordCount", wordCount);
-            SetReference(view, "_targetWord", target);
-            SetReference(view, "_typedWord", typed);
-            SetReference(view, "_typingFeedback", feedback);
+            SetReference(view, "_targetKey", target);
+            SetReference(view, "_keyMashFill", keyMashFill);
+            SetReference(view, "_keyMashPercent", keyMashPercent);
             if (session != null) WalletHudSceneSetup.Configure();
             FeverHudSceneSetup.ConfigureCurrentScene();
 
