@@ -6,6 +6,8 @@ namespace Game.Upgrades
         AreaSmash = 1,
         AutoClick = 2,
         AreaDamage = 3,
-        RareKeycapQuality = 4
+        RareKeycapQuality = 4,
+        FeverDuration = 5,
+        FeverDamageMultiplier = 6
     }
 }

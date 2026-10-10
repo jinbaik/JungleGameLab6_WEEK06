@@ -113,11 +113,11 @@ namespace KeyboardModeling
             float radius = _gameSession != null
                 ? _gameSession.Upgrades.GetAreaRadius()
                 : 0f;
-            int multiplier = _miniGameController != null
+            float multiplier = _miniGameController != null
                 ? _miniGameController.DamageMultiplier
-                : 1;
-            int damage = (_baseDamage + damageBonus) * multiplier;
-            int areaDamage = (_baseAreaDamage + areaDamageBonus) * multiplier;
+                : 1f;
+            int damage = Mathf.CeilToInt((_baseDamage + damageBonus) * multiplier);
+            int areaDamage = Mathf.CeilToInt((_baseAreaDamage + areaDamageBonus) * multiplier);
             Vector2 center = positions[targetIndex];
 
             // 파괴 콜백이 현재 키보드를 해제해도 이번 타격은 보관한 대상과 위치를 사용한다.

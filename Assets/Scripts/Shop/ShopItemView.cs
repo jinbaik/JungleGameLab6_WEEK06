@@ -41,6 +41,10 @@ namespace Game.Shop
             {
                 ConfigureQualityLayout();
             }
+            else if (definition.Id == UpgradeId.FeverDuration || definition.Id == UpgradeId.FeverDamageMultiplier)
+            {
+                ConfigureFeverLayout();
+            }
             _purchaseButton.onClick.AddListener(OnPurchaseClicked);
             Refresh();
         }
@@ -68,6 +72,47 @@ namespace Game.Shop
                     _nameText.text += $"\nNext: {FormatRarityDistribution(level + 1)}";
                 }
             }
+            else if (_definition.Id == UpgradeId.FeverDuration || _definition.Id == UpgradeId.FeverDamageMultiplier)
+            {
+                _nameText.text = $"{_definition.DisplayName}\n{FormatFeverEffect(level)}";
+                if (!isMaxLevel)
+                {
+                    _nameText.text += $" -> {FormatFeverEffect(level + 1)}";
+                }
+                _nameText.text += " (Next fever)";
+            }
+        }
+
+        /// <summary>
+        /// level과 현재 피버 강화 정의로 상점에 표시할 지속시간 또는 피해 배율을 만든다.
+        /// 다음 피버부터 적용되는 효과 문구를 반환하며 강화 상태는 변경하지 않는다.
+        /// </summary>
+        private string FormatFeverEffect(int level)
+        {
+            return _definition.Id == UpgradeId.FeverDuration
+                ? $"{_definition.GetFeverDuration(level):0.#}s"
+                : $"x{_definition.GetFeverDamageMultiplier(level):0.0}";
+        }
+
+        /// <summary>
+        /// 피버 강화 항목의 텍스트와 버튼 위치를 조정하여 현재 및 다음 효과를 표시한다.
+        /// 연결된 UI와 LayoutElement를 사용하여 항목 높이와 표시 영역을 변경한다.
+        /// </summary>
+        private void ConfigureFeverLayout()
+        {
+            LayoutElement layout = GetComponent<LayoutElement>();
+            layout.minHeight = 100f;
+            layout.preferredHeight = 100f;
+            _nameText.fontSize = 14;
+            RectTransform nameRect = _nameText.rectTransform;
+            nameRect.anchorMin = new Vector2(0f, 1f);
+            nameRect.anchorMax = Vector2.one;
+            nameRect.offsetMin = new Vector2(14f, -48f);
+            nameRect.offsetMax = new Vector2(-14f, -6f);
+            _levelText.rectTransform.anchoredPosition = new Vector2(_levelText.rectTransform.anchoredPosition.x, -58f);
+            _costText.rectTransform.anchoredPosition = new Vector2(_costText.rectTransform.anchoredPosition.x, -58f);
+            RectTransform buttonRect = (RectTransform)_purchaseButton.transform;
+            buttonRect.anchoredPosition = new Vector2(buttonRect.anchoredPosition.x, -52f);
         }
 
         /// <summary>품질 강화 항목의 높이와 텍스트 배치를 조정하여 현재·다음 분포와 구매 버튼을 겹치지 않게 표시한다.</summary>

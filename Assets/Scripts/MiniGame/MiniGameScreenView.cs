@@ -134,7 +134,7 @@ namespace KeyboardModeling
         private void RefreshIdleDetails(bool fever)
         {
             _idleDetails.text = fever
-                ? $"SMASH DAMAGE x2\n{_controller.FeverRemaining:0.0}s REMAINING"
+                ? $"SMASH DAMAGE x{_controller.DamageMultiplier:0.0}\n{_controller.FeverRemaining:0.0}s REMAINING"
                 : $"Next event in {Mathf.CeilToInt(_controller.NextEventRemaining):00}s\nClear two events to activate FEVER.";
         }
 
@@ -217,7 +217,7 @@ namespace KeyboardModeling
         /// </summary>
         private void RefreshFeverLabel(bool fever)
         {
-            _feverLabel.text = fever ? $"FEVER / {_controller.FeverRemaining:0.0}s / DAMAGE x{_controller.DamageMultiplier}" : $"FEVER CHARGE / {_controller.FeverCharge * 100f:0}%";
+            _feverLabel.text = fever ? $"FEVER / {_controller.FeverRemaining:0.0}s / DAMAGE x{_controller.DamageMultiplier:0.0}" : $"FEVER CHARGE / {_controller.FeverCharge * 100f:0}%";
         }
     }
 }

@@ -3,6 +3,8 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+using Game.Session;
+
 namespace KeyboardModeling
 {
     [DefaultExecutionOrder(-100)]
@@ -51,15 +53,17 @@ namespace KeyboardModeling
         public string TypingFeedback => _typingFeedback;
 
         [Header("Fever")]
-        [SerializeField, Min(0.1f)] private float _feverDuration = 15f;
-        [SerializeField] private int _feverDamageMultiplier = 4;
+        [Tooltip("피버 강화를 구매하는 세션을 연결합니다. 강화가 없는 개발 씬에서는 비워 둘 수 있습니다.")]
+        [SerializeField] private GameSession _gameSession;
+        private float _feverDuration = 5f;
+        private float _feverDamageMultiplier = 2f;
         private int _feverClears;
         private float _feverRemaining;
         public bool IsFeverActive => _feverRemaining > 0f;
         public float FeverRemaining => _feverRemaining;
         public float FeverDuration => _feverDuration;
         public float FeverCharge => _feverClears * 0.5f;
-        public int DamageMultiplier => IsFeverActive ? _feverDamageMultiplier : 1;
+        public float DamageMultiplier => IsFeverActive ? _feverDamageMultiplier : 1f;
 
         void Awake()
         {
@@ -220,7 +224,7 @@ namespace KeyboardModeling
 
         /// <summary>
         /// 실행 중인 미니게임을 클리어하고 다음 이벤트 대기 및 피버 보상을 적용한다.
-        /// 클리어 횟수로 게이지를 50% 올리고 두 번째 클리어 시 15초 피버 상태를 시작한다.
+        /// 클리어 횟수로 게이지를 50% 올리고 두 번째 클리어 시 세션의 강화 값을 확정하여 피버를 시작한다.
         /// </summary>
         private void CompleteMiniGame()
         {
@@ -228,7 +232,11 @@ namespace KeyboardModeling
             _nextEventRemaining = _eventInterval;
             _feverClears = Mathf.Min(2, _feverClears + 1);
             if (_feverClears == 2 && !IsFeverActive)
+            {
+                _feverDuration = _gameSession != null ? _gameSession.Upgrades.GetFeverDuration() : 5f;
+                _feverDamageMultiplier = _gameSession != null ? _gameSession.Upgrades.GetFeverDamageMultiplier() : 2f;
                 _feverRemaining = _feverDuration;
+            }
         }
 
         /// <summary>

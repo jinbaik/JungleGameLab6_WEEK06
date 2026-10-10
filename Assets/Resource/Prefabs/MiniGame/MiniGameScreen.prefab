@@ -1557,8 +1557,7 @@ MonoBehaviour:
   _progressPerPress: 0.04
   _progressDecayPerSecond: 1
   _wordsToClear: 3
-  _feverDuration: 15
-  _feverDamageMultiplier: 4
+  _gameSession: {fileID: 0}
 --- !u!114 &7739273831158867798
 MonoBehaviour:
   m_ObjectHideFlags: 0

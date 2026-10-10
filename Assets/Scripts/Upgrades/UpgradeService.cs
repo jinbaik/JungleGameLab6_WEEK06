@@ -81,6 +81,28 @@ namespace Game.Upgrades
             return _definitions[UpgradeId.AreaSmash].GetAreaRadius(_levels[UpgradeId.AreaSmash]);
         }
 
+        /// <summary>
+        /// 현재 피버 지속시간 강화 레벨과 정의로 다음 피버의 전체 지속시간을 조회한다.
+        /// 정의가 없는 기존 세션에서는 기본 5초를 반환하며 레벨과 지갑은 변경하지 않는다.
+        /// </summary>
+        public float GetFeverDuration()
+        {
+            return _definitions.TryGetValue(UpgradeId.FeverDuration, out UpgradeDefinition definition)
+                ? definition.GetFeverDuration(_levels[UpgradeId.FeverDuration])
+                : 5f;
+        }
+
+        /// <summary>
+        /// 현재 피버 피해 배율 강화 레벨과 정의로 다음 피버의 최종 배율을 조회한다.
+        /// 정의가 없는 기존 세션에서는 기본 2배를 반환하며 레벨과 지갑은 변경하지 않는다.
+        /// </summary>
+        public float GetFeverDamageMultiplier()
+        {
+            return _definitions.TryGetValue(UpgradeId.FeverDamageMultiplier, out UpgradeDefinition definition)
+                ? definition.GetFeverDamageMultiplier(_levels[UpgradeId.FeverDamageMultiplier])
+                : 2f;
+        }
+
         /// <summary>현재 품질 강화 레벨을 반환하며 품질 강화가 없는 기존 세션에서는 0을 반환한다.</summary>
         public int GetKeycapQualityLevel()
         {
