@@ -1578,6 +1578,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 6, y: 0, z: 0}
+--- !u!1 &1162827442
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1162827443}
+  m_Layer: 0
+  m_Name: ThrowVisitPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1162827443
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1162827442}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3, y: 7.15, z: 16.700941}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1176919430
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2727,6 +2758,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9100000002}
   - component: {fileID: 9100000003}
+  - component: {fileID: 9100000004}
   m_Layer: 0
   m_Name: BackgroundKeyboardThrowPoint
   m_TagString: Untagged
@@ -2763,6 +2795,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BackgroundKeyboardThrowSpawner
   _keyboardPrefab: {fileID: 6059366032874846202, guid: eba128e88a5e4e844bc4bc1c51be6dc7, type: 3}
   _spawningEnabled: 1
+  _externalSequence: 1
   _spawnInterval: 2.5
   _firstSpawnDelay: 1
   _keyboardScale: 0.15
@@ -2774,6 +2807,26 @@ MonoBehaviour:
   _directionSpread: 8
   _spinSpeed: 5
   _modelEulerAngles: {x: 0, y: 0, z: 0}
+--- !u!114 &9100000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9100000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dab5ebde7025c90409274905f15e9bf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BackgroundKeyboardThrowVisit
+  _actor: {fileID: 7940145484255243566}
+  _visitPoint: {fileID: 1162827443}
+  _spawner: {fileID: 9100000003}
+  _interval: 2.5
+  _firstDelay: 1
+  _moveDuration: 0.6
+  _waitBeforeThrow: 0.5
+  _waitAfterThrow: 0.5
 --- !u!1 &9200000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -2864,7 +2917,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6296055223845996250, guid: 7a056df9578f141428926d323771173b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.15
+      value: -5.86
       objectReference: {fileID: 0}
     - target: {fileID: 6296055223845996250, guid: 7a056df9578f141428926d323771173b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2907,6 +2960,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a056df9578f141428926d323771173b, type: 3}
+--- !u!4 &7940145484255243566 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6296055223845996250, guid: 7a056df9578f141428926d323771173b, type: 3}
+  m_PrefabInstance: {fileID: 7940145484255243565}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2929,3 +2987,4 @@ SceneRoots:
   - {fileID: 1234535475}
   - {fileID: 451483022}
   - {fileID: 2107089719}
+  - {fileID: 1162827443}
