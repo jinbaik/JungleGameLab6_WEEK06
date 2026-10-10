@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 using Unity.Cinemachine;
 
+[DefaultExecutionOrder(100)]
 [RequireComponent(typeof(CharacterController))]
 public sealed class PlayerMovement : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public sealed class PlayerMovement : MonoBehaviour
     [SerializeField] private CinemachineCamera _inputCam;
     [SerializeField] private InputActionReference _moveInput;
     private CharacterController _controller;
+    private Vector3 _cameraLocalPosition;
+    private bool _wasInputCamReady;
 
     [Header("Movement")]
     [SerializeField] private float _moveSpeed = 4f;
@@ -20,6 +23,7 @@ public sealed class PlayerMovement : MonoBehaviour
     void Awake()
     {
         _controller = GetComponent<CharacterController>();
+        _cameraLocalPosition = _inputCam.transform.localPosition;
     }
 
     void OnEnable()
@@ -30,11 +34,12 @@ public sealed class PlayerMovement : MonoBehaviour
     void OnDisable()
     {
         _moveInput.action.Disable();
+        _wasInputCamReady = false;
     }
 
     void Update()
     {
-        if (_brain.ActiveVirtualCamera != (ICinemachineCamera)_inputCam || _brain.IsBlending || !Application.isFocused)
+        if (_brain.ActiveVirtualCamera != (ICinemachineCamera)_inputCam || _brain.IsBlending || !_wasInputCamReady || !Application.isFocused)
         {
             _verticalVelocity = 0f;
             return;
@@ -49,5 +54,35 @@ public sealed class PlayerMovement : MonoBehaviour
         else _verticalVelocity += _gravity * Time.deltaTime;
 
         _controller.Move((movement + Vector3.up * _verticalVelocity) * Time.deltaTime);
+    }
+
+    void LateUpdate()
+    {
+        bool isInputCamReady = _brain.ActiveVirtualCamera == (ICinemachineCamera)_inputCam && !_brain.IsBlending;
+        if (!isInputCamReady)
+        {
+            _wasInputCamReady = false;
+            return;
+        }
+
+        if (_wasInputCamReady) return;
+        AlignPlayerToCamera();
+        _wasInputCamReady = true;
+    }
+
+    /// <summary>
+    /// InputCam의 현재 월드 위치와 Awake에서 저장한 로컬 위치로 Player 위치를 맞춘다.
+    /// 카메라의 월드 위치를 유지하면서 로컬 위치를 복원하고 수직 속도를 초기화한다.
+    /// </summary>
+    private void AlignPlayerToCamera()
+    {
+        Vector3 cameraPosition = _inputCam.transform.position;
+        Vector3 cameraOffset = transform.TransformVector(_cameraLocalPosition);
+
+        _controller.enabled = false;
+        transform.position = cameraPosition - cameraOffset;
+        _inputCam.transform.localPosition = _cameraLocalPosition;
+        _controller.enabled = true;
+        _verticalVelocity = 0f;
     }
 }
