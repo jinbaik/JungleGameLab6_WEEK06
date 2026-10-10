@@ -2001,15 +2001,12 @@ MonoBehaviour:
   _background: {fileID: 641087397}
   _coinPrefab: {fileID: 6984344256650909965, guid: 6bb43625029d65442b254948407d438b, type: 3}
   _coinAnimation: {fileID: 7400000, guid: 2e18ef22c867ab94a90a35441523b96d, type: 2}
-  _collisionMaterial: {fileID: 0}
   _effectEnabled: 1
-  _poolSize: 64
+  _poolSize: 24
   _amountPerCoin: 10
   _maximumCoinsPerIncome: 6
   _coinSize: 28
-  _lifetime: 5
-  _blinkRemainingTime: 1
-  _blinkFadeDuration: 0.1
+  _lifetime: 2
   _screenWidth: 1
   _gravity: 500
   _initialFallSpeed: 70
@@ -2972,11 +2969,7 @@ MonoBehaviour:
   _keyboardScale: 0.15
   _maximumAlive: 6
   _lifetime: 10
-<<<<<<< Updated upstream
   _keyboardInteractionController: {fileID: 27118945}
-=======
-  _keyboardInteractionController: {fileID: 0}
->>>>>>> Stashed changes
   _forwardSpeed: {x: 10, y: 16}
   _arcHeight: {x: 0.45, y: 0.8}
   _directionSpread: 8

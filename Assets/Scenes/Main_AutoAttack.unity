@@ -2648,13 +2648,10 @@ MonoBehaviour:
   _amountPerCoin: 10
   _maximumCoinsPerIncome: 6
   _coinSize: 28
-  _lifetime: 3
-  _blinkRemainingTime: 1
-  _blinkFadeDuration: 0.1
+  _lifetime: 2
   _screenWidth: 1
   _gravity: 500
   _initialFallSpeed: 70
-  _collisionMaterial: {fileID: 6200000, guid: 3a1f771065c04b1b9485f2dde8d8d568, type: 2}
 --- !u!4 &1198220494
 Transform:
   m_ObjectHideFlags: 0
