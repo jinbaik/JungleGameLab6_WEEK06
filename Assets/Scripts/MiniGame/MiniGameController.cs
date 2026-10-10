@@ -53,8 +53,6 @@ namespace KeyboardModeling
         public string TargetKeyLabel => _targetKey switch
         {
             Key.None => "",
-            Key.Space => "SPACE",
-            Key.Enter => "ENTER",
             Key.Digit0 => "0",
             Key.Digit1 => "1",
             Key.Digit2 => "2",
@@ -65,7 +63,6 @@ namespace KeyboardModeling
             Key.Digit7 => "7",
             Key.Digit8 => "8",
             Key.Digit9 => "9",
-            Key.Backquote => "`  ~",
             Key.Minus => "-  _",
             Key.Equals => "=  +",
             Key.LeftBracket => "[  {",
@@ -236,7 +233,6 @@ namespace KeyboardModeling
         private static bool IsTargetKeyCandidate(Key key)
         {
             return (key >= Key.A && key <= Key.Z) || (key >= Key.Digit1 && key <= Key.Digit0)
-                || key == Key.Space || key == Key.Enter || key == Key.Backquote
                 || key == Key.Minus || key == Key.Equals || key == Key.LeftBracket || key == Key.RightBracket
                 || key == Key.Backslash || key == Key.Semicolon || key == Key.Quote
                 || key == Key.Comma || key == Key.Period || key == Key.Slash;
