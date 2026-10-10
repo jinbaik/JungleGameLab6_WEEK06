@@ -62,7 +62,7 @@ namespace Game.UI
             _gauge.targetGraphic.color = accent;
             _status.text = active ? "FEVER ACTIVE" : "FEVER CHARGE";
             _status.color = accent;
-            _charge.text = $"CHARGE\n{_controller.Charge * 100f:0}%";
+            _charge.text = $"CHARGE\n{_controller.Charge * 100f:0.0}%";
             _remaining.text = $"TIME LEFT\n{_controller.Remaining:0.0}s";
             _multiplier.text = $"DAMAGE\nx{_controller.DamageMultiplier:0.0}";
             _pauseGuide.text = _controller.CurrentPauseReason switch
@@ -70,7 +70,7 @@ namespace Game.UI
                 FeverController.PauseReason.KeyboardUnavailable => "PAUSED\nPlace a keyboard\nto resume.",
                 FeverController.PauseReason.InputDisabled => "PAUSED\nReturn to smash\nto resume.",
                 FeverController.PauseReason.GamePaused => "PAUSED\nResume the game\nto continue.",
-                _ => active ? "Keep smashing!" : "+50% per clear\nTwo clears to start."
+                _ => active ? "Keep smashing!" : "+0.1% direct hit\n+50% per clear"
             };
         }
     }

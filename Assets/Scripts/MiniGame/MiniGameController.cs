@@ -28,12 +28,13 @@ namespace KeyboardModeling
         private MiniGameKind _currentGame;
         private float _nextEventRemaining;
         private bool CanProcessInput => isActiveAndEnabled && _keyboard != null && _keyboard.InputEnabled && _keyboard.isActiveAndEnabled;
+        private bool IsProgressPaused => !CanProcessInput || (_feverController != null && _feverController.IsFeverActive);
         public MiniGameKind CurrentGame => _currentGame;
         public float NextEventRemaining => _nextEventRemaining;
-        public bool IsSuspended => _currentGame != MiniGameKind.Idle && !CanProcessInput;
+        public bool IsSuspended => _currentGame != MiniGameKind.Idle && IsProgressPaused;
         public bool InputAvailable => CanProcessInput;
         public bool HasKeyboard => _keyboard != null;
-        public bool IsEventTimerPaused => !CanProcessInput || (_feverController != null && _feverController.IsFeverActive);
+        public bool IsEventTimerPaused => IsProgressPaused;
         public event Action StateChanged;
         public event Action Completed;
 
@@ -105,13 +106,10 @@ namespace KeyboardModeling
 
         void Update()
         {
-            if (!CanProcessInput)
+            if (IsProgressPaused)
             {
                 return;
             }
-
-            if (_feverController != null && _feverController.IsFeverActive)
-                return;
 
             if (_currentGame == MiniGameKind.Idle)
             {
@@ -152,7 +150,7 @@ namespace KeyboardModeling
         /// </summary>
         private void HandleKeyPressed(Key key)
         {
-            if (!CanProcessInput || key == Key.Escape)
+            if (IsProgressPaused || key == Key.Escape)
                 return;
             if (_currentGame == MiniGameKind.Hacking)
             {

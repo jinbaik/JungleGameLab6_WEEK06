@@ -19,6 +19,7 @@ public sealed class KeycapHealth : MonoBehaviour
     public int CurrentHP => _currentHP;
     public event Action<KeycapHealth> Broken;
     public event Action<KeycapDamage> Damaged;
+    public event Action<KeycapHealth> DamageApplied;
 
     [Header("Runtime Rarity")]
     private bool _hasSpawnData;
@@ -110,15 +111,17 @@ public sealed class KeycapHealth : MonoBehaviour
         }
     }
 
-    /// <summary>양수 damage로 체력을 줄이고 요청량, 실제 감소량과 월드 위치를 Damaged로 알린 뒤 체력이 0이면 파괴한다. 이미 파괴된 키캡은 무시한다.</summary>
+    /// <summary>
+    /// 양수 damage로 체력을 줄이고 실제 감소한 경우 DamageApplied로 이 키캡을 알린다.
+    /// 체력이 0이면 파괴하며 이미 파괴되었거나 체력이 소진된 키캡은 무시하고 피해 Toast 이벤트는 발생시키지 않는다.
+    /// </summary>
     public void TakeDamage(int damage)
     {
-        if (_broken || damage <= 0) return;
+        if (_broken || _currentHP <= 0 || damage <= 0) return;
         int previousHP = _currentHP;
-        Vector3 worldPosition = transform.position;
         _currentHP = Mathf.Max(0, _currentHP - damage);
         UpdateDamageDecal();
-        //Damaged?.Invoke(new KeycapDamage(damage, previousHP - _currentHP, worldPosition));
+        if (_currentHP < previousHP) DamageApplied?.Invoke(this);
         if (_currentHP == 0) Break();
     }
 

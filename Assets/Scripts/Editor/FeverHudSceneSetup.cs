@@ -178,10 +178,10 @@ namespace KeyboardModeling.Editor
             gauge.navigation = new Navigation { mode = Navigation.Mode.None };
             gauge.SetValueWithoutNotify(0f);
 
-            Text charge = CreateText("Charge", panel, new Vector2(-12f, -56f), new Vector2(124f, 66f), "CHARGE\n0%", 24, Color.white);
+            Text charge = CreateText("Charge", panel, new Vector2(-12f, -56f), new Vector2(124f, 66f), "CHARGE\n0.0%", 24, Color.white);
             Text remaining = CreateText("Remaining", panel, new Vector2(-12f, -140f), new Vector2(124f, 66f), "TIME LEFT\n0.0s", 24, Color.white);
             Text multiplier = CreateText("Multiplier", panel, new Vector2(-12f, -224f), new Vector2(124f, 66f), "DAMAGE\nx1.0", 24, Color.white);
-            Text pause = CreateText("PauseGuide", panel, new Vector2(-12f, -320f), new Vector2(124f, 94f), "+50% per clear\nTwo clears to start.", 17, _muted);
+            Text pause = CreateText("PauseGuide", panel, new Vector2(-12f, -320f), new Vector2(124f, 94f), "+0.1% direct hit\n+50% per clear", 17, _muted);
             FeverHudView view = panel.gameObject.AddComponent<FeverHudView>();
             SetReference(view, "_gauge", gauge);
             SetReference(view, "_status", title);

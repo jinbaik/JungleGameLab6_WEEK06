@@ -80,7 +80,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'CHARGE
 
-    0%'
+    0.0%'
 --- !u!1 &990366364453665941
 GameObject:
   m_ObjectHideFlags: 0
@@ -1172,9 +1172,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '+50% per clear
+  m_Text: '+0.1% direct hit
 
-    Two clears to start.'
+    +50% per clear'
 --- !u!1 &9169425404957351017
 GameObject:
   m_ObjectHideFlags: 0

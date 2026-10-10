@@ -106,7 +106,9 @@ namespace KeyboardModeling
         private void RefreshStatus(MiniGameController.MiniGameKind game)
         {
             _status.text = _controller.IsSuspended
-                ? "EVENT PAUSED / PLACE A KEYBOARD TO RESUME"
+                ? _controller.InputAvailable
+                    ? "EVENT PAUSED / PROGRESS RETAINED"
+                    : "EVENT PAUSED / PLACE A KEYBOARD TO RESUME"
                 : game == MiniGameController.MiniGameKind.Idle ? "SYSTEM ONLINE / STANDBY" : "EVENT ACTIVE";
         }
 
