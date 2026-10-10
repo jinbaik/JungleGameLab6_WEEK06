@@ -228,7 +228,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     /// <summary>
     /// state의 입력을 끄고 들기 목록에서 제거한다.
     /// 배치된 키보드가 파괴되는 경우 입력 복원 예약을 해제하고,
-    /// 진행 중인 미니게임을 클리어 보상 없이 종료한다.
+    /// 미니게임의 입력 대상만 해제하여 진행도와 피버 상태를 보존한다.
     /// </summary>
     private void HandleKeyboardBreaking(KeyboardState state)
     {
@@ -243,11 +243,14 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         if (_placedKeyboard == state)
         {
             _resumeSmashInput = false;
-            _controller.CancelMiniGame();
+            _controller.SetKeyBoard(null);
         }
     }
 
-    /// <summary>state가 Pad 키보드이면 파편의 -Z 이동 시작 후 SmashMode를 종료하고 배치 참조를 비운다.</summary>
+    /// <summary>
+    /// state가 Pad 키보드이면 파편의 -Z 이동 시작 후 SmashMode를 종료하고 배치 참조를 비운다.
+    /// 보존된 미니게임 상태와 관계없이 새 키보드를 집고 배치할 수 있도록 교체 상태를 해제한다.
+    /// </summary>
     private void HandleKeyboardDestroyed(KeyboardState state)
     {
         if (_placedKeyboard != state) return;

@@ -28,8 +28,10 @@ namespace KeyboardModeling
         [SerializeField, Min(0.1f)] private float _eventInterval = 15f;
         private MiniGameKind _currentGame;
         private float _nextEventRemaining;
+        private bool CanProcessInput => isActiveAndEnabled && _keyboard != null && _keyboard.InputEnabled && _keyboard.isActiveAndEnabled;
         public MiniGameKind CurrentGame => _currentGame;
         public float NextEventRemaining => _nextEventRemaining;
+        public bool IsSuspended => _currentGame != MiniGameKind.Idle && !CanProcessInput;
         public event Action StateChanged;
 
         [Header("Hacking")]
@@ -72,17 +74,24 @@ namespace KeyboardModeling
 
         void OnEnable()
         {
-            _keyboard.KeyPressed += HandleKeyPressed;
+            if (_keyboard != null)
+            {
+                _keyboard.KeyPressed += HandleKeyPressed;
+            }
         }
 
         void OnDisable()
         {
-            _keyboard.KeyPressed -= HandleKeyPressed;
+            if (_keyboard != null)
+            {
+                _keyboard.KeyPressed -= HandleKeyPressed;
+            }
         }
 
         /// <summary>
         /// keyboard1을 미니게임 입력 대상으로 교체한다.
-        /// 이전 KeyPressed 구독을 해제하고 활성 상태이면 새 대상에 연결한다.
+        /// 이전 KeyPressed 구독을 해제하고 활성 상태이면 새 대상에 연결하며,
+        /// 진행도와 시간을 유지한 채 StateChanged로 입력 대상 변경을 알린다.
         /// </summary>
         public void SetKeyBoard(KeyboardInputController keyboard1)
         {
@@ -96,17 +105,19 @@ namespace KeyboardModeling
 
             if (isActiveAndEnabled && _keyboard != null)
                 _keyboard.KeyPressed += HandleKeyPressed;
+
+            StateChanged?.Invoke();
         }
 
         void Update()
         {
+            if (!CanProcessInput)
+            {
+                return;
+            }
+
             if (_feverRemaining > 0f)
             {
-                if (_keyboard == null || !_keyboard.InputEnabled || !_keyboard.isActiveAndEnabled)
-                {
-                    return;
-                }
-
                 _feverRemaining = Mathf.Max(0f, _feverRemaining - Time.deltaTime);
                 if (_feverRemaining == 0f)
                 {
@@ -119,11 +130,6 @@ namespace KeyboardModeling
 
             if (_currentGame == MiniGameKind.Idle)
             {
-                if (!_keyboard.InputEnabled || !_keyboard.isActiveAndEnabled)
-                {
-                    return;
-                }
-
                 _nextEventRemaining = Mathf.Max(0f, _nextEventRemaining - Time.deltaTime);
 
                 if (_nextEventRemaining == 0f)
@@ -157,11 +163,11 @@ namespace KeyboardModeling
 
         /// <summary>
         /// 키보드의 새 눌림을 현재 미니게임에 전달한다.
-        /// key가 Escape가 아니면 해킹 진행도를 높이거나 단어 입력과 삭제 상태를 변경한다.
+        /// 입력이 가능한 상태에서 key가 Escape가 아니면 해킹 진행도를 높이거나 단어 입력과 삭제 상태를 변경한다.
         /// </summary>
         private void HandleKeyPressed(Key key)
         {
-            if (key == Key.Escape)
+            if (!CanProcessInput || key == Key.Escape)
                 return;
             if (_currentGame == MiniGameKind.Hacking)
             {

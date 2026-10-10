@@ -110,11 +110,13 @@ namespace KeyboardModeling
 
         /// <summary>
         /// 현재 이벤트 상태 문구를 갱신한다.
-        /// game을 사용하여 _status에 대기 또는 실행 상태를 표시한다.
+        /// game과 controller의 입력 중단 상태를 사용하여 _status에 대기, 실행 또는 재개 안내를 표시한다.
         /// </summary>
         private void RefreshStatus(MiniGameController.MiniGameKind game)
         {
-            _status.text = game == MiniGameController.MiniGameKind.Idle ? "SYSTEM ONLINE / STANDBY" : "EVENT ACTIVE";
+            _status.text = _controller.IsSuspended
+                ? "EVENT PAUSED / PLACE A KEYBOARD TO RESUME"
+                : game == MiniGameController.MiniGameKind.Idle ? "SYSTEM ONLINE / STANDBY" : "EVENT ACTIVE";
         }
 
         /// <summary>
