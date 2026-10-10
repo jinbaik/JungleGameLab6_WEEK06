@@ -90,7 +90,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         _padRotation = _referenceKeyboard.transform.rotation;
         _keyboardBounds = CalculateKeyboardBounds(_referenceKeyboard.transform);
         _padCollider = GetComponent<BoxCollider>();
-        
+
         _padCollider.isTrigger = true;
         _fixedCam.Priority = 0;
         Cursor.lockState = CursorLockMode.Locked;
@@ -254,6 +254,9 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     private void HandleKeyboardDestroyed(KeyboardState state)
     {
         if (_placedKeyboard != state) return;
+
+        _gameSession.CompleteKeyboard();
+
         if (IsSmashMode) OnExitSmashMode();
         _placedKeyboard = null;
     }
@@ -368,14 +371,6 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     /// </summary>
     private KeyboardState CreatePlayableKeyboard(KeyboardState source)
     {
-        UpgradeService upgrades = _gameSession.Upgrades;
-        if (upgrades == null)
-        {
-            throw new InvalidOperationException(
-                $"Cannot place a keyboard because GameSession '{_gameSession.name}' failed to initialize its UpgradeService. " +
-                "Resolve the earlier GameSession.Awake exception and restart Play Mode.");
-        }
-
         GameObject instance = Instantiate(_inGameKeyBoardPrefab);
         try
         {
@@ -392,9 +387,14 @@ public sealed class KeyboardInteractionController : MonoBehaviour
             if (source.PendingProfile == null)
             {
                 KeyboardSpawnProfile profile = KeyboardProfileGenerator.GenerateProfile(
-                    layout, new HashSet<KeycapHealth>(requiredKeys), upgrades.GetRarityDistribution(),
-                    _raritySettings, _rewardController.RewardPerKeycap,
-                    upgrades.GetKeycapQualityLevel(), _qualityRandom.Next());
+                    layout,
+                    new HashSet<KeycapHealth>(requiredKeys),
+                    _gameSession.GetCurrentRarityDistribution(),
+                    _raritySettings,
+                    _rewardController.RewardPerKeycap,
+                    _gameSession.CurrentRarityStage,
+                    _qualityRandom.Next());
+
                 source.StoreProfile(profile);
             }
 

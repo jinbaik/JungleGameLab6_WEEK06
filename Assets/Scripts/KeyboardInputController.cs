@@ -187,11 +187,10 @@ namespace KeyboardModeling
 
                 if (pressedThisFrame)
                 {
-                    if (_keycapHealths[index] == null || _keycapHealths[index].CurrentHP > 0)
-                    {
-                        _audioSource.PlayOneShot(_pressSound);
-                        KeycapPressed?.Invoke(_bindings[index].Keycap);
-                    }
+                    float volumeScale = _keycapHealths[index] != null && _keycapHealths[index].CurrentHP == 0 ? 0.05f : 1f;
+                    _audioSource.PlayOneShot(_pressSound, volumeScale);
+
+                    KeycapPressed?.Invoke(_bindings[index].Keycap);
                     KeyPressed?.Invoke(_bindings[index].Key);
                     if (!_inputEnabled || !isActiveAndEnabled)
                     {
@@ -226,8 +225,8 @@ namespace KeyboardModeling
         }
 
         /// <summary>
-        /// 살아 있는 광역 타격 대상 keycap의 정상 타격음을 재생하고 AreaKeycapHit로 연출을 요청한다.
-        /// 공격 판정이 검증한 대상 Transform을 전달하며 물리 키 입력, 미니게임 진행과 추가 공격은 발생시키지 않는다.
+        /// 살아 있는 범위 타격 대상 keycap의 효과음과 피드백 이벤트를 전달한다.
+        /// 대상 Transform으로 AreaKeycapHit를 호출하며 추가 키 입력이나 데미지를 발생시키지 않는다.
         /// </summary>
         public void NotifyAreaKeycapHit(Transform keycap)
         {

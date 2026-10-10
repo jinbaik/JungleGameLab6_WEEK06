@@ -21,8 +21,8 @@ namespace KeyboardModeling.Editor
         private const string CANVAS_PATH = PREFAB_FOLDER + "/ToastCanvas.prefab";
 
         /// <summary>
-        /// Dev_MiniGame의 피해 및 보상 알림과 독립된 풀링 Canvas를 구성하고 저장한다.
-        /// 현재 씬의 상호작용 컨트롤러와 Session을 연결하고 UI 폴더에 재사용 프리팹을 생성한다.
+        /// Dev_MiniGame의 기존 피해 및 보상 Toast 참조를 구성하고 비활성 상태로 저장한다.
+        /// 상호작용 컨트롤러와 Session을 연결하며 재사용 프리팹은 보존하고 Presenter와 Canvas 표시를 끈다.
         /// </summary>
         [MenuItem("Tools/Toast/Configure Dev_MiniGame")]
         public static void Configure()
@@ -62,11 +62,17 @@ namespace KeyboardModeling.Editor
             SetReference(presenter, "_interactionController", interaction);
             SetReference(presenter, "_rewardController", reward);
             SetReference(presenter, "_toastPool", pool);
+            Undo.RecordObject(presenter, "Disable legacy damage Toast presenter");
+            presenter.enabled = false;
+            PrefabUtility.RecordPrefabInstancePropertyModifications(presenter);
+            Undo.RecordObject(pool.gameObject, "Disable legacy Toast UI");
+            pool.gameObject.SetActive(false);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(pool.gameObject);
 
             Undo.CollapseUndoOperations(undoGroup);
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
-            Debug.Log("TOAST_CONFIGURED Scene=Dev_MiniGame Prefabs=ToastCanvas,ToastItem Pool=128/256");
+            Debug.Log("TOAST_CONFIGURED Scene=Dev_MiniGame Prefabs=ToastCanvas,ToastItem Disabled=true");
         }
 
         /// <summary>
@@ -110,7 +116,7 @@ namespace KeyboardModeling.Editor
         }
 
         /// <summary>
-        /// 기존 ToastCanvas를 재사용하거나 전용 Overlay Canvas와 ToastPool을 생성한다.
+        /// 기존 ToastCanvas를 재사용하거나 비활성 Overlay Canvas와 ToastPool을 생성한다.
         /// item을 대여할 풀과 표시 루트를 연결하여 CANVAS_PATH에 저장된 프리팹을 반환한다.
         /// </summary>
         private static GameObject GetOrCreateCanvas(ToastView item)
@@ -142,6 +148,7 @@ namespace KeyboardModeling.Editor
             ToastPool pool = canvasObject.AddComponent<ToastPool>();
             SetReference(pool, "_root", root);
             SetReference(pool, "_toastPrefab", item);
+            canvasObject.SetActive(false);
             GameObject saved = PrefabUtility.SaveAsPrefabAsset(canvasObject, CANVAS_PATH);
             UnityEngine.Object.DestroyImmediate(canvasObject);
             return saved;

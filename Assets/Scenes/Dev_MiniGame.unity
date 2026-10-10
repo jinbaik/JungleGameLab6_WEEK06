@@ -536,6 +536,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8308945120844809451, guid: a018345a92df9c140b93b45b5323e3ee, type: 3}
+      propertyPath: _controller
+      value: 
+      objectReference: {fileID: 1762638214}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1568,6 +1572,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665555be6ee1c4c4e91a0c715db2b176, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Session.GameSession
+--- !u!114 &1762638214 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6937473625109612741, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+  m_PrefabInstance: {fileID: 1762638212}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 607804dc14421fa40bc6a7bb3484cd06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.FeverController
 --- !u!114 &1762638216 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7425521347323571261, guid: eeba46b795e71854d883e33ac92b8108, type: 3}

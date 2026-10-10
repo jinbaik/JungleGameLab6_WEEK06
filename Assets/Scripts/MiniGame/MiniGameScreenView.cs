@@ -28,10 +28,6 @@ namespace KeyboardModeling
         [SerializeField] private Text _typedWord;
         [SerializeField] private Text _typingFeedback;
 
-        [Header("Fever")]
-        [SerializeField] private Slider _feverFill;
-        [SerializeField] private Text _feverLabel;
-
         void OnEnable()
         {
             _controller.StateChanged += RefreshView;
@@ -54,22 +50,19 @@ namespace KeyboardModeling
         }
 
         /// <summary>
-        /// 미니게임과 피버 상태를 모니터 및 HUD에 표시한다.
+        /// 미니게임 상태를 모니터에 표시한다.
         /// controller의 현재 게임, 입력, 진행도, 남은 시간을 읽어 패널, 텍스트와 게이지를 변경한다.
         /// </summary>
         private void RefreshView()
         {
             MiniGameController.MiniGameKind game = _controller.CurrentGame;
-            bool fever = _controller.IsFeverActive;
-            Color accent = fever ? new Color(1f, 0.56f, 0.16f) : new Color(0.25f, 0.95f, 0.72f);
-            float feverValue = fever ? _controller.FeverRemaining / _controller.FeverDuration : _controller.FeverCharge;
 
             RefreshIdlePanel(game);
             RefreshHackingPanel(game);
             RefreshTypingPanel(game);
             RefreshStatus(game);
-            RefreshIdleTitle(fever, accent);
-            RefreshIdleDetails(fever);
+            RefreshIdleTitle();
+            RefreshIdleDetails();
             RefreshHackingFill();
             RefreshHackingPercent();
             RefreshCommandLog();
@@ -77,8 +70,6 @@ namespace KeyboardModeling
             RefreshTargetWord();
             RefreshTypedWord();
             RefreshTypingFeedback();
-            RefreshFeverFill(feverValue, accent);
-            RefreshFeverLabel(fever);
         }
 
         /// <summary>
@@ -115,29 +106,31 @@ namespace KeyboardModeling
         private void RefreshStatus(MiniGameController.MiniGameKind game)
         {
             _status.text = _controller.IsSuspended
-                ? "EVENT PAUSED / PLACE A KEYBOARD TO RESUME"
+                ? _controller.InputAvailable
+                    ? "EVENT PAUSED / PROGRESS RETAINED"
+                    : "EVENT PAUSED / PLACE A KEYBOARD TO RESUME"
                 : game == MiniGameController.MiniGameKind.Idle ? "SYSTEM ONLINE / STANDBY" : "EVENT ACTIVE";
         }
 
         /// <summary>
         /// 대기 화면의 제목과 색상을 갱신한다.
-        /// fever와 accent를 사용하여 _idleTitle에 시스템 또는 피버 상태를 표시한다.
+        /// 시스템 대기 문구와 기본 강조색을 _idleTitle에 표시한다.
         /// </summary>
-        private void RefreshIdleTitle(bool fever, Color accent)
+        private void RefreshIdleTitle()
         {
-            _idleTitle.text = fever ? "FEVER ONLINE" : "SYSTEM SECURE";
-            _idleTitle.color = accent;
+            _idleTitle.text = "SYSTEM SECURE";
+            _idleTitle.color = new Color(0.25f, 0.95f, 0.72f);
         }
 
         /// <summary>
         /// 대기 화면의 상세 안내를 갱신한다.
-        /// fever와 controller의 남은 시간을 사용하여 _idleDetails에 피버 또는 다음 이벤트 시간을 표시한다.
+        /// controller의 다음 이벤트 시간과 타이머 정지 여부를 읽어 _idleDetails에 대기 안내를 표시한다.
         /// </summary>
-        private void RefreshIdleDetails(bool fever)
+        private void RefreshIdleDetails()
         {
-            _idleDetails.text = fever
-                ? $"SMASH DAMAGE x{_controller.DamageMultiplier:0.0}\n{_controller.FeverRemaining:0.0}s REMAINING"
-                : $"Next event in {Mathf.CeilToInt(_controller.NextEventRemaining):00}s\nClear two events to activate FEVER.";
+            _idleDetails.text = _controller.IsEventTimerPaused
+                ? "Next event waiting.\nSecurity system standing by."
+                : $"Next event in {Mathf.CeilToInt(_controller.NextEventRemaining):00}s\nComplete events to restore security.";
         }
 
         /// <summary>
@@ -201,25 +194,6 @@ namespace KeyboardModeling
         private void RefreshTypingFeedback()
         {
             _typingFeedback.text = _controller.TypingFeedback;
-        }
-
-        /// <summary>
-        /// 모니터의 피버 Slider 값과 색상을 갱신한다.
-        /// feverValue와 accent를 사용하여 충전 비율 또는 남은 시간 비율을 _feverFill에 표시한다.
-        /// </summary>
-        private void RefreshFeverFill(float feverValue, Color accent)
-        {
-            _feverFill.SetValueWithoutNotify(feverValue);
-            _feverFill.targetGraphic.color = accent;
-        }
-
-        /// <summary>
-        /// 모니터의 피버 상태 문구를 갱신한다.
-        /// fever와 controller의 충전량 및 남은 시간을 사용하여 _feverLabel에 상태를 표시한다.
-        /// </summary>
-        private void RefreshFeverLabel(bool fever)
-        {
-            _feverLabel.text = fever ? $"FEVER / {_controller.FeverRemaining:0.0}s / DAMAGE x{_controller.DamageMultiplier:0.0}" : $"FEVER CHARGE / {_controller.FeverCharge * 100f:0}%";
         }
     }
 }
