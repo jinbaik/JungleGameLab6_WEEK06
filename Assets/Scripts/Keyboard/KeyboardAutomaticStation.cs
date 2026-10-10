@@ -12,11 +12,11 @@ namespace KeyboardModeling
     public sealed class KeyboardAutomaticStation : MonoBehaviour
     {
         [Header("Station")]
-        [SerializeField] private KeyboardInteractionController _interactionController;
         [SerializeField] private Transform _placement;
         [SerializeField] private CinemachineCamera _viewCamera;
-        [SerializeField] private KeyboardRewardController _rewards;
-        [SerializeField] private GameObject _keyboardFragmentsPrefab;
+        private KeyboardRewardController _rewards;
+        private GameObject _keyboardFragmentsPrefab;
+        private KeyboardInteractionController _interactionController;
         private KeyboardInputController _keyboard;
         private KeycapHealth[] _keycaps = Array.Empty<KeycapHealth>();
         public KeyboardInputController Keyboard => _keyboard;
@@ -26,6 +26,9 @@ namespace KeyboardModeling
 
         void Awake()
         {
+            _interactionController = KeyboardAutoAttackManager.Instance.InteractionController;
+            _rewards = KeyboardAutoAttackManager.Instance.RewardController;
+            _keyboardFragmentsPrefab = KeyboardAutoAttackManager.Instance.KeyboardFragmentsPrefab;
             GetComponent<BoxCollider>().isTrigger = true;
             _viewCamera.Priority = 0;
         }
@@ -48,6 +51,8 @@ namespace KeyboardModeling
         /// </summary>
         public void AcceptKeyboard(KeyboardInputController keyboard)
         {
+            if (_rewards == null || _keyboardFragmentsPrefab == null)
+                throw new InvalidOperationException("KeyboardAutoAttackManager requires Reward Controller and Keyboard Fragments Prefab before inserting a keyboard.");
             Rigidbody body = keyboard.GetComponent<Rigidbody>();
             body.interpolation = RigidbodyInterpolation.None;
             body.isKinematic = true;
@@ -58,17 +63,17 @@ namespace KeyboardModeling
             keyboardTransform.localRotation = Quaternion.identity;
             body.position = keyboardTransform.position;
             body.rotation = keyboardTransform.rotation;
-            _keyboard = keyboard;
-            _keyboard.SetInputEnabled(false);
-            _keyboard.enabled = false;
+            keyboard.SetInputEnabled(false);
+            keyboard.enabled = false;
             foreach (Collider collider in keyboard.GetComponentsInChildren<Collider>())
                 collider.enabled = false;
             keyboard.GetComponent<BoxCollider>().enabled = true;
             _keycaps = keyboard.GetComponentsInChildren<KeycapHealth>(true);
             foreach (KeycapHealth keycap in _keycaps)
-                keycap.Broken += _rewards.GrantAutomaticKeycapReward;
+                keycap.Broken += HandleKeycapBroken;
             KeyboardDestruction destruction = keyboard.gameObject.AddComponent<KeyboardDestruction>();
             destruction.Initialize(keyboard.GetDestructionKeycaps(), _keyboardFragmentsPrefab, HandleBreaking, HandleDestroyed);
+            _keyboard = keyboard;
             KeyboardChanged?.Invoke(keyboard);
         }
 
@@ -112,9 +117,18 @@ namespace KeyboardModeling
             foreach (KeycapHealth keycap in _keycaps)
             {
                 if (keycap != null)
-                    keycap.Broken -= _rewards.GrantAutomaticKeycapReward;
+                    keycap.Broken -= HandleKeycapBroken;
             }
             _keycaps = Array.Empty<KeycapHealth>();
+        }
+
+        /// <summary>
+        /// 작업대에서 파괴된 keycap의 보상을 공통 보상 컨트롤러에 전달한다.
+        /// 연결된 _rewards를 사용해 기존 지갑에 지급하며 슬롯이 구독과 해제의 직접 대상이 된다.
+        /// </summary>
+        private void HandleKeycapBroken(KeycapHealth keycap)
+        {
+            _rewards.GrantAutomaticKeycapReward(keycap);
         }
     }
 }

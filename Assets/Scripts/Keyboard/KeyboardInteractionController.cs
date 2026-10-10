@@ -342,11 +342,12 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         if (other.attachedRigidbody == null || !_keyboards.TryGetValue(other.attachedRigidbody, out KeyboardState source) || source.PlacementFailed)
             return;
         _isPlacingKeyboard = true;
+        KeyboardState target = null;
         try
         {
-            KeyboardState target = CreatePlayableKeyboard(source, false);
-            _keyboards.Remove(target.Body);
+            target = CreatePlayableKeyboard(source, false);
             station.AcceptKeyboard(target.Keyboard);
+            _keyboards.Remove(target.Body);
             _keyboards.Remove(source.Body);
             source.Collider.enabled = false;
             lastDroped = null;
@@ -355,6 +356,11 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         }
         catch (Exception exception)
         {
+            if (target != null && !station.HasKeyboard)
+            {
+                _keyboards.Remove(target.Body);
+                Destroy(target.Keyboard.gameObject);
+            }
             source.MarkPlacementFailed();
             Debug.LogException(exception, this);
         }

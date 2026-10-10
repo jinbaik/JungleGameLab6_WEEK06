@@ -72,18 +72,14 @@ namespace KeyboardModeling.Editor
                 cameraSettings.FindProperty("Lens.FieldOfView").floatValue = 65;
                 cameraSettings.ApplyModifiedPropertiesWithoutUndo();
                 SerializedObject stationSettings = new SerializedObject(station);
-                stationSettings.FindProperty("_interactionController").objectReferenceValue = interaction;
                 stationSettings.FindProperty("_placement").objectReferenceValue = placement;
                 stationSettings.FindProperty("_viewCamera").objectReferenceValue = view;
-                stationSettings.FindProperty("_rewards").objectReferenceValue = rewards;
-                stationSettings.FindProperty("_keyboardFragmentsPrefab").objectReferenceValue = fragments;
                 stationSettings.ApplyModifiedPropertiesWithoutUndo();
                 KeyboardTypingArmController arm = ((GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Resource/Prefabs/KeyboardTypingArm.prefab"))).GetComponent<KeyboardTypingArmController>();
                 arm.transform.SetParent(root, false);
                 arm.transform.localScale = Vector3.one * scale;
                 arm.transform.localPosition = new Vector3(0, 0, .145f * scale);
                 SerializedObject armSettings = new SerializedObject(arm);
-                armSettings.FindProperty("_interactionController").objectReferenceValue = interaction;
                 armSettings.FindProperty("_temporarySmashInput").boolValue = false;
                 armSettings.ApplyModifiedPropertiesWithoutUndo();
                 arm.gameObject.SetActive(false);
@@ -96,8 +92,6 @@ namespace KeyboardModeling.Editor
                 feedbackSettings.ApplyModifiedPropertiesWithoutUndo();
                 KeyboardAutoAttackController auto = root.gameObject.AddComponent<KeyboardAutoAttackController>();
                 SerializedObject autoSettings = new SerializedObject(auto);
-                autoSettings.FindProperty("_gameSession").objectReferenceValue = session;
-                autoSettings.FindProperty("_interactionController").objectReferenceValue = interaction;
                 autoSettings.FindProperty("_arm").objectReferenceValue = arm;
                 autoSettings.FindProperty("_station").objectReferenceValue = station;
                 autoSettings.FindProperty("_stationFeedback").objectReferenceValue = feedback;
@@ -115,6 +109,7 @@ namespace KeyboardModeling.Editor
                 triangles += filter.sharedMesh.triangles.Length / 3;
             }
             Debug.Log("AUTOMATIC_WORKBENCH_GEOMETRY vertices=" + vertices + " triangles=" + triangles + " renderers=" + bench.GetComponentsInChildren<MeshRenderer>(true).Length);
+            KeyboardAutoAttackManagerSetup.ConfigureCurrentScene();
             EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
             Debug.Log("AUTOMATIC_WORKBENCH_COMPLETE slots=2 arms=2 whiteKeys=" + eligible.Length);
         }

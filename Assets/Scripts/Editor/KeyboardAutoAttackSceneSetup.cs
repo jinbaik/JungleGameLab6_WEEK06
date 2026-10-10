@@ -28,6 +28,7 @@ namespace KeyboardModeling.Editor
             if (AssetDatabase.LoadAssetAtPath<SceneAsset>(SCENE_PATH) != null)
                 throw new InvalidOperationException("기존 자동공격 씬은 덮어쓰지 않습니다.");
             EditorSceneManager.OpenScene("Assets/Scenes/Main.unity", OpenSceneMode.Single);
+            KeyboardAutoAttackManagerSetup.ConfigureCurrentScene();
             EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(), SCENE_PATH, true);
             AssetDatabase.Refresh();
             EditorSceneManager.OpenScene(SCENE_PATH, OpenSceneMode.Single);
@@ -89,7 +90,6 @@ namespace KeyboardModeling.Editor
                 reference.transform.TransformPoint(new Vector3(9.25f, 0, 2.8f)) + reference.transform.rotation * new Vector3(0, 0, .145f * scale),
                 reference.transform.rotation);
             SerializedObject armSettings = new SerializedObject(arm);
-            armSettings.FindProperty("_interactionController").objectReferenceValue = interaction;
             armSettings.FindProperty("_temporarySmashInput").boolValue = false;
             armSettings.ApplyModifiedPropertiesWithoutUndo();
             arm.gameObject.SetActive(false);
@@ -97,8 +97,6 @@ namespace KeyboardModeling.Editor
             KeyboardAutoAttackController auto = new GameObject("AutomaticKeyboardAttack").AddComponent<KeyboardAutoAttackController>();
             auto.gameObject.AddComponent<KeyboardAutoAttackManager>();
             SerializedObject autoSettings = new SerializedObject(auto);
-            autoSettings.FindProperty("_gameSession").objectReferenceValue = session;
-            autoSettings.FindProperty("_interactionController").objectReferenceValue = interaction;
             autoSettings.FindProperty("_arm").objectReferenceValue = arm;
             SerializedProperty keys = autoSettings.FindProperty("_eligibleKeys");
             keys.arraySize = eligible.Count;
@@ -106,6 +104,7 @@ namespace KeyboardModeling.Editor
                 keys.GetArrayElementAtIndex(index).intValue = (int)eligible[index];
             autoSettings.ApplyModifiedPropertiesWithoutUndo();
             AssetDatabase.SaveAssets();
+            KeyboardAutoAttackManagerSetup.ConfigureCurrentScene();
             EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
             Debug.Log("AUTO_ATTACK_SCENE_COMPLETE whiteKeys=" + eligible.Count + " interval=1 damage=1 upgradeCost=50");
         }

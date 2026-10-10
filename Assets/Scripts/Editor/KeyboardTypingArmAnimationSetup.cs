@@ -68,7 +68,7 @@ namespace KeyboardModeling.Editor
                 arm = (GameObject)PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(PREFAB_PATH));
             PlaceArm(arm, reference.transform);
             settings = new SerializedObject(arm.GetComponent<KeyboardTypingArmController>());
-            settings.FindProperty("_interactionController").objectReferenceValue = interaction;
+            KeyboardAutoAttackManagerSetup.ConfigureCurrentScene();
             settings.FindProperty("_temporarySmashInput").boolValue = true;
             settings.FindProperty("_pressDuration").floatValue = .035f;
             settings.FindProperty("_retractDuration").floatValue = .055f;
