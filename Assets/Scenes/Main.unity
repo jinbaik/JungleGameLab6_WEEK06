@@ -906,17 +906,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
---- !u!114 &451483023 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5367489302501381250, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
-  m_PrefabInstance: {fileID: 451483022}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ac08cc9ec30f6344b163ce16da08d5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Game.UI.ToastPool
 --- !u!1 &517964499
 GameObject:
   m_ObjectHideFlags: 0
@@ -1091,7 +1080,7 @@ PrefabInstance:
     - target: {fileID: 8823056269604226751, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
       propertyPath: _toastPool
       value: 
-      objectReference: {fileID: 451483023}
+      objectReference: {fileID: 2107089720}
     - target: {fileID: 8823056269604226751, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
       propertyPath: _interactionController
       value: 
@@ -1269,7 +1258,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 825563189}
-  - component: {fileID: 825563188}
   m_Layer: 0
   m_Name: KeyboardAutoAttackManager
   m_TagString: Untagged
@@ -1277,24 +1265,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &825563188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 825563187}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b1e3a726caf4e50af7c91e266af28b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardAutoAttackManager
-  _interactionController: {fileID: 27118945}
-  _gameSession: {fileID: 641087395}
-  _rewardController: {fileID: 1068726015}
-  _keyboardFragmentsPrefab: {fileID: 100, guid: 5dc9afe1dd0444239ccf712060e436a9, type: 3}
-  _damage: 1
-  _attacksPerSecond: 1
 --- !u!4 &825563189
 Transform:
   m_ObjectHideFlags: 0
@@ -2432,9 +2402,17 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4120467617764449812, guid: b16566fd032ba8a46b46051829eceb4e, type: 3}
+      propertyPath: _rewardController
+      value: 
+      objectReference: {fileID: 1068726015}
+    - target: {fileID: 4120467617764449812, guid: b16566fd032ba8a46b46051829eceb4e, type: 3}
       propertyPath: _interactionController
       value: 
       objectReference: {fileID: 27118945}
+    - target: {fileID: 4120467617764449812, guid: b16566fd032ba8a46b46051829eceb4e, type: 3}
+      propertyPath: _keyboardFragmentsPrefab
+      value: 
+      objectReference: {fileID: 100, guid: 5dc9afe1dd0444239ccf712060e436a9, type: 3}
     - target: {fileID: 6473820656794952159, guid: b16566fd032ba8a46b46051829eceb4e, type: 3}
       propertyPath: m_Name
       value: AutomaticWorkbench
@@ -2694,6 +2672,130 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
+--- !u!1001 &2107089719
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1835061433212750168, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_Name
+      value: ToastCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 5367489302501381250, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: _camera
+      value: 
+      objectReference: {fileID: 330585545}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7789717466363001315, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+--- !u!114 &2107089720 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5367489302501381250, guid: ecc79eb11b7cfe047b543abfc604da03, type: 3}
+  m_PrefabInstance: {fileID: 2107089719}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ac08cc9ec30f6344b163ce16da08d5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.UI.ToastPool
 --- !u!1001 &3000000000
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2830,7 +2932,6 @@ CharacterController:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -2879,3 +2980,4 @@ SceneRoots:
   - {fileID: 825563189}
   - {fileID: 1234535475}
   - {fileID: 451483022}
+  - {fileID: 2107089719}
