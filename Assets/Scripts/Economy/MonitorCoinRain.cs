@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
@@ -13,13 +16,12 @@ public sealed class MonitorCoinRain : MonoBehaviour
 {
     // UI 좌표 100을 물리 좌표 1로 변환한다.
     private const float PHYSICS_SCALE = 0.01f;
+    private static readonly int[] _coinAmounts = { 1000, 100, 50, 10 };
 
     [Header("References")]
     [SerializeField] private GameSession _gameSession;
     [SerializeField] private MiniGameScreenView _screenView;
     [SerializeField] private RectTransform _background;
-    [SerializeField] private GameObject _coinPrefab;
-    [SerializeField] private AnimationClip _coinAnimation;
     [SerializeField] private PhysicsMaterial2D _collisionMaterial;
     private RectTransform _canvasRoot;
     private readonly Vector3[] _backgroundCorners = new Vector3[4];
@@ -28,11 +30,28 @@ public sealed class MonitorCoinRain : MonoBehaviour
     private PlayableGraph _animationGraph;
     private AnimationClipPlayable[] _coinPlayables;
 
+    [Header("Coin Assets")]
+    [SerializeField] private GameObject _goldPrefab;
+    [SerializeField] private AnimationClip _goldAnimation;
+    [SerializeField] private GameObject _silverPrefab;
+    [SerializeField] private AnimationClip _silverAnimation;
+    [SerializeField] private GameObject _ironPrefab;
+    [SerializeField] private AnimationClip _ironAnimation;
+    [SerializeField] private GameObject _copperPrefab;
+    [SerializeField] private AnimationClip _copperAnimation;
+    private GameObject[] _coinPrefabs;
+    private AnimationClip[] _coinAnimations;
+
     [Header("Live Options")]
     [SerializeField] private bool _effectEnabled = true;
     [SerializeField, Range(8, 64)] private int _poolSize = 24;
-    [SerializeField, Min(1)] private long _amountPerCoin = 10;
-    [SerializeField, Range(1, 12)] private int _maximumCoinsPerIncome = 6;
+    [SerializeField, Min(0.01f)] private float _spawnInterval = 0.1f;
+    private readonly Queue<(int Type, int Count)> _pendingCoins = new Queue<(int Type, int Count)>();
+    private readonly int[] _nextCoins = new int[4];
+    private int _pendingType;
+    private int _pendingCount;
+    private float _spawnTimer;
+    public event Action<int> CoinSpawned;
 
     [Header("Canvas Drop")]
     [SerializeField, Min(1f)] private float _coinSize = 28f;
@@ -52,7 +71,6 @@ public sealed class MonitorCoinRain : MonoBehaviour
     private Transform _physicsRoot;
     private float[] _ages;
     private float[] _animationOffsets;
-    private int _nextCoin;
     private bool CanShowCoins => _effectEnabled && _canvasRoot.gameObject.activeInHierarchy;
 
     /// <summary>
@@ -61,6 +79,8 @@ public sealed class MonitorCoinRain : MonoBehaviour
     /// </summary>
     void Awake()
     {
+        _coinPrefabs = new[] { _goldPrefab, _silverPrefab, _ironPrefab, _copperPrefab };
+        _coinAnimations = new[] { _goldAnimation, _silverAnimation, _ironAnimation, _copperAnimation };
         CreatePoolRoot();
         CreatePhysicsWorld();
         FitPoolToBackground();
@@ -121,10 +141,11 @@ public sealed class MonitorCoinRain : MonoBehaviour
             if (!coin.gameObject.activeSelf) continue;
             _ages[index] += Time.unscaledDeltaTime;
             if (HideExpiredCoin(index)) continue;
-            _coinPlayables[index].SetTime((_ages[index] + _animationOffsets[index]) % _coinAnimation.length);
+            _coinPlayables[index].SetTime((_ages[index] + _animationOffsets[index]) % _coinAnimations[index / _poolSize].length);
             animated = true;
             UpdateCoinBlink(index);
         }
+        ProcessSpawnQueue(Time.unscaledDeltaTime);
         SimulateCoins(Mathf.Min(Time.unscaledDeltaTime, 0.05f));
         if (animated) _animationGraph.Evaluate(0f);
         SyncCoinPositions();
@@ -152,22 +173,24 @@ public sealed class MonitorCoinRain : MonoBehaviour
     }
 
     /// <summary>
-    /// _coinPrefab을 _poolSize만큼 생성하고 각 코인의 Image, Collider와 애니메이션을 배열에 저장한다.
+    /// 4종 코인 프리팹을 종류마다 _poolSize만큼 생성하고 Image, Collider와 애니메이션을 배열에 저장한다.
     /// 물리 자식은 전용 씬으로 분리하며 생성 직후 UI와 시뮬레이션을 꺼 재사용 대기 상태로 둔다.
     /// </summary>
     private void CreateCoinPool()
     {
-        _coins = new Image[_poolSize];
-        _coinPlayables = new AnimationClipPlayable[_poolSize];
+        int totalCount = _poolSize * _coinPrefabs.Length;
+        _coins = new Image[totalCount];
+        _coinPlayables = new AnimationClipPlayable[totalCount];
         _animationGraph = PlayableGraph.Create("MonitorCoinAnimation");
         _animationGraph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
-        _bodies = new Rigidbody2D[_poolSize];
-        _coinColliders = new CircleCollider2D[_poolSize];
-        _ages = new float[_poolSize];
-        _animationOffsets = new float[_poolSize];
+        _bodies = new Rigidbody2D[totalCount];
+        _coinColliders = new CircleCollider2D[totalCount];
+        _ages = new float[totalCount];
+        _animationOffsets = new float[totalCount];
         for (int index = 0; index < _coins.Length; index++)
         {
-            GameObject coin = Instantiate(_coinPrefab, _poolRoot);
+            int type = index / _poolSize;
+            GameObject coin = Instantiate(_coinPrefabs[type], _poolRoot);
             coin.layer = _canvasRoot.gameObject.layer;
             _coins[index] = coin.GetComponent<Image>();
             _coins[index].raycastTarget = false;
@@ -180,7 +203,7 @@ public sealed class MonitorCoinRain : MonoBehaviour
             _bodies[index] = body;
             _coinColliders[index] = body.GetComponent<CircleCollider2D>();
             _coinColliders[index].sharedMaterial = _collisionMaterial;
-            _coinPlayables[index] = AnimationClipPlayable.Create(_animationGraph, _coinAnimation);
+            _coinPlayables[index] = AnimationClipPlayable.Create(_animationGraph, _coinAnimations[type]);
             _coinPlayables[index].SetSpeed(0);
             AnimationPlayableOutput output = AnimationPlayableOutput.Create(_animationGraph, "Coin" + index, coin.GetComponent<Animator>());
             output.SetSourcePlayable(_coinPlayables[index]);
@@ -288,33 +311,72 @@ public sealed class MonitorCoinRain : MonoBehaviour
 
     /// <summary>
     /// balance의 증가분을 활성 미니게임 캔버스 안에서 코인으로 표시한다.
-    /// _amountPerCoin으로 올림 계산하고 _maximumCoinsPerIncome만큼 제한하며 감소한 잔액은 연출하지 않는다.
+    /// 증가분을 int로 변환해 단위별 대기열에 추가하며 감소한 잔액은 연출하지 않는다.
     /// </summary>
     private void HandleBalanceChanged(long balance)
     {
         long income = balance - _lastBalance;
         _lastBalance = balance;
         if (!CanShowCoins || income <= 0) return;
-        long units = _amountPerCoin > 0 ? _amountPerCoin : 1;
-        long count = income / units + (income % units > 0 ? 1 : 0);
-        int visibleCount = count > _maximumCoinsPerIncome ? _maximumCoinsPerIncome : (int)count;
-        for (int index = 0; index < visibleCount; index++) PlayCoin();
+        QueueIncome(checked((int)income));
+    }
+
+    /// <summary>
+    /// amount를 1000, 100, 50, 10 순서로 분해해 종류와 개수를 생성 대기열에 저장한다.
+    /// 획득량은 10의 배수로 처리하며 지갑 잔액은 변경하지 않는다.
+    /// </summary>
+    private void QueueIncome(int amount)
+    {
+        for (int type = 0; type < _coinAmounts.Length; type++)
+        {
+            int count = amount / _coinAmounts[type];
+            amount %= _coinAmounts[type];
+            if (count > 0) _pendingCoins.Enqueue((type, count));
+        }
+    }
+
+    /// <summary>
+    /// deltaTime으로 생성 간격을 계산하고 대기열의 코인을 한 개씩 순서대로 표시한다.
+    /// 생성한 코인의 단위 금액을 CoinSpawned로 전달하며 같은 종류의 남은 개수를 차감한다.
+    /// </summary>
+    private void ProcessSpawnQueue(float deltaTime)
+    {
+        if (_pendingCount == 0 && _pendingCoins.Count == 0) { _spawnTimer = 0f; return; }
+        _spawnTimer -= deltaTime;
+        if (_spawnTimer > 0f) return;
+        if (_pendingCount == 0)
+        {
+            (int type, int count) = _pendingCoins.Dequeue();
+            _pendingType = type;
+            _pendingCount = count;
+        }
+        if (!PlayCoin(_pendingType)) return;
+        _pendingCount--;
+        _spawnTimer = _spawnInterval;
+        CoinSpawned?.Invoke(_coinAmounts[_pendingType]);
     }
 
     /// <summary>
     /// 미니게임 캔버스의 최상단 랜덤 가로 위치에서 다음 코인을 수직으로 낙하시킨다.
-    /// 물리 코인의 위치, 크기와 초기 속도를 초기화하고 UI 전용 클립을 Image에서 직접 재생한다.
+    /// type의 풀에서 빈 코인을 찾아 초기화하며 생성하면 true, 풀이 모두 사용 중이면 false를 반환한다.
     /// </summary>
-    private void PlayCoin()
+    private bool PlayCoin(int type)
     {
-        int index = _nextCoin;
-        _nextCoin = (_nextCoin + 1) % _coins.Length;
+        int checkedCount = 0;
+        while (checkedCount < _poolSize && _coins[type * _poolSize + _nextCoins[type]].gameObject.activeSelf)
+        {
+            _nextCoins[type] = (_nextCoins[type] + 1) % _poolSize;
+            checkedCount++;
+        }
+        if (checkedCount == _poolSize) return false;
+        int index = type * _poolSize + _nextCoins[type];
+        _nextCoins[type] = (_nextCoins[type] + 1) % _poolSize;
         Image coin = _coins[index];
         FitPoolToBackground();
-        float size = _coinSize * Random.Range(0.85f, 1.15f);
+        float size = _coinSize * UnityEngine.Random.Range(0.85f, 1.15f);
         // 코인 반지름과 여백을 제외한 배경 너비 안에서 생성 X 좌표를 무작위로 선택한다.
         float horizontalRange = Mathf.Max(0f, _poolRoot.rect.width * 0.5f - size * 0.5f - 2f) * _screenWidth;
-        Vector2 spawnPosition = new Vector2(Random.Range(-horizontalRange, horizontalRange), _poolRoot.rect.yMax - size * 0.5f - 2f);
+        Vector2 spawnPosition = new Vector2(UnityEngine.Random.Range(-horizontalRange, horizontalRange), _poolRoot.rect.yMax - size * 0.5f - 2f);
         coin.rectTransform.anchoredPosition = spawnPosition;
         coin.rectTransform.sizeDelta = Vector2.one * size;
         coin.rectTransform.localScale = Vector3.one;
@@ -328,15 +390,16 @@ public sealed class MonitorCoinRain : MonoBehaviour
         body.simulated = true;
         body.position = physicsPosition;
         body.rotation = 0f;
-        body.linearVelocity = Vector2.down * (Random.Range(_initialFallSpeed * 0.5f, _initialFallSpeed) * PHYSICS_SCALE);
+        body.linearVelocity = Vector2.down * (UnityEngine.Random.Range(_initialFallSpeed * 0.5f, _initialFallSpeed) * PHYSICS_SCALE);
         body.angularVelocity = 0f;
         _ages[index] = 0f;
-        _animationOffsets[index] = Random.Range(0f, _coinAnimation.length);
+        _animationOffsets[index] = UnityEngine.Random.Range(0f, _coinAnimations[type].length);
         coin.gameObject.SetActive(true);
         _coinPlayables[index].SetTime(_animationOffsets[index]);
         _animationGraph.Evaluate(0f);
         SyncCoinPositions();
         coin.color = Color.white;
+        return true;
     }
 
     /// <summary>
@@ -361,10 +424,13 @@ public sealed class MonitorCoinRain : MonoBehaviour
 
     /// <summary>
     /// 풀에 남아 있는 코인 연출을 모두 숨긴다.
-    /// 화면 전환, 옵션 해제 또는 비활성화 시 UI와 물리 시뮬레이션을 끄고 인스턴스는 유지하여 재사용한다.
+    /// 화면 전환, 옵션 해제 또는 비활성화 시 대기열과 타이머를 비우고 인스턴스는 유지하여 재사용한다.
     /// </summary>
     private void ClearCoins()
     {
+        _pendingCoins.Clear();
+        _pendingCount = 0;
+        _spawnTimer = 0f;
         if (_coins == null) return;
         for (int index = 0; index < _coins.Length; index++)
         {

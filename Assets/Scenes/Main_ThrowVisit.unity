@@ -1826,15 +1826,20 @@ MonoBehaviour:
   _gameSession: {fileID: 641087395}
   _screenView: {fileID: 641087398}
   _background: {fileID: 641087397}
-  _coinPrefab: {fileID: 6984344256650909965, guid: 6bb43625029d65442b254948407d438b, type: 3}
-  _coinAnimation: {fileID: 7400000, guid: 2e18ef22c867ab94a90a35441523b96d, type: 2}
-  _collisionMaterial: {fileID: 0}
+  _goldPrefab: {fileID: 6984344256650909965, guid: 6bb43625029d65442b254948407d438b, type: 3}
+  _goldAnimation: {fileID: 7400000, guid: 2e18ef22c867ab94a90a35441523b96d, type: 2}
+  _silverPrefab: {fileID: 6984344256650909965, guid: d258878d28894346adb8af5b68dc8bfa, type: 3}
+  _silverAnimation: {fileID: 7400000, guid: 3d912166141f4964a3c1dd968971e6ed, type: 2}
+  _ironPrefab: {fileID: 6984344256650909965, guid: ac23a2e0186542a4ad20347143d61007, type: 3}
+  _ironAnimation: {fileID: 7400000, guid: 0b4b13a1a8d54ed6b0f6c5500384c869, type: 2}
+  _copperPrefab: {fileID: 6984344256650909965, guid: be943159f4fa4f7d83a961d0b3417963, type: 3}
+  _copperAnimation: {fileID: 7400000, guid: 5db05c55612946ee8196e07561a90482, type: 2}
+  _collisionMaterial: {fileID: 6200000, guid: 3a1f771065c04b1b9485f2dde8d8d568, type: 2}
   _effectEnabled: 1
   _poolSize: 24
-  _amountPerCoin: 10
-  _maximumCoinsPerIncome: 6
+  _spawnInterval: 0.1
   _coinSize: 28
-  _lifetime: 2
+  _lifetime: 3
   _blinkRemainingTime: 1
   _blinkFadeDuration: 0.1
   _screenWidth: 1

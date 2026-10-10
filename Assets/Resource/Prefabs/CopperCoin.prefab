@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5444997313695157826}
   - component: {fileID: 2237893631194442409}
   m_Layer: 0
-  m_Name: MonitorCoin
+  m_Name: CopperCoin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1234429392, guid: 8f73c7ba3cb0ebd4f81c7ce23bca7102, type: 3}
+  m_Sprite: {fileID: -2005969383, guid: 8f73c7ba3cb0ebd4f81c7ce23bca7102, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

@@ -46,8 +46,8 @@ public static class MonitorCoinRainSetup
     private static void RestoreScene(string scenePath)
     {
         if (!Application.isBatchMode) throw new InvalidOperationException("복사 프로젝트 배치에서 실행합니다.");
-        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Resource/Prefabs/MonitorCoin.prefab");
-        AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Resource/Sprites/CoinUI.anim");
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Resource/Prefabs/GoldCoin.prefab");
+        AnimationClip clip = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Resource/Sprites/GoldCoin.anim");
         if (prefab == null || clip == null) throw new InvalidOperationException("기존 코인 에셋을 찾을 수 없습니다.");
         var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
         GameSession session = UnityEngine.Object.FindFirstObjectByType<GameSession>();
@@ -59,8 +59,7 @@ public static class MonitorCoinRainSetup
         settings.FindProperty("_gameSession").objectReferenceValue = session;
         settings.FindProperty("_screenView").objectReferenceValue = view;
         settings.FindProperty("_background").objectReferenceValue = background;
-        settings.FindProperty("_coinPrefab").objectReferenceValue = prefab;
-        settings.FindProperty("_coinAnimation").objectReferenceValue = clip;
+        ConfigureCoinAssets(settings);
         settings.FindProperty("_effectEnabled").boolValue = true;
         settings.ApplyModifiedPropertiesWithoutUndo();
         effect.enabled = true;
@@ -81,7 +80,7 @@ public static class MonitorCoinRainSetup
         EditorCurveBinding binding = AnimationUtility.GetObjectReferenceCurveBindings(clip).Single(item => item.type == typeof(SpriteRenderer) && item.propertyName == "m_Sprite" && item.path == "");
         ObjectReferenceKeyframe[] frames = AnimationUtility.GetObjectReferenceCurve(clip, binding);
         if (clip.length <= 0f || frames.Any(frame => !(frame.value is Sprite))) throw new InvalidOperationException("코인 프레임 참조 오류");
-        string uiPath = "Assets/Resource/Sprites/CoinUI.anim";
+        string uiPath = "Assets/Resource/Sprites/GoldCoin.anim";
         AnimationClip uiClip = AssetDatabase.LoadAssetAtPath<AnimationClip>(uiPath);
         if (uiClip == null)
         {
@@ -113,7 +112,7 @@ public static class MonitorCoinRainSetup
         Debug.Log("COIN_UI_FRAME_OK expected=" + frames[2].value.name + " actual=" + imageComponent.sprite.name);
         playable.SetTime(0); graph.Evaluate(0);
         graph.Destroy();
-        GameObject prefab = PrefabUtility.SaveAsPrefabAsset(coin, "Assets/Resource/Prefabs/MonitorCoin.prefab");
+        GameObject prefab = PrefabUtility.SaveAsPrefabAsset(coin, "Assets/Resource/Prefabs/GoldCoin.prefab");
         UnityEngine.Object.DestroyImmediate(coin);
         var scene = EditorSceneManager.OpenScene("Assets/Scenes/Main.unity", OpenSceneMode.Single);
         GameSession session = UnityEngine.Object.FindAnyObjectByType<GameSession>();
@@ -130,11 +129,10 @@ public static class MonitorCoinRainSetup
         serialized.FindProperty("_gameSession").objectReferenceValue = session;
         serialized.FindProperty("_screenView").objectReferenceValue = view;
         serialized.FindProperty("_background").objectReferenceValue = background;
-        serialized.FindProperty("_coinPrefab").objectReferenceValue = prefab;
-        serialized.FindProperty("_coinAnimation").objectReferenceValue = uiClip;
+        ConfigureCoinAssets(serialized);
         serialized.FindProperty("_gravity").floatValue = 500f;
         serialized.FindProperty("_screenWidth").floatValue = 1f;
-        serialized.FindProperty("_lifetime").floatValue = 2f;
+        serialized.FindProperty("_lifetime").floatValue = 3f;
         serialized.ApplyModifiedPropertiesWithoutUndo();
         if (session == null || canvasRoot == null) throw new InvalidOperationException("메인 씬 수입/카메라 참조 오류");
         Debug.Log("COIN_CANVAS_ROOT name=" + canvasRoot.name + " canvas=" + (canvasRoot.GetComponent<Canvas>() != null) + " width=" + canvasRoot.rect.width + " height=" + canvasRoot.rect.height);
@@ -148,6 +146,23 @@ public static class MonitorCoinRainSetup
             "\nMax sprite triangles: " + frames.Max(frame => ((Sprite)frame.value).triangles.Length / 3) +
             "\nCoin CanvasRenderers: 1; visible SpriteRenderers: 0\nCoin shadow casters: 0\nPool: 24\n");
         Debug.Log("MONITOR_COIN_RAIN_UI_COMPLETE");
+    }
+    /// <summary>
+    /// settings의 4종 코인 프리팹과 클립 참조를 현재 에셋 경로로 설정한다.
+    /// 물리 재질과 생성 간격 및 깜빡임 설정을 연결하며 실제 반영은 호출자가 수행한다.
+    /// </summary>
+    private static void ConfigureCoinAssets(SerializedObject settings)
+    {
+        foreach (string name in new[] { "Gold", "Silver", "Iron", "Copper" })
+        {
+            string field = "_" + name.ToLowerInvariant();
+            settings.FindProperty(field + "Prefab").objectReferenceValue = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Resource/Prefabs/" + name + "Coin.prefab");
+            settings.FindProperty(field + "Animation").objectReferenceValue = AssetDatabase.LoadAssetAtPath<AnimationClip>("Assets/Resource/Sprites/" + name + "Coin.anim");
+        }
+        settings.FindProperty("_collisionMaterial").objectReferenceValue = AssetDatabase.LoadAssetAtPath<PhysicsMaterial2D>("Assets/Resource/Materials/MonitorCoin.physicsMaterial2D");
+        settings.FindProperty("_spawnInterval").floatValue = 0.1f;
+        settings.FindProperty("_blinkRemainingTime").floatValue = 1f;
+        settings.FindProperty("_blinkFadeDuration").floatValue = 0.1f;
     }
 }
 

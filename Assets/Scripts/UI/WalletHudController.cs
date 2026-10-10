@@ -17,10 +17,10 @@ namespace Game.UI
         [SerializeField] private Text _balanceLabel;
         [SerializeField] private RectTransform _toastRoot;
         [SerializeField] private WalletHudToastView _toastPrefab;
+        private MonitorCoinRain _coinRain;
 
         [Header("Toast Pool")]
         [SerializeField, Range(1, 8)] private int _maxVisible = 4;
-        [SerializeField, Min(0f)] private float _mergeWindow = 0.12f;
         private ObjectPool<WalletHudToastView> _pool;
         private List<WalletHudToastView> _active;
 
@@ -34,10 +34,10 @@ namespace Game.UI
         [Header("Runtime State")]
         private Wallet _wallet;
         private long _lastBalance;
-        private float _sinceLastGain = float.PositiveInfinity;
 
         void Awake()
         {
+            _coinRain = FindAnyObjectByType<MonitorCoinRain>();
             _active = new List<WalletHudToastView>(_maxVisible);
             _pool = new ObjectPool<WalletHudToastView>(CreateView, ActivateView, ReturnView, DestroyView, false, _maxVisible, _maxVisible);
             for (int index = 0; index < _maxVisible; index++) _active.Add(_pool.Get());
@@ -46,6 +46,7 @@ namespace Game.UI
 
         void OnEnable()
         {
+            if (_coinRain != null) _coinRain.CoinSpawned += ShowGain;
             if (_wallet != null) BindWallet();
         }
 
@@ -57,8 +58,7 @@ namespace Game.UI
 
         void Update()
         {
-            float deltaTime = Time.deltaTime;
-            _sinceLastGain += deltaTime;
+            float deltaTime = Time.unscaledDeltaTime;
             for (int index = _active.Count - 1; index >= 0; index--)
             {
                 WalletHudToastView view = _active[index];
@@ -70,6 +70,7 @@ namespace Game.UI
 
         void OnDisable()
         {
+            if (_coinRain != null) _coinRain.CoinSpawned -= ShowGain;
             if (_wallet != null) _wallet.BalanceChanged -= OnBalanceChanged;
             ClearToasts();
         }
@@ -91,15 +92,15 @@ namespace Game.UI
         }
 
         /// <summary>
-        /// balance를 현재 잔액으로 표시하고 직전 잔액보다 증가한 수량만 알림으로 전달한다.
-        /// 초기 잔액이나 구매로 인한 감소에는 보상 Toast를 생성하지 않는다.
+        /// balance를 실제 지갑 잔액으로 즉시 표시하며 코인 연출이 있는 씬의 획득 알림은 생성 이벤트에 맡긴다.
+        /// 코인 연출이 없는 씬에서는 증가분을 int로 변환하여 기존 획득 알림을 표시한다.
         /// </summary>
         private void OnBalanceChanged(long balance)
         {
             long gained = balance - _lastBalance;
             _lastBalance = balance;
             RefreshBalance(balance);
-            if (gained > 0) ShowGain(gained);
+            if (_coinRain == null && gained > 0) ShowGain(checked((int)gained));
         }
 
         /// <summary>
@@ -112,42 +113,33 @@ namespace Game.UI
         }
 
         /// <summary>
-        /// amount의 획득 알림을 합산하거나 풀에서 대여하여 우측 상단에 표시한다.
-        /// 합산 시간 밖의 획득은 새 알림으로 표시하고 용량이 가득 차면 가장 오래된 알림을 재사용한다.
+        /// 생성된 코인의 단위 금액 amount를 합산 없이 개별 획득 알림으로 표시한다.
+        /// 풀에서 알림을 대여하며 용량이 가득 차면 가장 오래된 알림을 재사용한다.
         /// </summary>
-        private void ShowGain(long amount)
+        private void ShowGain(int amount)
         {
-            if (_mergeWindow > 0f && _active.Count > 0 && _sinceLastGain <= _mergeWindow)
+            if (_active.Count == _maxVisible)
             {
-                _active[_active.Count - 1].Merge(amount);
+                WalletHudToastView oldest = _active[0];
+                _active.RemoveAt(0);
+                _pool.Release(oldest);
             }
-            else
-            {
-                if (_active.Count == _maxVisible)
-                {
-                    WalletHudToastView oldest = _active[0];
-                    _active.RemoveAt(0);
-                    _pool.Release(oldest);
-                }
-                WalletHudToastView view = _pool.Get();
-                view.Begin(amount, _duration, _riseDistance, _fadeStart, _toastColor);
-                _active.Add(view);
-            }
-            _sinceLastGain = 0f;
+            WalletHudToastView view = _pool.Get();
+            view.Begin(amount, _duration, _riseDistance, _fadeStart, _toastColor);
+            _active.Add(view);
             for (int index = 0; index < _active.Count; index++)
                 _active[index].Tick(0f, _active.Count - 1 - index, _rowSpacing);
         }
 
         /// <summary>
         /// 표시 중인 HUD 알림을 초기화하고 풀로 반환한다.
-        /// 활성 목록과 합산 시간을 비워 다시 활성화할 때 이전 알림이 남지 않게 한다.
+        /// 활성 목록을 비워 다시 활성화할 때 이전 알림이 남지 않게 한다.
         /// </summary>
         private void ClearToasts()
         {
             if (_pool == null) return;
             for (int index = _active.Count - 1; index >= 0; index--) _pool.Release(_active[index]);
             _active.Clear();
-            _sinceLastGain = float.PositiveInfinity;
         }
 
         /// <summary>
