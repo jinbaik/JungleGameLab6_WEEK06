@@ -65,13 +65,15 @@ namespace KeyboardModeling
             [Header("Rarity")]
             [SerializeField] private KeycapRarity _rarity;
             [SerializeField, Min(1f)] private float _healthMultiplier;
-            [SerializeField, Min(1f)] private float _rewardMultiplier;
-            [SerializeField] private Material _effectMaterial;
+            [SerializeField, Min(1f)] private float _rewardMultiplier;            
+            [SerializeField] private Material _shellMaterial;
+
 
             public KeycapRarity Rarity => _rarity;
             public float HealthMultiplier => _healthMultiplier;
             public float RewardMultiplier => _rewardMultiplier;
-            public Material EffectMaterial => _effectMaterial;
+            public Material ShellMaterial => _shellMaterial;
+            
 
             /// <summary>
             /// rarity, healthMultiplier, rewardMultiplier로 등급 기본 설정을 만든다.
@@ -84,7 +86,10 @@ namespace KeyboardModeling
                 _rewardMultiplier = rewardMultiplier;
             }
 
-            /// <summary>체력과 보상 배율이 유한한 1 이상의 수인지 검사하며 설정 오류를 거부한다.</summary>
+            /// <summary>
+            /// 체력·보상 배율과 외피 재질을 검사한다.
+            /// 현재 등급의 설정이 잘못되면 예외를 발생시킨다.
+            /// </summary>
             public void Validate()
             {
                 if (float.IsNaN(_healthMultiplier) || float.IsInfinity(_healthMultiplier) || _healthMultiplier < 1f ||
@@ -92,9 +97,10 @@ namespace KeyboardModeling
                 {
                     throw new InvalidOperationException("Keycap rarity multipliers must be finite and at least one.");
                 }
-                if (_rarity != KeycapRarity.Common && _effectMaterial == null)
+
+                if (_shellMaterial == null)
                 {
-                    throw new InvalidOperationException($"Missing rarity effect material: {_rarity}.");
+                    throw new InvalidOperationException($"Missing keycap shell material: {_rarity}.");
                 }
             }
         }

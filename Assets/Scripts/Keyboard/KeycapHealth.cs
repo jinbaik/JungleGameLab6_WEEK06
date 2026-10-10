@@ -22,13 +22,15 @@ public sealed class KeycapHealth : MonoBehaviour
     public event Action<KeycapHealth> DamageApplied;
 
     [Header("Runtime Rarity")]
+    [SerializeField] private bool _supportsRarity;
+    public bool SupportsRarity => _supportsRarity;
     private bool _hasSpawnData;
     private KeycapRarity _rarity;
     private long _reward;
     public bool HasSpawnData => _hasSpawnData;
     public KeycapRarity Rarity => _rarity;
     public long Reward => _reward;
-    private MeshRenderer _rarityOverlayRenderer;
+    private MeshRenderer _shellRenderer;
 
     [Header("Damage decal")]
     [SerializeField] private DecalProjector _damageDecal;
@@ -51,15 +53,13 @@ public sealed class KeycapHealth : MonoBehaviour
 
     void Awake()
     {
-        if (_audioSource == null || !_audioSource.gameObject.scene.IsValid()) _audioSource = GetComponentInParent<AudioSource>();
+        if (_audioSource == null || !_audioSource.gameObject.scene.IsValid())
+            _audioSource = GetComponentInParent<AudioSource>();
+
         _currentHP = _maxHP;
         UpdateDamageDecal();
-        Transform overlay = transform.Find("RarityOverlay");
-        _rarityOverlayRenderer = overlay != null ? overlay.GetComponent<MeshRenderer>() : null;
-        if (_rarityOverlayRenderer != null)
-        {
-            _rarityOverlayRenderer.enabled = false;
-        }
+
+        _shellRenderer = transform.Find("PBT_SculptedShell").GetComponent<MeshRenderer>();
         _renderers = GetComponentsInChildren<Renderer>();
         _colliders = GetComponentsInChildren<Collider>();
     }
@@ -68,16 +68,15 @@ public sealed class KeycapHealth : MonoBehaviour
     /// data의 확정된 등급·체력·보상을 새 키캡에 한 번 적용한다.
     /// 최대·현재 체력과 등급 상태를 저장하고 희귀 키캡의 색상 및 균열 표시를 갱신한다.
     /// </summary>
+    /// <summary>
+    /// data의 등급·체력·보상·외피 재질을 새 키캡에 한 번 적용한다.
+    /// 최대·현재 체력과 등급 상태를 저장하고 외피 및 균열 표시를 갱신한다.
+    /// </summary>
     public void InitializeSpawnData(KeyboardSpawnProfile.KeycapData data)
     {
         if (_hasSpawnData || _broken || _currentHP != _maxHP)
         {
             throw new InvalidOperationException("Spawn data can only initialize an untouched keycap once.");
-        }
-
-        if (data.Rarity != KeycapRarity.Common && (_rarityOverlayRenderer == null || data.EffectMaterial == null))
-        {
-            throw new InvalidOperationException($"Missing rarity overlay on keycap '{name}'.");
         }
 
         _maxHP = data.MaxHP;
@@ -86,12 +85,10 @@ public sealed class KeycapHealth : MonoBehaviour
         _reward = data.Reward;
         _hasSpawnData = true;
 
-        if (_rarity != KeycapRarity.Common)
+        if (_supportsRarity)
         {
-            _rarityOverlayRenderer.sharedMaterial = data.EffectMaterial;
-            _rarityOverlayRenderer.enabled = true;
+            _shellRenderer.sharedMaterial = data.ShellMaterial;
         }
-
         UpdateDamageDecal();
     }
 

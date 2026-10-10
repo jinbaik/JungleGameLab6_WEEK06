@@ -16,16 +16,16 @@ MonoBehaviour:
   - _rarity: 0
     _healthMultiplier: 1
     _rewardMultiplier: 1
-    _effectMaterial: {fileID: 0}
+    _shellMaterial: {fileID: 2100000, guid: 0a1a2ec0d6ed18c459f87b5d181564bf, type: 2}
   - _rarity: 1
     _healthMultiplier: 3
     _rewardMultiplier: 2
-    _effectMaterial: {fileID: 2100000, guid: 006fe791511e3d947803a1ce47c270b5, type: 2}
+    _shellMaterial: {fileID: 2100000, guid: 1c359114b88294f4faf80ab69cd546a9, type: 2}
   - _rarity: 2
     _healthMultiplier: 10
     _rewardMultiplier: 6
-    _effectMaterial: {fileID: 2100000, guid: e4144ad995903914382c1f8495fd19ea, type: 2}
+    _shellMaterial: {fileID: 2100000, guid: 4a0a69a01cf224a46928ca01abe1b600, type: 2}
   - _rarity: 3
     _healthMultiplier: 40
     _rewardMultiplier: 10
-    _effectMaterial: {fileID: 2100000, guid: 98216fa607e7a3b43ab28e6a901a3c86, type: 2}
+    _shellMaterial: {fileID: 2100000, guid: 49c3ca8fd4e59c34ea8d550486382ebb, type: 2}
