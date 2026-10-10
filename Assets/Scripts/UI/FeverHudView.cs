@@ -70,7 +70,7 @@ namespace Game.UI
                 FeverController.PauseReason.KeyboardUnavailable => "PAUSED\nPlace a keyboard\nto resume.",
                 FeverController.PauseReason.InputDisabled => "PAUSED\nReturn to smash\nto resume.",
                 FeverController.PauseReason.GamePaused => "PAUSED\nResume the game\nto continue.",
-                _ => active ? "Keep smashing!" : "+0.1% direct hit\n+50% per clear"
+                _ => active ? "Keep smashing!" : "+0.1% direct hit\n+50% per minigame"
             };
         }
     }

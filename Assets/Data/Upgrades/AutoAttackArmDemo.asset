@@ -15,7 +15,7 @@ MonoBehaviour:
   _id: 2
   _displayName: Auto Attack
   _description: 'Unlock a robotic arm: one intact white key, 1 damage, every second.'
-  _levelCosts: 3200000000000000
+  _levelCosts: 6400000000000000
   _damageBonuses: 010000000200000003000000
   _areaRadii:
   - 1.5

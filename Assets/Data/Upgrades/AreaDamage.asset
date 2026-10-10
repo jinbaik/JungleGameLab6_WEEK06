@@ -16,14 +16,16 @@ MonoBehaviour:
   _displayName: Area Damage
   _description: Increase nearby-key damage independently from direct smash damage.
     Applies before the fever multiplier.
-  _levelCosts: 64000000000000005802000000000000b80b000000000000
+  _levelCosts: 2c0100000000000084030000000000009411000000000000
   _damageBonuses: 010000000200000003000000
   _areaRadii:
   - 1.5
   - 2
   - 2.5
+  _feverDurations: []
   _baseFeverDuration: 5
   _feverDurationPerLevel: 2
+  _feverDamageMultipliers: []
   _baseFeverDamageMultiplier: 2
   _feverDamageMultiplierPerLevel: 0.3
   _rarityDistributions:

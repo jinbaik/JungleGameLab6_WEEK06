@@ -16,14 +16,16 @@ MonoBehaviour:
   _displayName: Area Smash
   _description: Hit keys within a radius of 1.5 / 2 / 2.5 key spacings. Nearby keys
     take the same damage.
-  _levelCosts: 64000000000000005802000000000000b80b000000000000
+  _levelCosts: 2c01000000000000e8030000000000008813000000000000
   _damageBonuses: 010000000200000003000000
   _areaRadii:
   - 1.5
   - 2
   - 2.5
+  _feverDurations: []
   _baseFeverDuration: 5
   _feverDurationPerLevel: 2
+  _feverDamageMultipliers: []
   _baseFeverDamageMultiplier: 2
   _feverDamageMultiplierPerLevel: 0.3
   _rarityDistributions:
