@@ -27,6 +27,7 @@ namespace KeyboardModeling
         public event Action<Key> KeyPressed;
         public event Action<KeycapHealth> AttackRequested;
         public event Action<Transform> KeycapPressed;
+        public event Action<Transform> AreaKeycapHit;
 
         [Header("Key Travel")]
         [SerializeField, Min(0f)] private float _pressDistance = 0.15f;
@@ -186,10 +187,11 @@ namespace KeyboardModeling
 
                 if (pressedThisFrame)
                 {
-                    float volumeScale = _keycapHealths[index] != null && _keycapHealths[index].CurrentHP == 0 ? 0.05f : 1f;
-                    _audioSource.PlayOneShot(_pressSound, volumeScale);
-
-                    KeycapPressed?.Invoke(_bindings[index].Keycap);
+                    if (_keycapHealths[index] == null || _keycapHealths[index].CurrentHP > 0)
+                    {
+                        _audioSource.PlayOneShot(_pressSound);
+                        KeycapPressed?.Invoke(_bindings[index].Keycap);
+                    }
                     KeyPressed?.Invoke(_bindings[index].Key);
                     if (!_inputEnabled || !isActiveAndEnabled)
                     {
@@ -221,6 +223,16 @@ namespace KeyboardModeling
             _lastPressDistance = _pressDistance;
             if (pressedKeysChanged)
                 RefreshPressedKeyNames();
+        }
+
+        /// <summary>
+        /// 살아 있는 광역 타격 대상 keycap의 정상 타격음을 재생하고 AreaKeycapHit로 연출을 요청한다.
+        /// 공격 판정이 검증한 대상 Transform을 전달하며 물리 키 입력, 미니게임 진행과 추가 공격은 발생시키지 않는다.
+        /// </summary>
+        public void NotifyAreaKeycapHit(Transform keycap)
+        {
+            _audioSource.PlayOneShot(_pressSound);
+            AreaKeycapHit?.Invoke(keycap);
         }
 
         void OnEnable()
