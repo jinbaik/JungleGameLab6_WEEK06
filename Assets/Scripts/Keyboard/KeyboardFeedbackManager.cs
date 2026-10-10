@@ -100,7 +100,7 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
     }
 
     /// <summary>
-    /// keyboard의 새 눌림 이벤트를 구독하고 이전 대상의 연결과 부스러기를 해제한다.
+        /// keyboard의 새 눌림과 광역 타격 이벤트를 구독하고 이전 대상의 연결과 부스러기를 해제한다.
     /// 대상 메시 경계를 저장하여 부스러기가 키보드 외곽을 넘어가지 않도록 제한한다.
     /// </summary>
     private void BindKeyboard(KeyboardInputController keyboard)
@@ -108,6 +108,7 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
         if (_keyboard != null)
         {
             _keyboard.KeycapPressed -= HandleKeycapPressed;
+            _keyboard.AreaKeycapHit -= HandleKeycapPressed;
             _keyboard.SetHitStopEnabled(false);
         }
         EndHitStop();
@@ -137,11 +138,12 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
         }
         _keyboard.SetHitStopEnabled(_enableHitStop);
         _keyboard.KeycapPressed += HandleKeycapPressed;
+        _keyboard.AreaKeycapHit += HandleKeycapPressed;
     }
 
     /// <summary>
-    /// 살아 있는 keycap의 새 눌림에서 부스러기와 히트스톱을 시작한다.
-    /// 키캡 위치와 현재 옵션으로 작은 조각을 방출하고 재발동 조건이 맞으면 시간 배율을 잠시 정지한다.
+    /// 살아 있는 keycap의 새 눌림 또는 광역 타격에서 부스러기, 점멸과 히트스톱을 시작한다.
+    /// 키캡 위치와 현재 옵션으로 연출을 재생하고 재발동 조건이 맞으면 시간 배율을 잠시 정지한다.
     /// </summary>
     private void HandleKeycapPressed(Transform keycap)
     {
