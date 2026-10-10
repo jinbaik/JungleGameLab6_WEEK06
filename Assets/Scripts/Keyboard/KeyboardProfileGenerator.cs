@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace KeyboardModeling
@@ -39,7 +40,8 @@ namespace KeyboardModeling
                 KeycapRaritySettings.Tier tier = settings.GetTier(rarity);
                 int maxHP = checked((int)Math.Ceiling(health.MaxHP * (double)tier.HealthMultiplier));
                 long reward = checked((long)Math.Ceiling(baseReward * (double)tier.RewardMultiplier));
-                data.Add(new KeyboardSpawnProfile.KeycapData(key, rarity, maxHP, reward, tier.EffectMaterial));
+                Mesh shape = health.transform.Find("PBT_SculptedShell").GetComponent<MeshFilter>().sharedMesh;
+                data.Add(new KeyboardSpawnProfile.KeycapData(key, rarity, maxHP, reward, tier.EffectMaterial, tier.GetPrefab(shape)));
 
             }
             return new KeyboardSpawnProfile(progressionStage, seed, distribution, data);

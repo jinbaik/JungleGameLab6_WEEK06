@@ -60,6 +60,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 49c3ca8fd4e59c34ea8d550486382ebb, type: 2}
+    - target: {fileID: 5261916027617818438, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 49c3ca8fd4e59c34ea8d550486382ebb, type: 2}
     - target: {fileID: 6004080589864425764, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
       propertyPath: m_Name
       value: Keyboard_TKL_87_Celestial_Background

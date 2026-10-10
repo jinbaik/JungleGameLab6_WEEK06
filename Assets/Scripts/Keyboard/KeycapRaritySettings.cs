@@ -67,11 +67,29 @@ namespace KeyboardModeling
             [SerializeField, Min(1f)] private float _healthMultiplier;
             [SerializeField, Min(1f)] private float _rewardMultiplier;
             [SerializeField] private Material _effectMaterial;
+            [SerializeField] private PrefabVariant[] _prefabVariants = Array.Empty<PrefabVariant>();
 
             public KeycapRarity Rarity => _rarity;
             public float HealthMultiplier => _healthMultiplier;
             public float RewardMultiplier => _rewardMultiplier;
             public Material EffectMaterial => _effectMaterial;
+
+            /// <summary>
+            /// sourceMesh와 같은 크기 및 형상을 사용하는 등급별 키캡 프리팹을 조회한다.
+            /// 교체 설정이 없는 등급은 null을 반환하고 설정된 등급의 형상이 누락되면 오류를 알린다.
+            /// </summary>
+            public GameObject GetPrefab(Mesh sourceMesh)
+            {
+                if (_prefabVariants.Length == 0)
+                    return null;
+
+                foreach (PrefabVariant variant in _prefabVariants)
+                {
+                    if (variant.SourceMesh == sourceMesh)
+                        return variant.Prefab;
+                }
+                throw new InvalidOperationException($"Missing {_rarity} keycap prefab for {sourceMesh.name}.");
+            }
 
             /// <summary>
             /// rarity, healthMultiplier, rewardMultiplier로 등급 기본 설정을 만든다.
@@ -96,6 +114,29 @@ namespace KeyboardModeling
                 {
                     throw new InvalidOperationException($"Missing rarity effect material: {_rarity}.");
                 }
+                foreach (PrefabVariant variant in _prefabVariants)
+                    variant.Validate();
+            }
+        }
+
+        [Serializable]
+        private sealed class PrefabVariant
+        {
+            [Header("Matching Shape")]
+            [SerializeField] private Mesh _sourceMesh;
+            [SerializeField] private GameObject _prefab;
+            public Mesh SourceMesh => _sourceMesh;
+            public GameObject Prefab => _prefab;
+
+            /// <summary>
+            /// 원본 메시와 교체 프리팹의 체력 및 버튼 설정을 확인한다.
+            /// 참조 또는 필수 컴포넌트가 없으면 배치 전에 설정 오류를 발생시킨다.
+            /// </summary>
+            public void Validate()
+            {
+                if (_sourceMesh == null || _prefab == null || _prefab.GetComponent<KeycapHealth>() == null
+                    || _prefab.GetComponent<KeycapButton>() == null)
+                    throw new InvalidOperationException("Keycap prefab variants require a source mesh, health and button.");
             }
         }
     }

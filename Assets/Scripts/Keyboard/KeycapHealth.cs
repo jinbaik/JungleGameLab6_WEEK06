@@ -85,6 +85,7 @@ public sealed class KeycapHealth : MonoBehaviour
         _rarity = data.Rarity;
         _reward = data.Reward;
         _hasSpawnData = true;
+        _renderers = GetComponentsInChildren<Renderer>();
 
         if (_rarity != KeycapRarity.Common)
         {

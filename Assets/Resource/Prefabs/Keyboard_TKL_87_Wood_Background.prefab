@@ -60,6 +60,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 1c359114b88294f4faf80ab69cd546a9, type: 2}
+    - target: {fileID: 5261916027617818438, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 1c359114b88294f4faf80ab69cd546a9, type: 2}
     - target: {fileID: 6004080589864425764, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
       propertyPath: m_Name
       value: Keyboard_TKL_87_Wood_Background

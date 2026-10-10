@@ -209,29 +209,33 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     }
 
     /// <summary>
-    /// keyboard의 입력과 키캡 Collider를 끄고 들기용 물리 상태를 구성하여 등록 상태를 반환한다.
+    /// instance의 입력과 키캡 Collider를 끄고 들기용 물리 상태를 구성하여 등록 상태를 반환한다.
     /// isPlayable이 true인 경우에만 실제 입력 키캡의 전체 파괴 판정을 초기화한다.
     /// </summary>
-    public KeyboardState RegisterKeyboard(KeyboardInputController keyboard, bool isPlayable = false)
+    private KeyboardState RegisterKeyboard(GameObject instance, bool isPlayable = false)
     {
-
-        keyboard.SetInputEnabled(false);
-        keyboard.enabled = false;
-        Collider[] colliders = keyboard.GetComponentsInChildren<Collider>();
+        KeyboardInputController keyboard = instance.GetComponent<KeyboardInputController>();
+        if (keyboard != null)
+        {
+            keyboard.SetInputEnabled(false);
+            keyboard.enabled = false;
+        }
+        Collider[] colliders = instance.GetComponentsInChildren<Collider>();
         bool[] colliderEnabled = new bool[colliders.Length];
         for (int index = 0; index < colliders.Length; index++) { colliderEnabled[index] = colliders[index].enabled; colliders[index].enabled = false; }
-        Rigidbody body = keyboard.GetComponent<Rigidbody>();
-        if (body == null) body = keyboard.gameObject.AddComponent<Rigidbody>();
-        BoxCollider collider = keyboard.GetComponent<BoxCollider>();
-        if (collider == null) collider = keyboard.gameObject.AddComponent<BoxCollider>();
-        collider.center = _keyboardBounds.center;
-        collider.size = _keyboardBounds.size;
+        Rigidbody body = instance.GetComponent<Rigidbody>();
+        if (body == null) body = instance.AddComponent<Rigidbody>();
+        BoxCollider collider = instance.GetComponent<BoxCollider>();
+        if (collider == null) collider = instance.AddComponent<BoxCollider>();
+        Bounds pickupBounds = isPlayable ? _keyboardBounds : CalculateKeyboardBounds(instance.transform);
+        collider.center = pickupBounds.center;
+        collider.size = pickupBounds.size;
         collider.isTrigger = false;
         collider.enabled = true;
         body.isKinematic = false;
         body.useGravity = true;
         body.interpolation = RigidbodyInterpolation.Interpolate;
-        KeyboardState state = new KeyboardState(keyboard, body, collider, colliders, colliderEnabled);
+        KeyboardState state = new KeyboardState(instance, keyboard, body, collider, colliders, colliderEnabled);
         _keyboards.Add(body, state);
         if (isPlayable)
         {
@@ -290,7 +294,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
             GameObject keyboard = Instantiate(_keyboardPrefab, position, Random.rotationUniform, _spawnRoot);
             keyboard.name = $"{areaName}_Keyboard_{index + 1}";
             keyboard.transform.localScale = _referenceKeyboard.transform.lossyScale;
-            RegisterKeyboard(keyboard.GetComponent<KeyboardInputController>());
+            RegisterKeyboard(keyboard);
             SpawnedKeyboardCount++;
         }
     }
@@ -351,7 +355,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
             source.Collider.enabled = false;
             lastDroped = null;
             _heldKeyboard = null;
-            Destroy(source.Keyboard.gameObject);
+            Destroy(source.Root);
         }
         catch (Exception exception)
         {
@@ -426,11 +430,15 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         _controller.SetKeyBoard(target.Keyboard);
         PlacedKeyboardChanged?.Invoke(target.Keyboard);
 
+        KeyboardProtectionCover cover = source.Root.GetComponentInChildren<KeyboardProtectionCover>();
+        if (cover != null)
+            cover.RemoveFrom(target.Root.transform);
+
         _keyboards.Remove(source.Body);
         source.Collider.enabled = false;
         lastDroped = null;
         _heldKeyboard = null;
-        Destroy(source.Keyboard.gameObject);
+        Destroy(source.Root);
         _isPlacingKeyboard = false;
         OnEnterSmashMode();
     }
@@ -469,7 +477,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
             }
 
             keyboard.InitializeSpawnProfile(source.PendingProfile, layout);
-            return RegisterKeyboard(keyboard, playerControlled);
+            return RegisterKeyboard(instance, playerControlled);
         }
         catch
         {
@@ -580,6 +588,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     {
         private KeyboardSpawnProfile _pendingProfile;
         private bool _placementFailed;
+        public GameObject Root { get; }
         public KeyboardInputController Keyboard { get; }
         public Rigidbody Body { get; }
         public BoxCollider Collider { get; }
@@ -606,9 +615,10 @@ public sealed class KeyboardInteractionController : MonoBehaviour
             _placementFailed = false;
         }
 
-        /// <summary>keyboard, body, collider와 기존 colliders 및 활성 상태를 저장하여 입력과 들기에 사용할 키보드 상태를 구성한다.</summary>
-        public KeyboardState(KeyboardInputController keyboard, Rigidbody body, BoxCollider collider, Collider[] colliders, bool[] colliderEnabled)
+        /// <summary>root, keyboard, body, collider와 기존 Collider 활성 상태를 저장하여 배경용 또는 플레이용 키보드 상태를 구성한다.</summary>
+        public KeyboardState(GameObject root, KeyboardInputController keyboard, Rigidbody body, BoxCollider collider, Collider[] colliders, bool[] colliderEnabled)
         {
+            Root = root;
             Keyboard = keyboard; Body = body; Collider = collider; Colliders = colliders; ColliderEnabled = colliderEnabled;
         }
     }

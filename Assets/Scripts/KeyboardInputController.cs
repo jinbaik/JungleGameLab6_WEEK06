@@ -83,10 +83,41 @@ namespace KeyboardModeling
 
             foreach (KeyboardSpawnProfile.KeycapData data in profile.Keycaps)
             {
-                layout[data.Key].InitializeSpawnData(data);
+                int index = Array.FindIndex(_bindings, binding => binding.Key == data.Key);
+                if (data.Prefab != null)
+                    ReplaceKeycap(index, data.Prefab);
+                _keycapHealths[index].InitializeSpawnData(data);
             }
 
             _spawnProfile = profile;
+        }
+
+        /// <summary>
+        /// index의 기존 키캡을 같은 형상의 prefab 인스턴스로 교체한다.
+        /// 위치, 각인과 누름 동작을 보존하고 바인딩, 체력, 버튼 및 복귀 위치 캐시를 갱신한다.
+        /// </summary>
+        private void ReplaceKeycap(int index, GameObject prefab)
+        {
+            Transform previous = _bindings[index].Keycap;
+            GameObject replacement = Instantiate(prefab, previous.parent, false);
+            Transform keycap = replacement.transform;
+            replacement.name = previous.name;
+            keycap.localPosition = previous.localPosition;
+            keycap.localRotation = previous.localRotation;
+            keycap.localScale = previous.localScale;
+            keycap.SetSiblingIndex(previous.GetSiblingIndex());
+            foreach (TextMesh legend in previous.GetComponentsInChildren<TextMesh>(true))
+                legend.transform.SetParent(keycap, true);
+
+            KeycapButton button = replacement.GetComponent<KeycapButton>();
+            button.PreservePressAction(_keycapButtons[index]);
+            _bindings[index].SetKeycap(keycap);
+            _keycapButtons[index] = button;
+            _keycapHealths[index] = replacement.GetComponent<KeycapHealth>();
+            _restPositions[index] = keycap.localPosition;
+            previous.gameObject.SetActive(false);
+            previous.SetParent(null, true);
+            Destroy(previous.gameObject);
         }
 
         /// <summary>
@@ -422,6 +453,15 @@ namespace KeyboardModeling
 
             public Key Key => _key;
             public Transform Keycap => _keycap;
+
+            /// <summary>
+            /// keycap을 이 물리 키의 새 입력 대상으로 저장한다.
+            /// 물리 키 식별자는 유지하고 키캡 Transform 참조만 변경한다.
+            /// </summary>
+            public void SetKeycap(Transform keycap)
+            {
+                _keycap = keycap;
+            }
         }
     }
 }
