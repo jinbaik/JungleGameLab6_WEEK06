@@ -2209,10 +2209,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Keyboard_TKL_87
       objectReference: {fileID: 0}
-    - target: {fileID: 6087872409866529466, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6971031978401606262, guid: 63bffb1f169d269429fc92b01b30f6e7, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.3995105
