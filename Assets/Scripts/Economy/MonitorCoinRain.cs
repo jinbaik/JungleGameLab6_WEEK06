@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 using Game.Economy;
@@ -10,12 +11,16 @@ using KeyboardModeling;
 [DisallowMultipleComponent]
 public sealed class MonitorCoinRain : MonoBehaviour
 {
+    // UI 좌표 100을 물리 좌표 1로 변환한다.
+    private const float PHYSICS_SCALE = 0.01f;
+
     [Header("References")]
     [SerializeField] private GameSession _gameSession;
     [SerializeField] private MiniGameScreenView _screenView;
     [SerializeField] private RectTransform _background;
     [SerializeField] private GameObject _coinPrefab;
     [SerializeField] private AnimationClip _coinAnimation;
+    [SerializeField] private PhysicsMaterial2D _collisionMaterial;
     private RectTransform _canvasRoot;
     private readonly Vector3[] _backgroundCorners = new Vector3[4];
     private Wallet _wallet;
@@ -31,19 +36,105 @@ public sealed class MonitorCoinRain : MonoBehaviour
 
     [Header("Canvas Drop")]
     [SerializeField, Min(1f)] private float _coinSize = 28f;
-    [SerializeField, Min(0.1f)] private float _lifetime = 2f;
+    [SerializeField, Min(0.1f)] private float _lifetime = 3f;
+    [SerializeField, Min(0f)] private float _blinkRemainingTime = 1f;
+    [SerializeField, Min(0.01f)] private float _blinkFadeDuration = 0.1f;
     [SerializeField, Range(0f, 1f)] private float _screenWidth = 1f;
     [SerializeField, Min(0f)] private float _gravity = 500f;
     [SerializeField, Min(0f)] private float _initialFallSpeed = 70f;
     private RectTransform _poolRoot;
     private Image[] _coins;
-    private Vector2[] _velocities;
+    private Rigidbody2D[] _bodies;
+    private CircleCollider2D[] _coinColliders;
+    private BoxCollider2D[] _walls;
+    private Scene _physicsScene;
+    private PhysicsScene2D _physicsWorld;
+    private Transform _physicsRoot;
     private float[] _ages;
     private float[] _animationOffsets;
     private int _nextCoin;
     private bool CanShowCoins => _effectEnabled && _canvasRoot.gameObject.activeInHierarchy;
 
+    /// <summary>
+    /// Inspector의 화면, 프리팹과 애니메이션 참조로 코인 연출을 초기화한다.
+    /// UI 루트와 독립 물리 씬을 만들고 배경 영역에 맞춘 뒤 재사용할 코인 풀을 생성한다.
+    /// </summary>
     void Awake()
+    {
+        CreatePoolRoot();
+        CreatePhysicsWorld();
+        FitPoolToBackground();
+        CreateCoinPool();
+    }
+
+    /// <summary>
+    /// _gameSession의 지갑을 가져와 현재 잔액부터 수입 감지를 시작한다.
+    /// _wallet을 저장하고 잔액 변경 이벤트를 구독한다.
+    /// </summary>
+    void Start()
+    {
+        _wallet = _gameSession.Wallet;
+        ConnectWallet();
+    }
+
+    /// <summary>
+    /// 재활성화 시 이미 저장된 지갑을 사용해 잔액 변경 이벤트를 다시 구독한다.
+    /// Start 이전에는 연결하지 않으며 비활성 동안 발생한 수입은 재생하지 않는다.
+    /// </summary>
+    void OnEnable()
+    {
+        if (_wallet != null) ConnectWallet();
+    }
+
+    /// <summary>
+    /// 지갑 이벤트 구독을 해제하고 모든 코인의 UI 표시와 물리 시뮬레이션을 끈다.
+    /// 풀 인스턴스는 유지하여 재활성화 후 다시 사용한다.
+    /// </summary>
+    void OnDisable()
+    {
+        if (_wallet != null) _wallet.BalanceChanged -= HandleBalanceChanged;
+        ClearCoins();
+    }
+
+    /// <summary>
+    /// 생성한 애니메이션 그래프와 UI 루트를 제거하고 코인 전용 물리 씬을 해제한다.
+    /// 물리 씬에 분리해 보관한 Rigidbody와 벽도 함께 정리한다.
+    /// </summary>
+    void OnDestroy()
+    {
+        if (_animationGraph.IsValid()) _animationGraph.Destroy();
+        if (_poolRoot != null) Destroy(_poolRoot.gameObject);
+        if (_physicsScene.IsValid() && _physicsScene.isLoaded) SceneManager.UnloadSceneAsync(_physicsScene);
+    }
+
+    /// <summary>
+    /// 활성 코인의 수명, 깜빡임, 애니메이션과 물리 위치를 프레임마다 갱신한다.
+    /// unscaledDeltaTime을 사용해 게임 시간 배율과 독립적으로 진행하며 숨긴 화면의 코인은 모두 정리한다.
+    /// </summary>
+    void Update()
+    {
+        if (!CanShowCoins) { ClearCoins(); return; }
+        bool animated = false;
+        for (int index = 0; index < _coins.Length; index++)
+        {
+            Image coin = _coins[index];
+            if (!coin.gameObject.activeSelf) continue;
+            _ages[index] += Time.unscaledDeltaTime;
+            if (HideExpiredCoin(index)) continue;
+            _coinPlayables[index].SetTime((_ages[index] + _animationOffsets[index]) % _coinAnimation.length);
+            animated = true;
+            UpdateCoinBlink(index);
+        }
+        SimulateCoins(Mathf.Min(Time.unscaledDeltaTime, 0.05f));
+        if (animated) _animationGraph.Evaluate(0f);
+        SyncCoinPositions();
+    }
+
+    /// <summary>
+    /// _screenView의 RectTransform 아래에 코인 표시용 UI 루트를 생성한다.
+    /// 중앙 앵커와 기본 배율을 설정하고 마지막 자식으로 배치해 기존 화면 위에 코인을 표시한다.
+    /// </summary>
+    private void CreatePoolRoot()
     {
         _canvasRoot = _screenView.GetComponent<RectTransform>();
         _poolRoot = new GameObject("MonitorCoinPool", typeof(RectTransform)).GetComponent<RectTransform>();
@@ -58,12 +149,20 @@ public sealed class MonitorCoinRain : MonoBehaviour
         _poolRoot.localRotation = Quaternion.identity;
         _poolRoot.SetAsLastSibling();
         Canvas.ForceUpdateCanvases();
-        FitPoolToBackground();
+    }
+
+    /// <summary>
+    /// _coinPrefab을 _poolSize만큼 생성하고 각 코인의 Image, Collider와 애니메이션을 배열에 저장한다.
+    /// 물리 자식은 전용 씬으로 분리하며 생성 직후 UI와 시뮬레이션을 꺼 재사용 대기 상태로 둔다.
+    /// </summary>
+    private void CreateCoinPool()
+    {
         _coins = new Image[_poolSize];
         _coinPlayables = new AnimationClipPlayable[_poolSize];
         _animationGraph = PlayableGraph.Create("MonitorCoinAnimation");
         _animationGraph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
-        _velocities = new Vector2[_poolSize];
+        _bodies = new Rigidbody2D[_poolSize];
+        _coinColliders = new CircleCollider2D[_poolSize];
         _ages = new float[_poolSize];
         _animationOffsets = new float[_poolSize];
         for (int index = 0; index < _coins.Length; index++)
@@ -72,6 +171,15 @@ public sealed class MonitorCoinRain : MonoBehaviour
             coin.layer = _canvasRoot.gameObject.layer;
             _coins[index] = coin.GetComponent<Image>();
             _coins[index].raycastTarget = false;
+            Rigidbody2D body = coin.GetComponentInChildren<Rigidbody2D>();
+            body.transform.SetParent(null, false);
+            SceneManager.MoveGameObjectToScene(body.gameObject, _physicsScene);
+            body.transform.SetParent(_physicsRoot, false);
+            body.name = "CoinPhysics_" + index;
+            body.simulated = false;
+            _bodies[index] = body;
+            _coinColliders[index] = body.GetComponent<CircleCollider2D>();
+            _coinColliders[index].sharedMaterial = _collisionMaterial;
             _coinPlayables[index] = AnimationClipPlayable.Create(_animationGraph, _coinAnimation);
             _coinPlayables[index].SetSpeed(0);
             AnimationPlayableOutput output = AnimationPlayableOutput.Create(_animationGraph, "Coin" + index, coin.GetComponent<Animator>());
@@ -81,60 +189,91 @@ public sealed class MonitorCoinRain : MonoBehaviour
         _animationGraph.Play();
     }
 
-    void Start()
+    /// <summary>
+    /// 코인 전용 독립 2D 물리 씬과 바닥 및 좌우 벽 Collider를 생성한다.
+    /// _collisionMaterial을 벽에 적용하고 씬, 물리 월드와 벽 배열을 저장해 다른 씬의 충돌과 분리한다.
+    /// </summary>
+    private void CreatePhysicsWorld()
     {
-        _wallet = _gameSession.Wallet;
-        ConnectWallet();
-    }
-
-    void OnEnable()
-    {
-        if (_wallet != null) ConnectWallet();
-    }
-
-    void OnDisable()
-    {
-        if (_wallet != null) _wallet.BalanceChanged -= HandleBalanceChanged;
-        ClearCoins();
-    }
-
-    void OnDestroy()
-    {
-        if (_animationGraph.IsValid()) _animationGraph.Destroy();
-        if (_poolRoot != null) Destroy(_poolRoot.gameObject);
-    }
-
-    void Update()
-    {
-        if (!CanShowCoins) { ClearCoins(); return; }
-        float deltaTime = Mathf.Min(Time.unscaledDeltaTime, 0.05f);
-        bool animated = false;
-        for (int index = 0; index < _coins.Length; index++)
+        _physicsScene = SceneManager.CreateScene("MonitorCoinPhysics_" + GetInstanceID(), new CreateSceneParameters(LocalPhysicsMode.Physics2D));
+        _physicsWorld = _physicsScene.GetPhysicsScene2D();
+        _physicsRoot = new GameObject("MonitorCoinPhysics").transform;
+        SceneManager.MoveGameObjectToScene(_physicsRoot.gameObject, _physicsScene);
+        _walls = new BoxCollider2D[3];
+        string[] names = { "Floor", "LeftWall", "RightWall" };
+        for (int index = 0; index < _walls.Length; index++)
         {
-            Image coin = _coins[index];
-            if (!coin.gameObject.activeSelf) continue;
-            _ages[index] += Time.unscaledDeltaTime;
-            if (_ages[index] >= _lifetime)
-            {
-                coin.gameObject.SetActive(false);
-                continue;
-            }
-            _velocities[index] += Vector2.down * (_gravity * deltaTime);
-            Vector2 nextPosition = coin.rectTransform.anchoredPosition + _velocities[index] * deltaTime;
-            float bottom = _poolRoot.rect.yMin + coin.rectTransform.rect.height * 0.5f;
-            if (nextPosition.y < bottom)
-            {
-                coin.gameObject.SetActive(false);
-                continue;
-            }
-            coin.rectTransform.anchoredPosition = nextPosition;
-            _coinPlayables[index].SetTime((_ages[index] + _animationOffsets[index]) % _coinAnimation.length);
-            animated = true;
-            float fade = 1f - Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.75f, 1f, _ages[index] / _lifetime));
-            float edgeFade = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((nextPosition.y - bottom) / _coinSize));
-            coin.color = new Color(1f, 1f, 1f, fade * edgeFade);
+            GameObject wall = new GameObject(names[index]);
+            wall.transform.SetParent(_physicsRoot, false);
+            _walls[index] = wall.AddComponent<BoxCollider2D>();
+            _walls[index].sharedMaterial = _collisionMaterial;
         }
-        if (animated) _animationGraph.Evaluate(0f);
+    }
+
+    /// <summary>
+    /// 배경의 현재 Rect와 좌표 변환 배율을 사용해 물리 바닥과 좌우 벽을 배치한다.
+    /// 각 BoxCollider2D의 위치와 크기를 갱신한다.
+    /// </summary>
+    private void FitPhysicsBoundaries()
+    {
+        Rect bounds = _poolRoot.rect;
+        float thickness = 0.1f;
+        _walls[0].transform.localPosition = new Vector3(bounds.center.x * PHYSICS_SCALE, bounds.yMin * PHYSICS_SCALE - thickness * 0.5f, 0f);
+        _walls[0].size = new Vector2(bounds.width * PHYSICS_SCALE + thickness * 2f, thickness);
+        _walls[1].transform.localPosition = new Vector3(bounds.xMin * PHYSICS_SCALE - thickness * 0.5f, bounds.center.y * PHYSICS_SCALE, 0f);
+        _walls[2].transform.localPosition = new Vector3(bounds.xMax * PHYSICS_SCALE + thickness * 0.5f, bounds.center.y * PHYSICS_SCALE, 0f);
+        _walls[1].size = _walls[2].size = new Vector2(thickness, bounds.height * PHYSICS_SCALE + thickness * 2f);
+    }
+
+    /// <summary>
+    /// deltaTime을 작은 시간 간격으로 나눠 코인 전용 Unity 2D 물리를 진행한다.
+    /// 중력을 힘으로 적용하고 Rigidbody2D 위치를 갱신하며 충돌은 엔진이 처리한다.
+    /// </summary>
+    private void SimulateCoins(float deltaTime)
+    {
+        int steps = Mathf.Max(1, Mathf.CeilToInt(deltaTime * 120f));
+        float stepTime = deltaTime / steps;
+        for (int step = 0; step < steps; step++)
+        {
+            foreach (Rigidbody2D body in _bodies)
+                if (body.simulated) body.AddForce(Vector2.down * (_gravity * PHYSICS_SCALE * body.mass));
+            _physicsWorld.Simulate(stepTime);
+        }
+    }
+
+    /// <summary>
+    /// 활성 Rigidbody2D의 최종 위치를 PHYSICS_SCALE로 변환하여 UI 코인에 반영한다.
+    /// 애니메이션 평가 후 호출하여 화면 위치를 물리 위치와 일치시킨다.
+    /// </summary>
+    private void SyncCoinPositions()
+    {
+        for (int index = 0; index < _coins.Length; index++)
+            if (_bodies[index].simulated) _coins[index].rectTransform.anchoredPosition = _bodies[index].position / PHYSICS_SCALE;
+    }
+
+    /// <summary>
+    /// index 코인의 나이를 수명과 비교하여 만료된 코인을 비활성화한다.
+    /// 수명이 끝나면 UI와 Rigidbody 시뮬레이션을 끄고 true를 반환하며, 아직 남아 있으면 false를 반환한다.
+    /// </summary>
+    private bool HideExpiredCoin(int index)
+    {
+        if (_ages[index] < _lifetime) return false;
+        _coins[index].gameObject.SetActive(false);
+        _bodies[index].simulated = false;
+        return true;
+    }
+
+    /// <summary>
+    /// index 코인의 남은 수명이 설정된 시간 이하면 알파를 반복해서 내리고 올린다.
+    /// _blinkFadeDuration마다 알파를 1에서 0, 다시 1로 변경하며 깜빡임 시작 전에는 알파를 1로 유지한다.
+    /// </summary>
+    private void UpdateCoinBlink(int index)
+    {
+        float blinkAge = _ages[index] - Mathf.Max(0f, _lifetime - _blinkRemainingTime);
+        float alpha = blinkAge < 0f ? 1f : 1f - Mathf.PingPong(blinkAge / _blinkFadeDuration, 1f);
+        Color color = _coins[index].color;
+        color.a = alpha;
+        _coins[index].color = color;
     }
 
     /// <summary>
@@ -149,7 +288,7 @@ public sealed class MonitorCoinRain : MonoBehaviour
 
     /// <summary>
     /// balance의 증가분을 활성 미니게임 캔버스 안에서 코인으로 표시한다.
-    /// 일반, 해킹 및 타이핑 상태 모두 허용하며 숨긴 캔버스에서 발생한 수입은 나중에 재생하지 않는다.
+    /// _amountPerCoin으로 올림 계산하고 _maximumCoinsPerIncome만큼 제한하며 감소한 잔액은 연출하지 않는다.
     /// </summary>
     private void HandleBalanceChanged(long balance)
     {
@@ -164,7 +303,7 @@ public sealed class MonitorCoinRain : MonoBehaviour
 
     /// <summary>
     /// 미니게임 캔버스의 최상단 랜덤 가로 위치에서 다음 코인을 수직으로 낙하시킨다.
-    /// 가로 이동이 없는 속도와 랜덤 시작 프레임을 설정하고 UI 전용 클립을 Image에서 직접 재생한다.
+    /// 물리 코인의 위치, 크기와 초기 속도를 초기화하고 UI 전용 클립을 Image에서 직접 재생한다.
     /// </summary>
     private void PlayCoin()
     {
@@ -173,17 +312,30 @@ public sealed class MonitorCoinRain : MonoBehaviour
         Image coin = _coins[index];
         FitPoolToBackground();
         float size = _coinSize * Random.Range(0.85f, 1.15f);
+        // 코인 반지름과 여백을 제외한 배경 너비 안에서 생성 X 좌표를 무작위로 선택한다.
         float horizontalRange = Mathf.Max(0f, _poolRoot.rect.width * 0.5f - size * 0.5f - 2f) * _screenWidth;
-        coin.rectTransform.anchoredPosition = new Vector2(Random.Range(-horizontalRange, horizontalRange), _poolRoot.rect.yMax - size * 0.5f - 2f);
+        Vector2 spawnPosition = new Vector2(Random.Range(-horizontalRange, horizontalRange), _poolRoot.rect.yMax - size * 0.5f - 2f);
+        coin.rectTransform.anchoredPosition = spawnPosition;
         coin.rectTransform.sizeDelta = Vector2.one * size;
         coin.rectTransform.localScale = Vector3.one;
         coin.rectTransform.localRotation = Quaternion.identity;
-        _velocities[index] = Vector2.down * Random.Range(_initialFallSpeed * 0.5f, _initialFallSpeed);
+        Rigidbody2D body = _bodies[index];
+        // 풀에서 재사용할 물리 코인의 위치와 속도를 UI 생성 위치에 맞춰 초기화한다.
+        body.simulated = false;
+        Vector2 physicsPosition = spawnPosition * PHYSICS_SCALE;
+        body.transform.SetPositionAndRotation(new Vector3(physicsPosition.x, physicsPosition.y, 0f), Quaternion.identity);
+        _coinColliders[index].radius = size * 0.5f * PHYSICS_SCALE;
+        body.simulated = true;
+        body.position = physicsPosition;
+        body.rotation = 0f;
+        body.linearVelocity = Vector2.down * (Random.Range(_initialFallSpeed * 0.5f, _initialFallSpeed) * PHYSICS_SCALE);
+        body.angularVelocity = 0f;
         _ages[index] = 0f;
         _animationOffsets[index] = Random.Range(0f, _coinAnimation.length);
         coin.gameObject.SetActive(true);
         _coinPlayables[index].SetTime(_animationOffsets[index]);
         _animationGraph.Evaluate(0f);
+        SyncCoinPositions();
         coin.color = Color.white;
     }
 
@@ -204,16 +356,21 @@ public sealed class MonitorCoinRain : MonoBehaviour
         }
         _poolRoot.sizeDelta = new Vector2(maximum.x - minimum.x, maximum.y - minimum.y);
         _poolRoot.localPosition = (minimum + maximum) * 0.5f;
+        FitPhysicsBoundaries();
     }
+
     /// <summary>
     /// 풀에 남아 있는 코인 연출을 모두 숨긴다.
-    /// 화면 전환, 옵션 해제 또는 비활성화 시 인스턴스는 유지하여 재사용한다.
+    /// 화면 전환, 옵션 해제 또는 비활성화 시 UI와 물리 시뮬레이션을 끄고 인스턴스는 유지하여 재사용한다.
     /// </summary>
     private void ClearCoins()
     {
         if (_coins == null) return;
-        foreach (Image coin in _coins)
-            if (coin != null) coin.gameObject.SetActive(false);
+        for (int index = 0; index < _coins.Length; index++)
+        {
+            if (_coins[index] != null) _coins[index].gameObject.SetActive(false);
+            if (_bodies[index] != null) _bodies[index].simulated = false;
+        }
     }
 }
 
