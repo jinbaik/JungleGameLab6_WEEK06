@@ -497,11 +497,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f44238b8f4df544b36e5e449d944e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardAutomaticStation
-  _interactionController: {fileID: 0}
   _placement: {fileID: 5828883991405206365}
   _viewCamera: {fileID: 4916612441074121730}
-  _rewards: {fileID: 0}
-  _keyboardFragmentsPrefab: {fileID: 100, guid: 5dc9afe1dd0444239ccf712060e436a9, type: 3}
 --- !u!114 &4850299712002065784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -514,8 +511,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21bfba2ea2281984a9b7be51032a873f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardAutoAttackController
-  _gameSession: {fileID: 0}
-  _interactionController: {fileID: 0}
   _arm: {fileID: 3149878625218993707}
   _station: {fileID: 4149212296703210319}
   _stationFeedback: {fileID: 6223961565752397748}
@@ -567,8 +562,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b1e3a726caf4e50af7c91e266af28b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _damage: 1
-  _attacksPerSecond: 1
+  _interactionController: {fileID: 0}
+  _gameSession: {fileID: 0}
+  _rewardController: {fileID: 0}
+  _keyboardFragmentsPrefab: {fileID: 0}
+  _damage: 5
+  _attacksPerSecond: 5
 --- !u!1 &6668512050925200167
 GameObject:
   m_ObjectHideFlags: 0
@@ -753,11 +752,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74f44238b8f4df544b36e5e449d944e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardAutomaticStation
-  _interactionController: {fileID: 0}
   _placement: {fileID: 3070654059663359507}
   _viewCamera: {fileID: 8989061353672483151}
-  _rewards: {fileID: 0}
-  _keyboardFragmentsPrefab: {fileID: 100, guid: 5dc9afe1dd0444239ccf712060e436a9, type: 3}
 --- !u!114 &4058274546556956987
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -770,8 +766,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21bfba2ea2281984a9b7be51032a873f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardAutoAttackController
-  _gameSession: {fileID: 0}
-  _interactionController: {fileID: 0}
   _arm: {fileID: 2389255483748782439}
   _station: {fileID: 2126159037437128305}
   _stationFeedback: {fileID: 6193609516080889216}
