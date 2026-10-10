@@ -12,6 +12,14 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 49c3ca8fd4e59c34ea8d550486382ebb, type: 2}
+    - target: {fileID: 2953950000880704017, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
+      propertyPath: _definition
+      value: 
+      objectReference: {fileID: 11400000, guid: 985e58b34b8a8d74f8f6400f90952da0, type: 2}
+    - target: {fileID: 2953950000880704017, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
+      propertyPath: _gamePrefab
+      value: 
+      objectReference: {fileID: 4514776891952405743, guid: b844b7dfa0f0f7141acc2be427f8fa0f, type: 3}
     - target: {fileID: 3519137165552478582, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

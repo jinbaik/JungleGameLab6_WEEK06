@@ -441,7 +441,9 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     /// </summary>
     private KeyboardState CreatePlayableKeyboard(KeyboardState source, bool playerControlled = true)
     {
-        GameObject instance = Instantiate(_inGameKeyBoardPrefab);
+        KeyboardPlayableVariant variant = source.Keyboard.GetComponent<KeyboardPlayableVariant>();
+        GameObject gamePrefab = variant != null ? variant.GamePrefab : _inGameKeyBoardPrefab;
+        GameObject instance = Instantiate(gamePrefab);
         try
         {
             KeyboardInputController keyboard = instance.GetComponent<KeyboardInputController>();

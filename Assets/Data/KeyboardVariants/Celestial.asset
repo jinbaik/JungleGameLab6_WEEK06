@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d081332bca659049ab8137b13a21562, type: 3}
+  m_Name: Celestial
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardPlayableVariantDefinition
+  _gamePrefab: {fileID: 4514776891952405743, guid: b844b7dfa0f0f7141acc2be427f8fa0f, type: 3}

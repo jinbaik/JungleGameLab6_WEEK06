@@ -2969,6 +2969,7 @@ MonoBehaviour:
   _keyboardScale: 0.15
   _maximumAlive: 6
   _lifetime: 10
+  _keyboardInteractionController: {fileID: 27118945}
   _forwardSpeed: {x: 10, y: 16}
   _arcHeight: {x: 0.45, y: 0.8}
   _directionSpread: 8
