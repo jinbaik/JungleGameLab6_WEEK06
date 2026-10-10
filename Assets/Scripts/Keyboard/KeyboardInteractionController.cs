@@ -31,8 +31,10 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     private KeyboardState _placedKeyboard;
     public bool IsSmashMode { get; private set; }
     public KeyboardInputController ActiveKeyboard => IsSmashMode ? _placedKeyboard.Keyboard : null;
+    public KeyboardInputController PlacedKeyboard => _placedKeyboard != null ? _placedKeyboard.Keyboard : null;
 
     public event Action<KeyboardInputController> ActiveKeyboardChanged;
+    public event Action<KeyboardInputController> PlacedKeyboardChanged;
 
     [Header("Pickup")]
     [SerializeField, Min(0.1f)] private float _rayDistance = 12f;
@@ -79,6 +81,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     [SerializeField] private ShopView _shopView;
     private bool _isShopFocused;
     private bool _resumeSmashInput;
+    private KeyboardAutomaticStation _viewingAutomaticStation;
 
 
     void Awake()
@@ -116,6 +119,15 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         if (EditorApplication.isPaused || EditorWindow.focusedWindow == null || EditorWindow.focusedWindow.GetType().Name != "GameView") return;
 #endif
         bool escapePressed = Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame;
+        if (_viewingAutomaticStation != null)
+        {
+            if (escapePressed)
+            {
+                _viewingAutomaticStation.SetViewActive(false);
+                _viewingAutomaticStation = null;
+            }
+            return;
+        }
         if (_isShopFocused)
         {
             return;
@@ -179,6 +191,11 @@ public sealed class KeyboardInteractionController : MonoBehaviour
 
     void OnDisable()
     {
+        if (_viewingAutomaticStation != null)
+        {
+            _viewingAutomaticStation.SetViewActive(false);
+            _viewingAutomaticStation = null;
+        }
         _shopView.OpenStateChanged -= ApplyShopFocus;
 
         if (_heldKeyboard != null)
@@ -256,6 +273,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         if (_placedKeyboard != state) return;
         if (IsSmashMode) OnExitSmashMode();
         _placedKeyboard = null;
+        PlacedKeyboardChanged?.Invoke(null);
     }
 
     /// <summary>area의 로컬 중심과 크기 안에서 count개를 임의 위치와 회전으로 생성한다. 영역이 없으면 areaName을 알리고 해당 영역 생성을 건너뛴다.</summary>
@@ -280,6 +298,14 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     {
         Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         if (!Physics.Raycast(ray, out RaycastHit hit, _rayDistance, _pickupLayers, QueryTriggerInteraction.Ignore)) return;
+        KeyboardAutomaticStation station = hit.collider.GetComponentInParent<KeyboardAutomaticStation>();
+        if (station != null)
+        {
+            // 자세히 보기 진입은 임시로 중단한다.
+            // _viewingAutomaticStation = station;
+            // station.SetViewActive(true);
+            return;
+        }
         if (hit.rigidbody == null || !_keyboards.TryGetValue(hit.rigidbody, out KeyboardState state)) return;
         if (state == _placedKeyboard)
         {
@@ -294,9 +320,47 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         state.Body.isKinematic = true;
         state.Body.useGravity = false;
         _canPlaceHeldKeyboard = !Physics.ComputePenetration(state.Collider, state.Body.position, state.Body.rotation, _padCollider, _padCollider.transform.position, _padCollider.transform.rotation, out _, out _);
-        if (_placedKeyboard == state) _placedKeyboard = null;
+        if (_placedKeyboard == state)
+        {
+            _placedKeyboard = null;
+            PlacedKeyboardChanged?.Invoke(null);
+        }
     }
     private GameObject lastDroped;
+
+    /// <summary>
+    /// 놓은 월드 키보드를 빈 자동작업대에 넣고 플레이어 회수 대상에서 제외한다.
+    /// other와 station으로 기존 품질 생성 및 배치 로직을 사용하며 수동 스매쉬 모드와 입력 이벤트는 켜지 않는다.
+    /// </summary>
+    public void TryPlaceAutomaticKeyboard(Collider other, KeyboardAutomaticStation station)
+    {
+        if (_isShopFocused || _isPlacingKeyboard || _viewingAutomaticStation != null || station.HasKeyboard || other.gameObject != lastDroped)
+            return;
+        if (other.attachedRigidbody == null || !_keyboards.TryGetValue(other.attachedRigidbody, out KeyboardState source) || source.PlacementFailed)
+            return;
+        _isPlacingKeyboard = true;
+        try
+        {
+            KeyboardState target = CreatePlayableKeyboard(source, false);
+            _keyboards.Remove(target.Body);
+            station.AcceptKeyboard(target.Keyboard);
+            _keyboards.Remove(source.Body);
+            source.Collider.enabled = false;
+            lastDroped = null;
+            _heldKeyboard = null;
+            Destroy(source.Keyboard.gameObject);
+        }
+        catch (Exception exception)
+        {
+            source.MarkPlacementFailed();
+            Debug.LogException(exception, this);
+        }
+        finally
+        {
+            _isPlacingKeyboard = false;
+        }
+    }
+
     /// <summary>현재 키보드의 카메라 추적을 중단하고 Rigidbody를 중력에 따라 움직이는 상태로 전환한다.</summary>
     private void DropKeyboard()
     {
@@ -352,6 +416,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         body.position = _padPosition;
         body.rotation = _padRotation;
         _controller.SetKeyBoard(target.Keyboard);
+        PlacedKeyboardChanged?.Invoke(target.Keyboard);
 
         _keyboards.Remove(source.Body);
         source.Collider.enabled = false;
@@ -366,7 +431,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     /// source의 최초 배치에서 현재 강화 분포로 생성 결과를 확정하고 플레이용 객체에 적용한다.
     /// 재시도는 같은 프로필을 사용하며 준비 실패 시 새 객체를 정리하고 월드 원본을 유지한다.
     /// </summary>
-    private KeyboardState CreatePlayableKeyboard(KeyboardState source)
+    private KeyboardState CreatePlayableKeyboard(KeyboardState source, bool playerControlled = true)
     {
         UpgradeService upgrades = _gameSession.Upgrades;
         if (upgrades == null)
@@ -399,7 +464,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
             }
 
             keyboard.InitializeSpawnProfile(source.PendingProfile, layout);
-            return RegisterKeyboard(keyboard, true);
+            return RegisterKeyboard(keyboard, playerControlled);
         }
         catch
         {

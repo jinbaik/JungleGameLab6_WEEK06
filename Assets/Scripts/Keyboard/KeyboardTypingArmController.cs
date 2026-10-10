@@ -50,7 +50,7 @@ namespace KeyboardModeling
                 renderer.enabled = true;
             if (_interactionController == null)
                 _interactionController = FindFirstObjectByType<KeyboardInteractionController>();
-            if (_interactionController != null)
+            if (_interactionController != null && _temporarySmashInput)
             {
                 _interactionController.ActiveKeyboardChanged += BindKeyboard;
                 BindKeyboard(_interactionController.ActiveKeyboard);
@@ -104,6 +104,23 @@ namespace KeyboardModeling
         public bool PressKeyAutomatically(Transform keycap)
         {
             return BeginPress(keycap);
+        }
+
+        /// <summary>
+        /// 플레이어의 임시 스매쉬 입력 연결을 켜거나 끈다.
+        /// enabled를 저장하고 기존 키보드와 교체 이벤트 구독을 정리하며 활성화한 경우에만 다시 구독한다.
+        /// </summary>
+        public void SetTemporaryInputEnabled(bool enabled)
+        {
+            if (_interactionController != null)
+                _interactionController.ActiveKeyboardChanged -= BindKeyboard;
+            BindKeyboard(null);
+            _temporarySmashInput = enabled;
+            if (enabled && isActiveAndEnabled && _interactionController != null)
+            {
+                _interactionController.ActiveKeyboardChanged += BindKeyboard;
+                BindKeyboard(_interactionController.ActiveKeyboard);
+            }
         }
 
         /// <summary>

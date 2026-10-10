@@ -95,11 +95,11 @@ namespace KeyboardModeling.Editor
             arm.gameObject.SetActive(false);
 
             KeyboardAutoAttackController auto = new GameObject("AutomaticKeyboardAttack").AddComponent<KeyboardAutoAttackController>();
+            auto.gameObject.AddComponent<KeyboardAutoAttackManager>();
             SerializedObject autoSettings = new SerializedObject(auto);
             autoSettings.FindProperty("_gameSession").objectReferenceValue = session;
             autoSettings.FindProperty("_interactionController").objectReferenceValue = interaction;
             autoSettings.FindProperty("_arm").objectReferenceValue = arm;
-            autoSettings.FindProperty("_damage").intValue = 1;
             SerializedProperty keys = autoSettings.FindProperty("_eligibleKeys");
             keys.arraySize = eligible.Count;
             for (int index = 0; index < eligible.Count; index++)
