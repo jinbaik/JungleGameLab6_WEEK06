@@ -212,7 +212,7 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     /// instance의 입력과 키캡 Collider를 끄고 들기용 물리 상태를 구성하여 등록 상태를 반환한다.
     /// isPlayable이 true인 경우에만 실제 입력 키캡의 전체 파괴 판정을 초기화한다.
     /// </summary>
-    private KeyboardState RegisterKeyboard(GameObject instance, bool isPlayable = false)
+    public KeyboardState RegisterKeyboard(GameObject instance, bool isPlayable = false)
     {
         KeyboardInputController keyboard = instance.GetComponent<KeyboardInputController>();
         if (keyboard != null)

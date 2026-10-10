@@ -128,7 +128,7 @@ public sealed class BackgroundKeyboardThrowSpawner : MonoBehaviour
         body.linearVelocity = forward * Random.Range(_forwardSpeed.x, _forwardSpeed.y) + up * upwardSpeed;
         body.angularVelocity = Random.insideUnitSphere * _spinSpeed;
         _spawned.Enqueue(keyboard);
-        _keyboardInteractionController.RegisterKeyboard(keyboard.GetComponent<KeyboardInputController>());
+        _keyboardInteractionController.RegisterKeyboard(keyboard);
         //Destroy(keyboard, _lifetime);
     }
 
