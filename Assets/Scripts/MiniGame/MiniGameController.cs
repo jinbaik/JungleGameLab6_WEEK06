@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,13 +9,7 @@ namespace KeyboardModeling
     [DefaultExecutionOrder(-100)]
     public sealed class MiniGameController : MonoBehaviour
     {
-        public enum MiniGameKind { Idle, Hacking, Typing }
-
-        private static readonly string[] _words =
-        {
-            "SPACE", "SHIELD", "SYSTEM", "ACCESS", "RESET", "PATCH",
-            "GUARD", "PROXY", "CACHE", "TOKEN", "INPUT", "SIGNAL"
-        };
+        public enum MiniGameKind { Idle = 0, Hacking = 1, KeyMash = 2 }
         private static readonly string[] _commands =
         {
             "> firewall --restore", "> isolate suspicious-host", "> revoke session-token",
@@ -28,7 +23,7 @@ namespace KeyboardModeling
         private MiniGameKind _currentGame;
         private float _nextEventRemaining;
         private bool CanProcessInput => isActiveAndEnabled && _keyboard != null && _keyboard.InputEnabled && _keyboard.isActiveAndEnabled;
-        private bool IsProgressPaused => !CanProcessInput || (_feverController != null && _feverController.IsFeverActive);
+        private bool IsProgressPaused => !CanProcessInput || Time.timeScale == 0f || (_feverController != null && _feverController.IsFeverActive);
         public MiniGameKind CurrentGame => _currentGame;
         public float NextEventRemaining => _nextEventRemaining;
         public bool IsSuspended => _currentGame != MiniGameKind.Idle && IsProgressPaused;
@@ -46,17 +41,44 @@ namespace KeyboardModeling
         public float HackingProgress => _hackingProgress;
         public string CommandLog => _commandLog;
 
-        [Header("Typing")]
-        [SerializeField, Min(1)] private int _wordsToClear = 6;
-        private int _completedWords;
-        private int _wordIndex = -1;
-        private string _typedWord = "";
-        private string _typingFeedback = "";
-        public int CompletedWords => _completedWords;
-        public int WordsToClear => _wordsToClear;
-        public string TargetWord => _wordIndex < 0 ? "" : _words[_wordIndex];
-        public string TypedWord => _typedWord;
-        public string TypingFeedback => _typingFeedback;
+        [Header("Target Key Mash")]
+        [SerializeField, Range(0.01f, 1f)] private float _keyMashProgressPerPress = 0.08f;
+        [SerializeField, Min(0f)] private float _keyMashDecayPerSecond = 0.06f;
+        [SerializeField, Min(0f)] private float _keyMashDecayDelay = 0.4f;
+        private Key _targetKey;
+        private float _keyMashProgress;
+        private float _keyMashDecayDelayRemaining;
+        public Key TargetKey => _targetKey;
+        public float KeyMashProgress => _keyMashProgress;
+        public string TargetKeyLabel => _targetKey switch
+        {
+            Key.None => "",
+            Key.Space => "SPACE",
+            Key.Enter => "ENTER",
+            Key.Digit0 => "0",
+            Key.Digit1 => "1",
+            Key.Digit2 => "2",
+            Key.Digit3 => "3",
+            Key.Digit4 => "4",
+            Key.Digit5 => "5",
+            Key.Digit6 => "6",
+            Key.Digit7 => "7",
+            Key.Digit8 => "8",
+            Key.Digit9 => "9",
+            Key.Backquote => "`  ~",
+            Key.Minus => "-  _",
+            Key.Equals => "=  +",
+            Key.LeftBracket => "[  {",
+            Key.RightBracket => "]  }",
+            Key.Backslash => "\\  |",
+            Key.Semicolon => ";  :",
+            Key.Quote => "'  \"",
+            Key.Comma => ",  <",
+            Key.Period => ".  >",
+            Key.Slash => "/  ?",
+            _ => _targetKey.ToString().ToUpperInvariant()
+        };
+        public event Action TargetKeyPressed;
 
         void Awake()
         {
@@ -124,29 +146,34 @@ namespace KeyboardModeling
             {
                 _hackingProgress = Mathf.Max(0f, _hackingProgress - _progressDecayPerSecond * Time.deltaTime);
             }
+            else if (_currentGame == MiniGameKind.KeyMash)
+            {
+                UpdateKeyMashProgress(Time.deltaTime);
+            }
         }
 
         /// <summary>
         /// 대기 시간이 끝나면 두 미니게임 중 하나를 무작위로 시작한다.
-        /// 현재 상태를 확인하고 진행도, 단어 및 명령 로그를 초기화하여 실행 상태를 변경한다.
+        /// 현재 입력 상태를 확인하고 진행도, 목표 키 및 명령 로그를 초기화하여 실행 상태를 변경한다.
         /// </summary>
         private void BeginMiniGame()
         {
-            if (_currentGame != MiniGameKind.Idle || (_feverController != null && _feverController.IsFeverActive))
+            if (_currentGame != MiniGameKind.Idle || IsProgressPaused)
                 return;
-            _currentGame = UnityEngine.Random.Range(0, 2) == 0 ? MiniGameKind.Hacking : MiniGameKind.Typing;
+            _currentGame = UnityEngine.Random.Range(0, 2) == 0 ? MiniGameKind.Hacking : MiniGameKind.KeyMash;
             _hackingProgress = 0f;
             _commandLog = "> intrusion detected\n> awaiting countermeasures...";
-            _completedWords = 0;
-            _typedWord = "";
-            _typingFeedback = "Complete the word to submit automatically.";
-            SelectNextWord();
+            _keyMashProgress = 0f;
+            _keyMashDecayDelayRemaining = 0f;
+            _targetKey = Key.None;
+            if (_currentGame == MiniGameKind.KeyMash)
+                SelectTargetKey();
             StateChanged?.Invoke();
         }
 
         /// <summary>
         /// 키보드의 새 눌림을 현재 미니게임에 전달한다.
-        /// 입력이 가능한 상태에서 key가 Escape가 아니면 해킹 진행도를 높이거나 단어 입력과 삭제 상태를 변경한다.
+        /// 입력이 가능한 상태에서 key가 Escape가 아니면 해킹 또는 목표 키 연타 진행도를 높인다.
         /// </summary>
         private void HandleKeyPressed(Key key)
         {
@@ -161,54 +188,58 @@ namespace KeyboardModeling
                 if (_hackingProgress >= 1f)
                     CompleteMiniGame();
             }
-            else if (_currentGame == MiniGameKind.Typing)
+            else if (_currentGame == MiniGameKind.KeyMash)
             {
-                ProcessTypingKey(key);
+                if (key != _targetKey)
+                    return;
+                _keyMashProgress = Mathf.Min(1f, _keyMashProgress + _keyMashProgressPerPress);
+                _keyMashDecayDelayRemaining = _keyMashDecayDelay;
+                TargetKeyPressed?.Invoke();
+                if (_keyMashProgress >= 1f)
+                    CompleteMiniGame();
             }
             StateChanged?.Invoke();
         }
 
         /// <summary>
-        /// 물리 영문 키와 Backspace 입력을 단어 버퍼에 반영한다.
-        /// key로 완성한 문자열을 목표와 비교하여 정답 수를 늘리거나 목표만 교체하고 버퍼를 비운다.
+        /// deltaTime을 사용하여 정답 입력 이후 감소 대기 시간과 연타 진행도를 갱신한다.
+        /// 대기 시간이 끝난 구간에만 초당 감소량을 적용하고 진행도를 0 이상으로 유지한다.
         /// </summary>
-        private void ProcessTypingKey(Key key)
+        private void UpdateKeyMashProgress(float deltaTime)
         {
-            if (key == Key.Backspace)
-            {
-                if (_typedWord.Length > 0)
-                    _typedWord = _typedWord.Substring(0, _typedWord.Length - 1);
-                return;
-            }
-            if (key < Key.A || key > Key.Z)
-                return;
-            _typedWord += (char)('A' + (key - Key.A));
-            if (_typedWord.Length < TargetWord.Length)
-                return;
-            bool correct = _typedWord == TargetWord;
-            if (correct)
-                _completedWords++;
-            _typingFeedback = correct ? "MATCH / word accepted" : "MISMATCH / new target, progress retained";
-            _typedWord = "";
-            if (_completedWords >= _wordsToClear)
-                CompleteMiniGame();
-            else
-                SelectNextWord();
+            float decayTime = Mathf.Max(0f, deltaTime - _keyMashDecayDelayRemaining);
+            _keyMashDecayDelayRemaining = Mathf.Max(0f, _keyMashDecayDelayRemaining - deltaTime);
+            _keyMashProgress = Mathf.Max(0f, _keyMashProgress - _keyMashDecayPerSecond * decayTime);
         }
 
         /// <summary>
-        /// 직전 목표와 다른 5~6글자 영문 단어를 선택한다.
-        /// 기존 단어 인덱스와 단어 목록을 사용하여 다음 목표 인덱스를 변경한다.
+        /// 현재 키보드에 바인딩된 영문, 숫자, 기호, Space 및 Enter 중 목표 키 하나를 선택한다.
+        /// 키캡 체력과 무관하게 선택하며 게임이 끝날 때까지 _targetKey를 유지한다.
         /// </summary>
-        private void SelectNextWord()
+        private void SelectTargetKey()
         {
-            if (_wordIndex < 0)
+            List<Key> candidates = new List<Key>();
+            foreach (Key key in _keyboard.GetKeycapLayout().Keys)
             {
-                _wordIndex = UnityEngine.Random.Range(0, _words.Length);
-                return;
+                if (IsTargetKeyCandidate(key))
+                    candidates.Add(key);
             }
-            int next = UnityEngine.Random.Range(0, _words.Length - 1);
-            _wordIndex = next >= _wordIndex ? next + 1 : next;
+            if (candidates.Count == 0)
+                throw new InvalidOperationException("Key mash requires a bound letter, digit, symbol, Space or Enter key.");
+            _targetKey = candidates[UnityEngine.Random.Range(0, candidates.Count)];
+        }
+
+        /// <summary>
+        /// key가 목표 키 풀에 포함되는 물리 키인지 검사하여 결과를 반환한다.
+        /// 영문, 상단 숫자, 기호, Space와 Enter를 허용하고 Tab 및 Escape는 제외한다.
+        /// </summary>
+        private static bool IsTargetKeyCandidate(Key key)
+        {
+            return (key >= Key.A && key <= Key.Z) || (key >= Key.Digit1 && key <= Key.Digit0)
+                || key == Key.Space || key == Key.Enter || key == Key.Backquote
+                || key == Key.Minus || key == Key.Equals || key == Key.LeftBracket || key == Key.RightBracket
+                || key == Key.Backslash || key == Key.Semicolon || key == Key.Quote
+                || key == Key.Comma || key == Key.Period || key == Key.Slash;
         }
 
         /// <summary>
@@ -234,7 +265,7 @@ namespace KeyboardModeling
 
         /// <summary>
         /// 현재 미니게임이 실행 중이면 클리어 보상 없이 종료한다.
-        /// 진행도와 입력 내용을 초기화하고 다음 이벤트 대기 시간을 재설정하며,
+        /// 진행도와 목표 키를 초기화하고 다음 이벤트 대기 시간을 재설정하며,
         /// 기존 피버 상태를 유지한 채 StateChanged로 변경을 알린다.
         /// </summary>
         public void CancelMiniGame()
@@ -250,10 +281,9 @@ namespace KeyboardModeling
             _hackingProgress = 0f;
             _commandLog = "";
 
-            _completedWords = 0;
-            _wordIndex = -1;
-            _typedWord = "";
-            _typingFeedback = "";
+            _targetKey = Key.None;
+            _keyMashProgress = 0f;
+            _keyMashDecayDelayRemaining = 0f;
 
             StateChanged?.Invoke();
         }
