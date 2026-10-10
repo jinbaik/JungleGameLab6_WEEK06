@@ -94,15 +94,15 @@ namespace KeyboardModeling
         }
 
         /// <summary>
-        /// health와 같은 키보드의 반경 안에 있는 살아 있는 키캡을 한 번씩 타격한다.
-        /// 공격 시작 시의 피버 배율로 피해를 계산하고 직접 타격만 충전 대상으로 지정하여 대상 체력과 파괴 상태를 변경한다.
+        /// health의 위치를 중심으로 같은 키보드 반경 안의 살아 있는 키캡을 한 번씩 타격한다.
+        /// 공격 시작 시의 피버 배율로 피해를 계산하며 살아 있는 중심에만 직접 피해와 충전을 적용하고 깨진 중심도 광역 피해를 발생시킨다.
         /// </summary>
         private void OnAttackRequested(KeycapHealth health)
         {
             KeyboardInputController keyboard = _activeKeyboard;
             KeyboardDestruction destruction = _keyboardDestruction;
             if (keyboard == null || !keyboard.InputEnabled || !keyboard.isActiveAndEnabled
-                || health.CurrentHP <= 0 || (destruction != null && destruction.IsBroken))
+                || (destruction != null && destruction.IsBroken))
             {
                 return;
             }
@@ -131,14 +131,17 @@ namespace KeyboardModeling
             int areaDamage = Mathf.CeilToInt((_baseAreaDamage + areaDamageBonus) * multiplier);
             Vector2 center = positions[targetIndex];
 
-            _directHitTarget = health;
-            try
+            if (health.CurrentHP > 0)
             {
-                health.TakeDamage(damage);
-            }
-            finally
-            {
-                _directHitTarget = null;
+                _directHitTarget = health;
+                try
+                {
+                    health.TakeDamage(damage);
+                }
+                finally
+                {
+                    _directHitTarget = null;
+                }
             }
             ApplyAreaDamage(keyboard, destruction, keycaps, positions, targetIndex, center, radius, areaDamage);
         }
