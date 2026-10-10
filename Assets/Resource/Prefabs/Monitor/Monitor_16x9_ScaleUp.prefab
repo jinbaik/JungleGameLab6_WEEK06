@@ -743,7 +743,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665555be6ee1c4c4e91a0c715db2b176, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Session.GameSession
-  _initialBalance: 5000
+  _initialBalance: 0
   _upgradeDefinitions:
   - {fileID: 11400000, guid: 9aa211f0cf0e32f45b6916573844effd, type: 2}
   - {fileID: 11400000, guid: 61d81da62fab48c44a3868935f7e152b, type: 2}

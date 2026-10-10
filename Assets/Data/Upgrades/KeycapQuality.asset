@@ -16,12 +16,16 @@ MonoBehaviour:
   _displayName: Keycap Quality
   _description: Improve the Common, Rare, Epic and Legendary distribution for the
     next keyboard placement.
-  _levelCosts: 32000000000000007d000000000000002c010000000000005802000000000000
+  _levelCosts: 2c010000000000006009000000000000204e0000000000003057050000000000
   _damageBonuses: 010000000200000003000000
   _areaRadii:
   - 1.5
   - 2
   - 2.5
+  _baseFeverDuration: 5
+  _feverDurationPerLevel: 2
+  _baseFeverDamageMultiplier: 2
+  _feverDamageMultiplierPerLevel: 0.3
   _rarityDistributions:
   - _weights:
     - 100

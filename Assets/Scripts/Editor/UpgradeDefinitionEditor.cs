@@ -53,12 +53,10 @@ namespace Game.Editor
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("_rarityDistributions"), true);
                     break;
                 case UpgradeId.FeverDuration:
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("_baseFeverDuration"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("_feverDurationPerLevel"));
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("_feverDurations"), true);
                     break;
                 case UpgradeId.FeverDamageMultiplier:
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("_baseFeverDamageMultiplier"));
-                    EditorGUILayout.PropertyField(serializedObject.FindProperty("_feverDamageMultiplierPerLevel"));
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("_feverDamageMultipliers"), true);
                     break;
             }
         }

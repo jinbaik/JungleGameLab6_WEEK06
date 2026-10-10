@@ -16,14 +16,20 @@ MonoBehaviour:
   _displayName: Fever Duration
   _description: Start at 5 seconds and gain 2 seconds per level. Purchases apply
     from the next fever.
-  _levelCosts: 3c0000000000000078000000000000002c01000000000000
+  _levelCosts: 64000000000000005802000000000000b80b000000000000
   _damageBonuses: 010000000200000003000000
   _areaRadii:
   - 1.5
   - 2
   - 2.5
+  _feverDurations:
+  - 5
+  - 7
+  - 9
+  - 11
   _baseFeverDuration: 5
   _feverDurationPerLevel: 2
+  _feverDamageMultipliers: []
   _baseFeverDamageMultiplier: 2
   _feverDamageMultiplierPerLevel: 0.3
   _rarityDistributions:

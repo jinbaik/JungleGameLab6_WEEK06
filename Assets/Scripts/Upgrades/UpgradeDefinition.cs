@@ -27,12 +27,16 @@ namespace Game.Upgrades
         [SerializeField, Min(0f)] private float[] _areaRadii = { 1.5f, 2f, 2.5f };
 
         [Header("Fever Duration")]
-        [SerializeField, Min(0.1f)] private float _baseFeverDuration = 5f;
-        [SerializeField, Min(0f)] private float _feverDurationPerLevel = 2f;
+        [Tooltip("Element 0은 기본 0레벨 지속시간입니다. 각 항목에 해당 레벨의 최종 초를 입력하며, Level Costs보다 1개 많아야 합니다.")]
+        [SerializeField, Min(0.1f)] private float[] _feverDurations = Array.Empty<float>();
+        [SerializeField, HideInInspector] private float _baseFeverDuration = 5f;
+        [SerializeField, HideInInspector] private float _feverDurationPerLevel = 2f;
 
         [Header("Fever Damage Multiplier")]
-        [SerializeField, Min(1f)] private float _baseFeverDamageMultiplier = 2f;
-        [SerializeField, Min(0f)] private float _feverDamageMultiplierPerLevel = 0.3f;
+        [Tooltip("Element 0은 기본 0레벨 배율입니다. 각 항목에 해당 레벨의 최종 배율을 입력하며, Level Costs보다 1개 많아야 합니다.")]
+        [SerializeField, Min(1f)] private float[] _feverDamageMultipliers = Array.Empty<float>();
+        [SerializeField, HideInInspector] private float _baseFeverDamageMultiplier = 2f;
+        [SerializeField, HideInInspector] private float _feverDamageMultiplierPerLevel = 0.3f;
 
         [Header("Keycap Quality: Level 0 through Max Level")]
         [Tooltip("Element 0은 강화 전 기본 분포입니다. 최대 레벨까지 포함하므로 Level Costs보다 1개 많아야 합니다.")]
@@ -71,6 +75,37 @@ namespace Game.Upgrades
                 {
                     _areaRadii[i] = Mathf.Max(0f, _areaRadii[i]);
                 }
+            }
+            else if (_id == UpgradeId.FeverDuration)
+            {
+                ValidateFeverLevels(ref _feverDurations, _baseFeverDuration, _feverDurationPerLevel, 0.1f);
+            }
+            else if (_id == UpgradeId.FeverDamageMultiplier)
+            {
+                ValidateFeverLevels(ref _feverDamageMultipliers, _baseFeverDamageMultiplier, _feverDamageMultiplierPerLevel, 1f);
+            }
+        }
+
+        /// <summary>
+        /// values를 0레벨부터 최대 레벨까지의 효과 배열로 맞추고 minimum 이상의 값으로 보정한다.
+        /// 빈 배열은 기존 baseValue와 legacyIncrement로 변환하며, 레벨 추가 시 마지막 효과를 복사하여 기존 설정을 보존한다.
+        /// </summary>
+        private void ValidateFeverLevels(ref float[] values, float baseValue, float legacyIncrement, float minimum)
+        {
+            int previousLength = values.Length;
+            Array.Resize(ref values, MaxLevel + 1);
+            for (int level = 0; level < values.Length; level++)
+            {
+                if (previousLength == 0)
+                {
+                    values[level] = baseValue + legacyIncrement * level;
+                }
+                else if (level >= previousLength)
+                {
+                    values[level] = values[level - 1];
+                }
+
+                values[level] = Mathf.Max(minimum, values[level]);
             }
         }
 
@@ -117,31 +152,46 @@ namespace Game.Upgrades
         }
 
         /// <summary>
-        /// level과 피버 지속시간의 기본값 및 레벨당 증가량으로 전체 지속시간을 계산한다.
-        /// 0부터 최대 레벨까지의 지속시간을 초 단위로 반환하며 에셋 상태는 변경하지 않는다.
+        /// level에 설정된 피버의 최종 지속시간을 초 단위로 반환한다.
+        /// 0부터 최대 레벨까지의 배열을 조회하며, 변환 전 에셋은 기존 기본값과 증가량을 사용하고 상태는 변경하지 않는다.
         /// </summary>
         public float GetFeverDuration(int level)
         {
-            if (level < 0 || level > MaxLevel)
-            {
-                throw new ArgumentOutOfRangeException(nameof(level));
-            }
-
-            return _baseFeverDuration + _feverDurationPerLevel * level;
+            return GetFeverValue(level, _feverDurations, _baseFeverDuration, _feverDurationPerLevel);
         }
 
         /// <summary>
-        /// level과 피버 피해 배율의 기본값 및 레벨당 증가량으로 최종 배율을 계산한다.
-        /// 0부터 최대 레벨까지의 배율을 반환하며 에셋 상태는 변경하지 않는다.
+        /// level에 설정된 피버의 최종 피해 배율을 반환한다.
+        /// 0부터 최대 레벨까지의 배열을 조회하며, 변환 전 에셋은 기존 기본값과 증가량을 사용하고 상태는 변경하지 않는다.
         /// </summary>
         public float GetFeverDamageMultiplier(int level)
+        {
+            return GetFeverValue(level, _feverDamageMultipliers, _baseFeverDamageMultiplier, _feverDamageMultiplierPerLevel);
+        }
+
+        /// <summary>
+        /// level과 values의 길이를 검증하고 해당 레벨의 최종 피버 효과를 반환한다.
+        /// 빈 배열은 변환 전 baseValue와 legacyIncrement로 계산하며 잘못된 레벨표는 예외로 알린다.
+        /// </summary>
+        private float GetFeverValue(int level, float[] values, float baseValue, float legacyIncrement)
         {
             if (level < 0 || level > MaxLevel)
             {
                 throw new ArgumentOutOfRangeException(nameof(level));
             }
 
-            return _baseFeverDamageMultiplier + _feverDamageMultiplierPerLevel * level;
+            if (values.Length == 0)
+            {
+                return baseValue + legacyIncrement * level;
+            }
+
+            if (values.Length != MaxLevel + 1)
+            {
+                throw new InvalidOperationException(
+                    $"Upgrade '{name}' requires {MaxLevel + 1} fever values for levels 0 through {MaxLevel}, but has {values.Length}.");
+            }
+
+            return values[level];
         }
 
         /// <summary>
