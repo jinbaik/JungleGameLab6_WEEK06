@@ -94,6 +94,24 @@ namespace KeyboardModeling
         /// </summary>
         public bool PressKey(Transform keycap)
         {
+            return BeginPress(keycap);
+        }
+
+        /// <summary>
+        /// 자동공격에서 지정한 키캡을 기계팔로 누른다.
+        /// keycap을 공통 관절 애니메이션에 전달하며 플레이어 입력 이벤트나 데미지는 발생시키지 않고 요청 성공 여부를 반환한다.
+        /// </summary>
+        public bool PressKeyAutomatically(Transform keycap)
+        {
+            return BeginPress(keycap);
+        }
+
+        /// <summary>
+        /// 지정한 키캡의 윗면으로 이동하고 짧은 누름 동작을 시작한다.
+        /// keycap의 위치와 Collider를 사용해 관절과 키캡 표시를 변경하며 도달 가능 여부를 반환한다.
+        /// </summary>
+        private bool BeginPress(Transform keycap)
+        {
             if (!isActiveAndEnabled || keycap == null)
                 return false;
             BoxCollider collider = keycap.GetComponent<BoxCollider>();

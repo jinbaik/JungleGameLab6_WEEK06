@@ -358,6 +358,98 @@ Transform:
   m_Children: []
   m_Father: {fileID: 350501781}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &270807058
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5533671889018133730, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 7.874016
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533671889018133730, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 7.874016
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533671889018133730, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 7.874016
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533671889018133730, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.012010455
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533671889018133730, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.2499999
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533671889018133730, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.6005505
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533671889018133730, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533671889018133730, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533671889018133730, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533671889018133730, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533671889018133730, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533671889018133730, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5533671889018133730, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6796795038645031112, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_Name
+      value: KeyboardTypingArm
+      objectReference: {fileID: 0}
+    - target: {fileID: 6796795038645031112, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8181452537449830944, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: _temporarySmashInput
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8181452537449830944, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+      propertyPath: _interactionController
+      value: 
+      objectReference: {fileID: 27118945}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+--- !u!114 &270807059 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8181452537449830944, guid: 6419610cc6647eb479dc2f3e03398ce1, type: 3}
+  m_PrefabInstance: {fileID: 270807058}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e39c0d8182338c4a9ed07373583a7bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardTypingArmController
 --- !u!4 &274345796 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8490769831061267171, guid: 115b471ba068d3d4099eb91c58191044, type: 3}
@@ -904,6 +996,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 350501781}
     m_Modifications:
+    - target: {fileID: 1979642950152958313, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+      propertyPath: '_upgradeDefinitions.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 81d9e10afff958d48861f912ffba2386, type: 2}
     - target: {fileID: 2612928670998550527, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
       propertyPath: monitorCam
       value: 
@@ -1015,22 +1111,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbbb187652d1c4844bceb0b976dde3c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Shop.ShopView
---- !u!224 &641087397 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8163749001187560232, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
-  m_PrefabInstance: {fileID: 641087393}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &641087398 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4990798316346721103, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
-  m_PrefabInstance: {fileID: 641087393}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad84914b4890af14e81519e2515db80c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.MiniGameScreenView
 --- !u!1 &729915526
 GameObject:
   m_ObjectHideFlags: 0
@@ -1741,6 +1821,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 350501781}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1270553671
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1270553673}
+  - component: {fileID: 1270553672}
+  m_Layer: 0
+  m_Name: AutomaticKeyboardAttack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1270553672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270553671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21bfba2ea2281984a9b7be51032a873f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardAutoAttackController
+  _gameSession: {fileID: 641087395}
+  _interactionController: {fileID: 27118945}
+  _arm: {fileID: 270807059}
+  _damage: 1
+  _eligibleKeys: 0400000005000000060000000700000008000000090000000b0000000c0000000d0000000e0000000f000000100000001100000012000000130000001400000015000000160000001700000018000000190000001a0000001b0000001c0000001d0000001e0000001f000000200000002100000022000000230000002400000025000000260000002700000028000000290000002a0000002b0000002c0000002d0000002e0000002f0000003000000031000000320000005e0000005f00000060000000610000006200000063000000640000006500000066000000670000006800000069000000
+--- !u!4 &1270553673
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270553671}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1328267138
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2131,64 +2260,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8490769831061267171, guid: 115b471ba068d3d4099eb91c58191044, type: 3}
   m_PrefabInstance: {fileID: 399929418}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1545851010
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1545851012}
-  - component: {fileID: 1545851011}
-  m_Layer: 0
-  m_Name: MonitorCoinRain
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1545851011
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1545851010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61ff503714d14bafa44f90b227d3cf01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonitorCoinRain
-  _gameSession: {fileID: 641087395}
-  _screenView: {fileID: 641087398}
-  _background: {fileID: 641087397}
-  _coinPrefab: {fileID: 6984344256650909965, guid: 6bb43625029d65442b254948407d438b, type: 3}
-  _coinAnimation: {fileID: 7400000, guid: 2e18ef22c867ab94a90a35441523b96d, type: 2}
-  _effectEnabled: 1
-  _poolSize: 24
-  _amountPerCoin: 10
-  _maximumCoinsPerIncome: 6
-  _coinSize: 28
-  _lifetime: 2
-  _screenWidth: 1
-  _gravity: 500
-  _initialFallSpeed: 70
---- !u!4 &1545851012
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1545851010}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1583888830
 GameObject:
   m_ObjectHideFlags: 0
@@ -2543,4 +2614,5 @@ SceneRoots:
   - {fileID: 9100000002}
   - {fileID: 517964501}
   - {fileID: 3000000000}
-  - {fileID: 1545851012}
+  - {fileID: 270807058}
+  - {fileID: 1270553673}

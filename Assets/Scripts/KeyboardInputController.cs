@@ -27,6 +27,7 @@ namespace KeyboardModeling
         public event Action<Key> KeyPressed;
         public event Action<KeycapHealth> AttackRequested;
         public event Action<Transform> KeycapPressed;
+        public event Action<Transform> AutomaticKeycapHit;
         public event Action<Transform> AreaKeycapHit;
 
         [Header("Key Travel")]
@@ -232,6 +233,16 @@ namespace KeyboardModeling
         {
             _audioSource.PlayOneShot(_pressSound);
             AreaKeycapHit?.Invoke(keycap);
+        }
+
+        /// <summary>
+        /// 자동공격 키캡의 기존 효과음과 전용 피드백 이벤트를 전달한다.
+        /// keycap으로 AutomaticKeycapHit를 호출하며 플레이어 입력, 미니게임 진행과 추가 피해 요청은 발생시키지 않는다.
+        /// </summary>
+        public void NotifyAutomaticKeycapHit(Transform keycap)
+        {
+            _audioSource.PlayOneShot(_pressSound);
+            AutomaticKeycapHit?.Invoke(keycap);
         }
 
         void OnEnable()

@@ -128,6 +128,7 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
         if (_keyboard != null)
         {
             _keyboard.KeycapPressed -= HandleKeycapPressed;
+            _keyboard.AutomaticKeycapHit -= HandleKeycapPressed;
             _keyboard.SetHitStopEnabled(false);
         }
         EndHitStop();
@@ -158,6 +159,7 @@ public sealed class KeyboardFeedbackManager : MonoBehaviour
         }
         _keyboard.SetHitStopEnabled(_enableHitStop);
         _keyboard.KeycapPressed += HandleKeycapPressed;
+        _keyboard.AutomaticKeycapHit += HandleKeycapPressed;
     }
 
     /// <summary>
