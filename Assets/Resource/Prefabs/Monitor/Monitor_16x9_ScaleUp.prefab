@@ -774,7 +774,7 @@ GameObject:
   - component: {fileID: 2612928670998550527}
   - component: {fileID: 5098958360283032277}
   - component: {fileID: 8823056269604226751}
-  - component: {fileID: 9165275900183240889}
+  - component: {fileID: 4294528132114918152}
   m_Layer: 0
   m_Name: Screen
   m_TagString: Untagged
@@ -888,7 +888,7 @@ MonoBehaviour:
   _rewardController: {fileID: 5098958360283032277}
   _toastPool: {fileID: 0}
   _showRequestedDamage: 0
---- !u!114 &9165275900183240889
+--- !u!114 &4294528132114918152
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
