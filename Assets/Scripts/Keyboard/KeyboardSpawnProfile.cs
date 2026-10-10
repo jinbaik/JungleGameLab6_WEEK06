@@ -12,15 +12,22 @@ namespace KeyboardModeling
         private readonly ReadOnlyCollection<KeycapData> _keycaps;
         private readonly KeycapRarityDistribution _distribution;
 
-        public int QualityLevel { get; }
+        public int ProgressionStage { get; }
         public int Seed { get; }
         public IReadOnlyList<KeycapData> Keycaps => _keycaps;
         public KeycapRarityDistribution Distribution => _distribution.Copy();
 
-        /// <summary>qualityLevel, seed, distribution과 keycaps의 복사본을 저장하여 배치 시 확정된 생성 결과를 구성한다.</summary>
-        public KeyboardSpawnProfile(int qualityLevel, int seed, KeycapRarityDistribution distribution, List<KeycapData> keycaps)
+        /// <summary>
+        /// progressionStage, seed, distribution과 keycaps로 배치 결과를 보관한다.
+        /// 전달받은 확률표와 키캡 목록의 복사본을 저장한다.
+        /// </summary>
+        public KeyboardSpawnProfile(
+            int progressionStage,
+            int seed,
+            KeycapRarityDistribution distribution,
+            List<KeycapData> keycaps)
         {
-            QualityLevel = qualityLevel;
+            ProgressionStage = progressionStage;
             Seed = seed;
             _distribution = distribution.Copy();
             _keycaps = new List<KeycapData>(keycaps).AsReadOnly();
@@ -32,22 +39,32 @@ namespace KeyboardModeling
             public KeycapRarity Rarity { get; }
             public int MaxHP { get; }
             public long Reward { get; }
-            public Color Color { get; }
+            public Material EffectMaterial { get; }
 
-            /// <summary>key, rarity, maxHP, reward와 color를 저장하여 객체 참조가 없는 키별 생성 결과를 구성한다.</summary>
-            public KeycapData(Key key, KeycapRarity rarity, int maxHP, long reward, Color color)
+            /// <summary>
+            /// key, rarity, maxHP, reward와 effectMaterial로 키캡 생성 결과를 만든다.
+            /// 확정된 등급·체력·보상 및 이펙트 재질 참조를 저장한다.
+            /// </summary>
+            public KeycapData(
+                Key key,
+                KeycapRarity rarity,
+                int maxHP,
+                long reward,
+                Material effectMaterial)
             {
-                if (maxHP <= 0 || reward <= 0 || !Enum.IsDefined(typeof(KeycapRarity), rarity))
+                if (maxHP <= 0 || reward <= 0 || !Enum.IsDefined(typeof(KeycapRarity), rarity) || (rarity != KeycapRarity.Common && effectMaterial == null))
                 {
-                    throw new ArgumentException("Keycap spawn data requires a valid rarity and positive health and reward.");
+                    throw new ArgumentException("Invalid keycap spawn data.");
                 }
 
                 Key = key;
                 Rarity = rarity;
                 MaxHP = maxHP;
                 Reward = reward;
-                Color = color;
+                EffectMaterial = effectMaterial;
             }
         }
+
+
     }
 }
