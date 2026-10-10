@@ -1,10 +1,7 @@
-using System;
-
-using UnityEngine;
-
-using Unity.Cinemachine;
-
 using Game.Economy;
+using System;
+using Unity.Cinemachine;
+using UnityEngine;
 
 namespace KeyboardModeling
 {
@@ -53,24 +50,32 @@ namespace KeyboardModeling
         {
             if (_rewards == null || _keyboardFragmentsPrefab == null)
                 throw new InvalidOperationException("KeyboardAutoAttackManager requires Reward Controller and Keyboard Fragments Prefab before inserting a keyboard.");
+
             Rigidbody body = keyboard.GetComponent<Rigidbody>();
             body.interpolation = RigidbodyInterpolation.None;
             body.isKinematic = true;
             body.useGravity = false;
+
             Transform keyboardTransform = keyboard.transform;
             keyboardTransform.SetParent(_placement, true);
             keyboardTransform.localPosition = Vector3.zero;
             keyboardTransform.localRotation = Quaternion.identity;
+
             body.position = keyboardTransform.position;
             body.rotation = keyboardTransform.rotation;
+
             keyboard.SetInputEnabled(false);
             keyboard.enabled = false;
+
             foreach (Collider collider in keyboard.GetComponentsInChildren<Collider>())
                 collider.enabled = false;
+
             keyboard.GetComponent<BoxCollider>().enabled = true;
             _keycaps = keyboard.GetComponentsInChildren<KeycapHealth>(true);
+
             foreach (KeycapHealth keycap in _keycaps)
                 keycap.Broken += HandleKeycapBroken;
+
             KeyboardDestruction destruction = keyboard.gameObject.AddComponent<KeyboardDestruction>();
             destruction.Initialize(keyboard.GetDestructionKeycaps(), _keyboardFragmentsPrefab, HandleBreaking, HandleDestroyed);
             _keyboard = keyboard;
