@@ -35,13 +35,18 @@ namespace Game.Editor
         }
 
         /// <summary>
-        /// id에 따라 피해, 반경, 품질 또는 피버 효과의 SerializedProperty만 표시한다.
+        /// id에 따라 피해, 자동공격 수치, 반경, 품질 또는 피버 효과의 SerializedProperty만 표시한다.
         /// 관련 필드만 편집할 수 있도록 하며 다른 효과 필드의 저장값은 변경하지 않는다.
         /// </summary>
         private void DrawEffectProperties(UpgradeId id)
         {
             switch (id)
             {
+                case UpgradeId.AutoClick:
+                    EditorGUILayout.HelpBox("Element 0 = 1레벨. 공격력과 팔 하나의 초당 공격 횟수를 최종값으로 입력합니다.", MessageType.Info);
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("_autoAttackDamages"), true);
+                    EditorGUILayout.PropertyField(serializedObject.FindProperty("_autoAttackSpeeds"), true);
+                    break;
                 case UpgradeId.SmashDamage:
                 case UpgradeId.AreaDamage:
                     EditorGUILayout.PropertyField(serializedObject.FindProperty("_damageBonuses"), true);

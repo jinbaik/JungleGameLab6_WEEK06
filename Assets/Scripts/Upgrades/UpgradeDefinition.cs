@@ -1,8 +1,6 @@
-using System;
-
-using UnityEngine;
-
 using KeyboardModeling;
+using System;
+using UnityEngine;
 
 namespace Game.Upgrades
 {
@@ -19,8 +17,14 @@ namespace Game.Upgrades
         [SerializeField, Min(1)] private long[] _levelCosts = { 10, 25, 60 };
 
         [Header("Damage")]
-        [Tooltip("직접 또는 광역 공격력 강화의 각 레벨에서 해당 기본 공격력에 더하는 누적 추가 피해입니다.")]
+        [Tooltip("직접·광역·자동 공격력 강화의 각 레벨에서 기본 공격력에 더하는 누적 추가 피해입니다. Element 0은 1레벨입니다.")]
         [SerializeField, Min(0)] private int[] _damageBonuses = { 1, 2, 3 };
+
+        [Header("Auto Click: Final Values Per Level")]
+        [Tooltip("자동클릭의 최종 공격력입니다. Element 0은 1레벨이며 다른 기본값이나 보너스를 더하지 않습니다.")]
+        [SerializeField, Min(1)] private int[] _autoAttackDamages = { 1, 2, 3 };
+        [Tooltip("기계팔 하나의 최종 초당 공격 횟수입니다. Element 0은 1레벨입니다.")]
+        [SerializeField, Min(0.01f)] private float[] _autoAttackSpeeds = { 1f, 2f, 3f };
 
         [Header("Area Smash")]
         [Tooltip("범위 강화의 각 레벨에서 사용하는 반경입니다. 일반 키 간격을 1로 사용합니다.")]
@@ -40,7 +44,8 @@ namespace Game.Upgrades
 
         [Header("Keycap Quality: Level 0 through Max Level")]
         [Tooltip("Element 0은 강화 전 기본 분포입니다. 최대 레벨까지 포함하므로 Level Costs보다 1개 많아야 합니다.")]
-        [SerializeField] private KeycapRarityDistribution[] _rarityDistributions =
+        [SerializeField]
+        private KeycapRarityDistribution[] _rarityDistributions =
         {
             new KeycapRarityDistribution(90f, 8f, 1.8f, 0.2f),
             new KeycapRarityDistribution(85f, 10.5f, 3.75f, 0.75f),
@@ -66,6 +71,17 @@ namespace Game.Upgrades
                 for (int i = 0; i < _damageBonuses.Length; i++)
                 {
                     _damageBonuses[i] = Math.Max(0, _damageBonuses[i]);
+                }
+
+            }
+            else if (_id == UpgradeId.AutoClick)
+            {
+                Array.Resize(ref _autoAttackDamages, MaxLevel);
+                Array.Resize(ref _autoAttackSpeeds, MaxLevel);
+                for (int i = 0; i < MaxLevel; i++)
+                {
+                    _autoAttackDamages[i] = Math.Max(1, _autoAttackDamages[i]);
+                    _autoAttackSpeeds[i] = Mathf.Max(0.01f, _autoAttackSpeeds[i]);
                 }
             }
             else if (_id == UpgradeId.AreaSmash)
@@ -121,6 +137,28 @@ namespace Game.Upgrades
             }
 
             return _levelCosts[currentLevel];
+        }
+
+        /// <summary>
+        /// level에 설정한 자동클릭의 최종 공격력을 반환한다.
+        /// 구매 레벨의 항목을 사용하며 미구매 상태는 0을 반환한다.
+        /// </summary>
+        public int GetAutoAttackDamage(int level)
+        {
+            if (level < 0 || level > MaxLevel)
+                throw new ArgumentOutOfRangeException(nameof(level));
+            return level == 0 ? 0 : Mathf.Max(1, _autoAttackDamages[level - 1]);
+        }
+
+        /// <summary>
+        /// level에 설정한 자동클릭의 최종 초당 공격 횟수를 반환한다.
+        /// 구매 레벨의 항목을 사용하며 미구매 상태는 0을 반환한다.
+        /// </summary>
+        public float GetAutoAttackSpeed(int level)
+        {
+            if (level < 0 || level > MaxLevel)
+                throw new ArgumentOutOfRangeException(nameof(level));
+            return level == 0 ? 0f : Mathf.Max(0.01f, _autoAttackSpeeds[level - 1]);
         }
 
         /// <summary>
