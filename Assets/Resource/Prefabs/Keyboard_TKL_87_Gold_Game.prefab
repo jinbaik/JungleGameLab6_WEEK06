@@ -7223,6 +7223,7 @@ GameObject:
   - component: {fileID: 2680009578680235083}
   - component: {fileID: 6838780600003165235}
   - component: {fileID: 5183488030401779004}
+  - component: {fileID: 4783090356711705118}
   m_Layer: 0
   m_Name: Keyboard_TKL_87_Gold_Game
   m_TagString: Untagged
@@ -7375,7 +7376,7 @@ MonoBehaviour:
   - _key: 5
     _keycap: {fileID: 7606477925888127726}
   - _key: 2
-    _keycap: {fileID: 8854248398633981313}
+    _keycap: {fileID: 2556059460306348188}
   - _key: 51
     _keycap: {fileID: 1670577657218954814}
   - _key: 40
@@ -7578,6 +7579,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardLegendRenderer
   _materialTemplate: {fileID: 2100000, guid: 0f5532151dae67d439584f533334d047, type: 2}
+--- !u!114 &4783090356711705118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1499309140426057397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ca849b7ae9ee24e8ecd649b89a25c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardPlayableVariant
+  _definition: {fileID: 11400000, guid: a13fa297d6f69ff47816fe42dc9b7f1b, type: 2}
 --- !u!1 &1530156000406323747
 GameObject:
   m_ObjectHideFlags: 0
@@ -35421,7 +35435,7 @@ Transform:
   - {fileID: 6397307826928522622}
   - {fileID: 7606477925888127726}
   - {fileID: 3806504732841562624}
-  - {fileID: 8854248398633981313}
+  - {fileID: 2556059460306348188}
   - {fileID: 2389641438868930702}
   - {fileID: 1670577657218954814}
   - {fileID: 5650022355142731020}
@@ -39099,7 +39113,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8854248398633981313}
+  m_Father: {fileID: 2556059460306348188}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &22392941258459657
 MeshRenderer:
@@ -47522,7 +47536,7 @@ PrefabInstance:
       addedObject: {fileID: 3252492239054648526}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3c7e4fd3c9ea5b044a9b0489c71c6ed8, type: 3}
---- !u!4 &8854248398633981313 stripped
+--- !u!4 &2556059460306348188 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3726142318296918527, guid: 3c7e4fd3c9ea5b044a9b0489c71c6ed8, type: 3}
   m_PrefabInstance: {fileID: 1210650516732068195}

@@ -29292,6 +29292,7 @@ GameObject:
   - component: {fileID: 1935904842214423556}
   - component: {fileID: -1542669809135472032}
   - component: {fileID: 967697931009147741}
+  - component: {fileID: 8929745939355307213}
   m_Layer: 0
   m_Name: Keyboard_TKL_87
   m_TagString: Untagged
@@ -29647,6 +29648,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardLegendRenderer
   _materialTemplate: {fileID: 2100000, guid: f7639a1d99846304692bae151dd728b9, type: 2}
+--- !u!114 &8929745939355307213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6087872409866529466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8ca849b7ae9ee24e8ecd649b89a25c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardPlayableVariant
+  _definition: {fileID: 11400000, guid: ea08a8a0d180fd8498be24141aafdea4, type: 2}
 --- !u!1 &6118148393335538725
 GameObject:
   m_ObjectHideFlags: 0
@@ -55147,4 +55161,3 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6974662458702007587, guid: 1889f29d74f2d354eb36117e3485caa8, type: 3}
   m_PrefabInstance: {fileID: 9103285877692757980}
   m_PrefabAsset: {fileID: 0}
-
