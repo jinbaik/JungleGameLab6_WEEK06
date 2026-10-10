@@ -5,6 +5,7 @@ namespace Game.Upgrades
         Success,
         UnknownUpgrade,
         MaxLevel,
-        InsufficientCurrency
+        InsufficientCurrency,
+        RequiresAreaSmash
     }
 }
