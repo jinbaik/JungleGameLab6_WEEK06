@@ -39,22 +39,20 @@ namespace KeyboardModeling
             public KeycapRarity Rarity { get; }
             public int MaxHP { get; }
             public long Reward { get; }
-            public Material EffectMaterial { get; }
             public GameObject Prefab { get; }
 
             /// <summary>
-            /// key, rarity, maxHP, reward, effectMaterial과 prefab으로 키캡 생성 결과를 만든다.
-            /// 확정된 등급·체력·보상 및 이펙트 재질과 교체 프리팹 참조를 저장한다.
+            /// key, rarity, maxHP, reward와 prefab으로 키캡 생성 결과를 만든다.
+            /// 확정된 등급·체력·보상과 교체 프리팹 참조를 저장하며 희귀 등급의 프리팹 누락을 거부한다.
             /// </summary>
             public KeycapData(
                 Key key,
                 KeycapRarity rarity,
                 int maxHP,
                 long reward,
-                Material effectMaterial,
                 GameObject prefab = null)
             {
-                if (maxHP <= 0 || reward <= 0 || !Enum.IsDefined(typeof(KeycapRarity), rarity) || (rarity != KeycapRarity.Common && effectMaterial == null))
+                if (maxHP <= 0 || reward <= 0 || !Enum.IsDefined(typeof(KeycapRarity), rarity) || (rarity != KeycapRarity.Common && prefab == null))
                 {
                     throw new ArgumentException("Invalid keycap spawn data.");
                 }
@@ -63,7 +61,6 @@ namespace KeyboardModeling
                 Rarity = rarity;
                 MaxHP = maxHP;
                 Reward = reward;
-                EffectMaterial = effectMaterial;
                 Prefab = prefab;
             }
         }

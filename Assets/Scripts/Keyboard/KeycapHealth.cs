@@ -28,7 +28,6 @@ public sealed class KeycapHealth : MonoBehaviour
     public bool HasSpawnData => _hasSpawnData;
     public KeycapRarity Rarity => _rarity;
     public long Reward => _reward;
-    private MeshRenderer _rarityOverlayRenderer;
 
     [Header("Damage decal")]
     [SerializeField] private DecalProjector _damageDecal;
@@ -54,19 +53,13 @@ public sealed class KeycapHealth : MonoBehaviour
         if (_audioSource == null || !_audioSource.gameObject.scene.IsValid()) _audioSource = GetComponentInParent<AudioSource>();
         _currentHP = _maxHP;
         UpdateDamageDecal();
-        Transform overlay = transform.Find("RarityOverlay");
-        _rarityOverlayRenderer = overlay != null ? overlay.GetComponent<MeshRenderer>() : null;
-        if (_rarityOverlayRenderer != null)
-        {
-            _rarityOverlayRenderer.enabled = false;
-        }
         _renderers = GetComponentsInChildren<Renderer>();
         _colliders = GetComponentsInChildren<Collider>();
     }
 
     /// <summary>
     /// data의 확정된 등급·체력·보상을 새 키캡에 한 번 적용한다.
-    /// 최대·현재 체력과 등급 상태를 저장하고 희귀 키캡의 색상 및 균열 표시를 갱신한다.
+    /// 최대·현재 체력과 등급 상태를 저장하고 파괴 대상 렌더러 및 균열 표시를 갱신한다.
     /// </summary>
     public void InitializeSpawnData(KeyboardSpawnProfile.KeycapData data)
     {
@@ -75,23 +68,12 @@ public sealed class KeycapHealth : MonoBehaviour
             throw new InvalidOperationException("Spawn data can only initialize an untouched keycap once.");
         }
 
-        if (data.Rarity != KeycapRarity.Common && (_rarityOverlayRenderer == null || data.EffectMaterial == null))
-        {
-            throw new InvalidOperationException($"Missing rarity overlay on keycap '{name}'.");
-        }
-
         _maxHP = data.MaxHP;
         _currentHP = data.MaxHP;
         _rarity = data.Rarity;
         _reward = data.Reward;
         _hasSpawnData = true;
         _renderers = GetComponentsInChildren<Renderer>();
-
-        if (_rarity != KeycapRarity.Common)
-        {
-            _rarityOverlayRenderer.sharedMaterial = data.EffectMaterial;
-            _rarityOverlayRenderer.enabled = true;
-        }
 
         UpdateDamageDecal();
     }

@@ -16,12 +16,10 @@ MonoBehaviour:
   - _rarity: 0
     _healthMultiplier: 1
     _rewardMultiplier: 1
-    _effectMaterial: {fileID: 0}
     _prefabVariants: []
   - _rarity: 1
     _healthMultiplier: 3
     _rewardMultiplier: 2
-    _effectMaterial: {fileID: 2100000, guid: 006fe791511e3d947803a1ce47c270b5, type: 2}
     _prefabVariants:
     - _sourceMesh: {fileID: 4300000, guid: 1587b8289e2cdc34ba310d54acd0a0bd, type: 2}
       _prefab: {fileID: 7015552502922679067, guid: f1407092703c3e84dad053943ee8d37b, type: 3}
@@ -42,7 +40,6 @@ MonoBehaviour:
   - _rarity: 2
     _healthMultiplier: 10
     _rewardMultiplier: 6
-    _effectMaterial: {fileID: 2100000, guid: e4144ad995903914382c1f8495fd19ea, type: 2}
     _prefabVariants:
     - _sourceMesh: {fileID: 4300000, guid: 1587b8289e2cdc34ba310d54acd0a0bd, type: 2}
       _prefab: {fileID: 7887805746170940235, guid: d02b8e7e0c6eb764c9db5f93011a0a42, type: 3}
@@ -63,7 +60,6 @@ MonoBehaviour:
   - _rarity: 3
     _healthMultiplier: 40
     _rewardMultiplier: 10
-    _effectMaterial: {fileID: 2100000, guid: 98216fa607e7a3b43ab28e6a901a3c86, type: 2}
     _prefabVariants:
     - _sourceMesh: {fileID: 4300000, guid: 1587b8289e2cdc34ba310d54acd0a0bd, type: 2}
       _prefab: {fileID: 7982443554172078182, guid: a8ae1491ac823814f97b696cabca70f5, type: 3}
