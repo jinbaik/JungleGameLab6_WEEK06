@@ -8,7 +8,7 @@ Shader "Keyboard/BackgroundLegend"
         {
             ZTest LEqual
             ZWrite On
-            Cull Off
+            Cull Back
             HLSLPROGRAM
             #pragma vertex Vert
             #pragma fragment Frag
