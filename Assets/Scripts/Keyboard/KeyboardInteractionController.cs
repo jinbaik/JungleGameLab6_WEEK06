@@ -19,8 +19,6 @@ using UnityEditor;
 [RequireComponent(typeof(BoxCollider))]
 public sealed class KeyboardInteractionController : MonoBehaviour
 {
-    public enum KeyboardGuideState { Hidden, Pickup, Placement }
-
     [Header("Camera and Pad")]
     [SerializeField] private Camera _camera;
     [SerializeField] private CinemachineCamera _fixedCam;
@@ -50,12 +48,6 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     private readonly Dictionary<Rigidbody, KeyboardState> _keyboards = new Dictionary<Rigidbody, KeyboardState>();
     public bool IsHoldingKeyboard => _heldKeyboard != null;
     public int SpawnedKeyboardCount { get; private set; }
-
-    [Header("Keyboard Guide")]
-    private KeyboardGuideState _guideState;
-    public KeyboardGuideState GuideState => _guideState;
-
-    public event Action<KeyboardGuideState> GuideStateChanged;
 
     [Header("Spawn")]
     [SerializeField] private GameObject _keyboardPrefab;
@@ -198,11 +190,6 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         _heldKeyboard.Body.MoveRotation(Quaternion.Slerp(_heldKeyboard.Body.rotation, rotation, amount));
     }
 
-    void LateUpdate()
-    {
-        RefreshGuideState();
-    }
-
     //void OnTriggerEnter(Collider other) { TryPlaceKeyboard(other); }
     void OnTriggerStay(Collider other) { TryPlaceKeyboard(other); }
     void OnTriggerExit(Collider other) { if (_heldKeyboard != null && other.attachedRigidbody == _heldKeyboard.Body) _canPlaceHeldKeyboard = true; }
@@ -223,7 +210,6 @@ public sealed class KeyboardInteractionController : MonoBehaviour
 
     void OnDisable()
     {
-        SetGuideState(KeyboardGuideState.Hidden);
         if (_viewingAutomaticStation != null)
         {
             _viewingAutomaticStation.SetViewActive(false);
@@ -385,72 +371,20 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 현재 모드와 입력 가능 상태, 들고 있는 키보드와 카메라 중앙 조준 대상을 확인한다.
-    /// 들기 안내를 우선 선택하고 집기 불가능한 상황에서는 가이드 상태를 숨김으로 변경한다.
-    /// </summary>
-    private void RefreshGuideState()
-    {
-        if (!Application.isFocused || IsSmashMode || _isShopFocused || _viewingAutomaticStation != null
-            || _isPlacingKeyboard || IsMiniGameRunning || Mouse.current == null)
-        {
-            SetGuideState(KeyboardGuideState.Hidden);
-            return;
-        }
-#if UNITY_EDITOR
-        if (EditorApplication.isPaused || EditorWindow.focusedWindow == null || EditorWindow.focusedWindow.GetType().Name != "GameView")
-        {
-            SetGuideState(KeyboardGuideState.Hidden);
-            return;
-        }
-#endif
-        if (_heldKeyboard != null)
-        {
-            SetGuideState(KeyboardGuideState.Placement);
-            return;
-        }
-
-        bool canPickUp = TryGetLookedAtKeyboard(out KeyboardState state) && state != _placedKeyboard;
-        SetGuideState(canPickUp ? KeyboardGuideState.Pickup : KeyboardGuideState.Hidden);
-    }
-
-    /// <summary>
-    /// state가 기존 가이드 상태와 다르면 현재 상태를 교체한다.
-    /// 변경된 상태를 GuideStateChanged로 전달하여 HUD 문구를 갱신한다.
-    /// </summary>
-    private void SetGuideState(KeyboardGuideState state)
-    {
-        if (_guideState == state)
-            return;
-
-        _guideState = state;
-        GuideStateChanged?.Invoke(state);
-    }
-
-    /// <summary>
-    /// 카메라 중앙 Ray와 집기 거리·레이어로 처음 충돌한 등록 키보드를 찾는다.
-    /// 자동 작업대를 제외하고 조준 대상을 state로 전달하며 대상이 있으면 true를 반환한다.
-    /// </summary>
-    private bool TryGetLookedAtKeyboard(out KeyboardState state)
-    {
-        state = null;
-        Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-        if (!Physics.Raycast(ray, out RaycastHit hit, _rayDistance, _pickupLayers, QueryTriggerInteraction.Ignore))
-            return false;
-
-        KeyboardAutomaticStation station = hit.collider.GetComponentInParent<KeyboardAutomaticStation>();
-        if (station != null)
-            return false;
-
-        return hit.rigidbody != null && _keyboards.TryGetValue(hit.rigidbody, out state);
-    }
-
     /// <summary>카메라 중앙 Ray의 첫 충돌이 등록된 키보드이면 집고, 교환에 사용할 원래 위치 및 회전을 저장한다.</summary>
     private void PickUpKeyboard()
     {
-        if (!TryGetLookedAtKeyboard(out KeyboardState state))
+        Ray ray = _camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        if (!Physics.Raycast(ray, out RaycastHit hit, _rayDistance, _pickupLayers, QueryTriggerInteraction.Ignore)) return;
+        KeyboardAutomaticStation station = hit.collider.GetComponentInParent<KeyboardAutomaticStation>();
+        if (station != null)
+        {
+            // 자세히 보기 진입은 임시로 중단한다.
+            // _viewingAutomaticStation = station;
+            // station.SetViewActive(true);
             return;
-
+        }
+        if (hit.rigidbody == null || !_keyboards.TryGetValue(hit.rigidbody, out KeyboardState state)) return;
         if (state == _placedKeyboard)
         {
             OnEnterSmashMode();
