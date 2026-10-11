@@ -70,6 +70,11 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     [SerializeField, Min(0)] private int _behindCount = 40;
     private Transform _spawnRoot;
 
+    [Header("Opening")]
+    [SerializeField] private bool _startWithSingleKeyboard;
+    [SerializeField] private Transform _openingCeiling;
+    private KeyboardState _openingKeyboard;
+
     [Header("Keycap Quality")]
     [SerializeField] private GameSession _gameSession;
     [SerializeField] private KeyboardRewardController _rewardController;
@@ -117,11 +122,12 @@ public sealed class KeyboardInteractionController : MonoBehaviour
         //_placedKeyboard = RegisterKeyboard(_referenceKeyboard.GetComponent<KeyboardInputController>());
         _placedKeyboard = null;
         _spawnRoot = new GameObject("SpawnedKeyboards").transform;
-        SpawnKeyboards(_front, _frontCount, "front");
-        SpawnKeyboards(_left, _leftCount, "left");
-        SpawnKeyboards(_right, _rightCount, "right");
-        SpawnKeyboards(_behind, _behindCount, "behind");
-        Debug.Log($"[Keyboard] Spawned {SpawnedKeyboardCount} keyboards.", this);
+        if (_startWithSingleKeyboard)
+        {
+            CreateOpeningKeyboard();
+            return;
+        }
+        SpawnSurroundingKeyboards();
     }
 
     void Update()
@@ -308,11 +314,58 @@ public sealed class KeyboardInteractionController : MonoBehaviour
     {
         if (_placedKeyboard != state) return;
 
+        if (_openingKeyboard == state)
+        {
+            Vector3 position = _openingCeiling.localPosition;
+            position.x = 10f;
+            _openingCeiling.localPosition = position;
+            _openingKeyboard = null;
+            SpawnSurroundingKeyboards();
+        }
+
         _gameSession.CompleteKeyboard();
 
         if (IsSmashMode) OnExitSmashMode();
         _placedKeyboard = null;
         PlacedKeyboardChanged?.Invoke(null);
+    }
+
+    /// <summary>
+    /// 설정된 키보드 프리팹과 Pad 위치·회전으로 시작 키보드 하나를 준비한다.
+    /// 기존 품질·파괴 등록을 사용하고 배치 상태를 저장하여 SmashMode 입력을 활성화한다.
+    /// </summary>
+    private void CreateOpeningKeyboard()
+    {
+        GameObject sourceObject = Instantiate(_keyboardPrefab, _padPosition, _padRotation, _spawnRoot);
+        KeyboardState source = RegisterKeyboard(sourceObject);
+        _openingKeyboard = CreatePlayableKeyboard(source);
+        _placedKeyboard = _openingKeyboard;
+        _keyboards.Remove(source.Body);
+        sourceObject.SetActive(false);
+        Destroy(sourceObject);
+        Rigidbody body = _placedKeyboard.Body;
+        body.interpolation = RigidbodyInterpolation.None;
+        body.isKinematic = true;
+        body.useGravity = false;
+        body.position = _padPosition;
+        body.rotation = _padRotation;
+        _controller.SetKeyBoard(_placedKeyboard.Keyboard);
+        PlacedKeyboardChanged?.Invoke(_placedKeyboard.Keyboard);
+        SpawnedKeyboardCount = 1;
+        OnEnterSmashMode();
+    }
+
+    /// <summary>
+    /// 설정된 네 영역과 생성 수를 사용해 주변 키보드를 생성한다.
+    /// 등록된 키보드와 SpawnedKeyboardCount를 갱신하고 누적 생성 수를 출력한다.
+    /// </summary>
+    private void SpawnSurroundingKeyboards()
+    {
+        SpawnKeyboards(_front, _frontCount, "front");
+        SpawnKeyboards(_left, _leftCount, "left");
+        SpawnKeyboards(_right, _rightCount, "right");
+        SpawnKeyboards(_behind, _behindCount, "behind");
+        Debug.Log($"[Keyboard] Spawned {SpawnedKeyboardCount} keyboards.", this);
     }
 
     /// <summary>area의 로컬 중심과 크기 안에서 count개를 임의 위치와 회전으로 생성한다. 영역이 없으면 areaName을 알리고 해당 영역 생성을 건너뛴다.</summary>
