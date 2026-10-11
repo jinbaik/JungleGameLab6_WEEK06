@@ -919,6 +919,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1933321807445377364, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
+      propertyPath: _progressDecayPerSecond
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 2612928670998550527, guid: eeba46b795e71854d883e33ac92b8108, type: 3}
       propertyPath: monitorCam
       value: 
