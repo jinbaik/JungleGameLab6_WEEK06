@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; connect-src 'none'; object-src 'none'; base-uri 'none'">
+  <title>Playtest Atlas · 토너먼트 로그 분석</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="model.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#main"><span class="brand-mark">PA</span><span>PLAYTEST<br><b>ATLAS</b></span></a>
+    <p class="eyebrow">TOURNAMENT ANALYTICS</p>
+    <nav aria-label="분석 화면">
+      <button data-tab="overview" class="active">01 <span>실행 개요</span></button>
+      <button data-tab="battle">02 <span>대전 분석</span></button>
+      <button data-tab="keyboard">03 <span>키보드 · 키 상세</span></button>
+      <button data-tab="shop">04 <span>기믹 · 상점</span></button>
+      <button data-tab="compare">05 <span>실행 비교</span></button>
+    </nav>
+    <div class="sidebar-note"><b>LOCAL FIRST</b><p>파일은 이 브라우저에서만 처리합니다.<br>서버 · 업로드 · 계정 없음</p><a href="README.md">사용법과 집계 정의 ↗</a></div>
+  </aside>
+  <div class="workspace">
+    <header class="toolbar">
+      <div class="selector"><label for="fileSelect">파일 · 실행</label><select id="fileSelect" disabled><option>CSV를 추가하세요</option></select></div>
+      <div class="selector"><label for="tournamentSelect">세션 · 토너먼트</label><select id="tournamentSelect" disabled><option>전체</option></select></div>
+      <div class="selector battle-selector"><label for="battleSelect">대전</label><div><button id="prevBattle" aria-label="이전 대전" disabled>‹</button><select id="battleSelect" disabled><option>선택 대기</option></select><button id="nextBattle" aria-label="다음 대전" disabled>›</button></div></div>
+      <button class="primary" id="addFiles">CSV 추가</button>
+      <button id="removeFile" disabled>파일 제외</button>
+      <input id="fileInput" type="file" accept=".csv,text/csv" multiple hidden>
+    </header>
+    <main id="main" tabindex="-1">
+      <div class="page-heading"><div><p class="eyebrow" id="breadcrumb">WORKSPACE / OVERVIEW</p><h1 id="pageTitle">실행 개요</h1><p id="pageSubtitle">흩어진 이벤트를 하나의 플레이 흐름으로.</p></div><span class="local-badge">오프라인 분석</span></div>
+      <div id="loadStatus" role="status" aria-live="polite"></div>
+      <div id="fileErrors" role="alert"></div>
+      <section id="welcome" class="welcome">
+        <p class="eyebrow">YOUR NEXT INSIGHT STARTS HERE</p><h2>한 번의 실행부터,<br>하나의 키까지.</h2>
+        <p>플레이테스트 CSV를 선택하거나 이 창에 놓으세요.<br>여러 파일의 대전, 키보드, 기믹과 상점 기록을 비교할 수 있습니다.</p>
+        <button class="primary" id="welcomeUpload">CSV 파일 선택</button>
+        <div class="welcome-steps"><span><b>01</b> 실행의 진행 확인</span><span><b>02</b> 대전과 키보드 탐색</span><span><b>03</b> 다른 실행과 비교</span></div>
+        <p class="fine">29 · 43 · 59열 지원 / UTF-8 CSV / 원본 파일 변경 없음</p>
+      </section>
+      <div id="content"></div>
+      <footer>기록된 사실을 집계합니다. 입력 ≠ 타격 성공 ≠ 기믹 발동. 미수집 데이터를 추정하지 않습니다.</footer>
+    </main>
+  </div>
+  <div id="dropOverlay" hidden>CSV 파일을 여기에 놓으세요</div>
+</body>
+</html>
