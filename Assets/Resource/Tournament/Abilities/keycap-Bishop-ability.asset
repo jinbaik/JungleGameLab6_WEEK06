@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad3e8e47f4844015ac851a4c9283e2e9, type: 3}
+  m_Name: keycap-Bishop-ability
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tournament.KeycapAbilityDefinition
+  _trigger: 0
+  _target: 6
+  _neighborCount: 8
+  _delay: 0
+  _waveDuration: 0.5
+  _effects:
+  - _kind: 0
+    _damage: 3
+    _status: {fileID: 0}
+  _artisanKind: 2
+  _passiveDamageBonus: 2
+  _passiveSideCount: 7
+  _passiveTargetCount: 10
+  _passiveSpacing: 2
+  _passiveOriginCount: 2
+  _propagation: 0
+  _repeatCount: 1
+  _repeatInterval: 0.1
+  _alternateDirection: 0
+  _activationEffectPrefab: {fileID: 5568108210182659090, guid: ca3b4c9509b08af4783ca4e7a07b8220, type: 3}
+  _effectScale: 1
+  _effectLifetime: 0.6
+  _windupEffectPrefab: {fileID: 0}
+  _impactEffectPrefab: {fileID: 5674904051496483455, guid: a3cf395d9e619dc4ba003f220b41554f, type: 3}
+  _impactLifetime: 0.32

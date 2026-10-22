@@ -29293,6 +29293,7 @@ GameObject:
   - component: {fileID: -1542669809135472032}
   - component: {fileID: 967697931009147741}
   - component: {fileID: 8929745939355307213}
+  - component: {fileID: 5424151925015608340}
   m_Layer: 0
   m_Name: Keyboard_TKL_87
   m_TagString: Untagged
@@ -29330,7 +29331,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardInputController
   _inputEnabled: 1
-  _blockShortcuts: 1
   _bindings:
   - _key: 60
     _keycap: {fileID: 8548128700969274151}
@@ -29514,6 +29514,7 @@ MonoBehaviour:
   _logInput: 1
   _audioSource: {fileID: -1542669809135472032}
   _pressSound: {fileID: 8300000, guid: 5871cb8f54e12774ebe12e9c708bd284, type: 3}
+  _fmodSwitchSound: 0
 --- !u!54 &1935904842214423556
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -29664,6 +29665,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardPlayableVariant
   _definition: {fileID: 11400000, guid: ea08a8a0d180fd8498be24141aafdea4, type: 2}
+--- !u!114 &5424151925015608340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6087872409866529466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fe699182f42ab9459654bc9b651eeed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardCollisionAudio
+  _minimumImpactSpeed: 2
+  _minimumPlayInterval: 0.2
+  _surfaceLayers:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!1 &6118148393335538725
 GameObject:
   m_ObjectHideFlags: 0

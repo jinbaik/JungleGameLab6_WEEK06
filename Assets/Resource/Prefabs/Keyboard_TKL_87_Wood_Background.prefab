@@ -108,6 +108,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6004080589864425764, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
       insertIndex: -1
       addedObject: {fileID: -2199249628022354126}
+    - targetCorrespondingSourceObject: {fileID: 6004080589864425764, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3032969947868566173}
   m_SourcePrefab: {fileID: 100100000, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
 --- !u!1 &7260896916683266010 stripped
 GameObject:
@@ -154,13 +157,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardInputController
   _inputEnabled: 0
-  _blockShortcuts: 1
   _bindings: []
   _pressDistance: 0.15
   _animationSpeed: 18
+  _stemHeightOffset: 0.08
+  _stemPressDistance: 0.2
+  _stemLengthMultiplier: 1.5
   _logInput: 1
   _audioSource: {fileID: 0}
   _pressSound: {fileID: 0}
+  _fmodSwitchSound: 0
 --- !u!65 &-2199249628022354126
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -182,3 +188,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 19.249996, y: 1.3619998, z: 7.4099994}
   m_Center: {x: 9.249998, y: 0.8009998, z: 2.7949998}
+--- !u!114 &3032969947868566173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7260896916683266010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fe699182f42ab9459654bc9b651eeed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardCollisionAudio
+  _minimumImpactSpeed: 2
+  _minimumPlayInterval: 0.2
+  _surfaceLayers:
+    serializedVersion: 2
+    m_Bits: 1
