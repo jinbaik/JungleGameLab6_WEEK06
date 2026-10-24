@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad3e8e47f4844015ac851a4c9283e2e9, type: 3}
+  m_Name: keycap-takodachi-ability
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tournament.KeycapAbilityDefinition
+  _trigger: 0
+  _target: 1
+  _neighborCount: 4
+  _delay: 0
+  _waveDuration: 0.6
+  _effects:
+  - _kind: 0
+    _damage: 3
+    _status: {fileID: 0}
+  _artisanKind: 5
+  _passiveDamageBonus: 1
+  _passiveSideCount: 7
+  _passiveTargetCount: 10
+  _passiveSpacing: 2
+  _passiveOriginCount: 2
+  _propagation: 2
+  _repeatCount: 1
+  _repeatInterval: 0.1
+  _alternateDirection: 0
+  _activationEffectPrefab: {fileID: 470251071865453178, guid: dc86bb41363a93f44962caa3aa717945, type: 3}
+  _effectScale: 1
+  _effectLifetime: 0.6
+  _windupEffectPrefab: {fileID: 0}
+  _impactEffectPrefab: {fileID: 2887038295190830418, guid: 57d07f6b8a8844240a03e1c2580c0337, type: 3}
+  _impactLifetime: 0.5

@@ -1,0 +1,13 @@
+{
+  "output": null,
+  "diagnostics": [],
+  "success": true,
+  "result": {
+    "photoApplied": true,
+    "photoHiddenOnBreak": true,
+    "photoRestored": true,
+    "originalDetailsHidden": true,
+    "originalRestored": true,
+    "compiling": false
+  }
+}

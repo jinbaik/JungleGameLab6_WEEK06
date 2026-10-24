@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad3e8e47f4844015ac851a4c9283e2e9, type: 3}
+  m_Name: keycap-gundampanel_yellow-ability
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tournament.KeycapAbilityDefinition
+  _trigger: 0
+  _target: 2
+  _neighborCount: 8
+  _delay: 0
+  _waveDuration: 0.24
+  _effects:
+  - _kind: 0
+    _damage: 1
+    _status: {fileID: 0}
+  _propagation: 1
+  _repeatCount: 3
+  _repeatInterval: 0.1
+  _alternateDirection: 0
+  _activationEffectPrefab: {fileID: 396790962215086713, guid: 8a1c82665914ff94097f6868d979e833, type: 3}
+  _effectScale: 1
+  _effectLifetime: 0.6
+  _windupEffectPrefab: {fileID: 0}
+  _impactEffectPrefab: {fileID: 312820259827769110, guid: 6ce760cf531d8b24d993c3ed4266c40f, type: 3}
+  _impactLifetime: 0.32

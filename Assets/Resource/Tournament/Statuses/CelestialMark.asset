@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1aa15abfe4940e7b1fe0f2abf214c6f, type: 3}
+  m_Name: CelestialMark
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tournament.KeycapStatusEffectDefinition
+  _displayName: "\uBCC4\uBE5B"
+  _usesDuration: 0
+  _duration: 5
+  _hitCount: 1
+  _reapply: 0
+  _maxStacks: 1
+  _bonusDamage: 1
+  _damageMultiplier: 1
+  _directHitsOnly: 1
+  _markerPrefab: {fileID: 3164547781819411574, guid: 9b4991200c3b83d439d7aa56f65ae45a, type: 3}
+  _attachToSurface: 1
+  _markerOffset: {x: 0.22, y: 0.08, z: 0.18}
+  _markerScale: 0.28

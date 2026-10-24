@@ -1,0 +1,30 @@
+{
+  "output": null,
+  "diagnostics": [],
+  "success": true,
+  "result": {
+    "Id": "keycap-Phoebe",
+    "DisplayName": "Phoebe 키캡",
+    "purchased": true,
+    "applied": 3,
+    "oneUnit": true,
+    "pressed": true,
+    "released": true,
+    "photoApplied": true,
+    "reloaded": 3,
+    "cracks": true,
+    "brokenEvents": 1,
+    "hidden": true,
+    "colliderDisabled": true,
+    "photoRestored": false,
+    "restored": true,
+    "uniqueId": true,
+    "uniqueMaterial": true,
+    "inPool": true,
+    "width": 0.886,
+    "depth": 0.795927048,
+    "height": 0.9740315,
+    "vertices": 16808,
+    "submeshes": 9
+  }
+}

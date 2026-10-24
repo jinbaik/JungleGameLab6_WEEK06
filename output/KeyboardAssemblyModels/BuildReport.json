@@ -1,0 +1,107 @@
+{
+  "sources": [
+    "https://www.cherry.de/en-us/product/mx2a-red",
+    "https://www.farnell.com/datasheets/1792245.pdf",
+    "https://txkeyboard.com/store1/?idx=82"
+  ],
+  "plate_switch_holes": 87,
+  "plate_stabilizer_holes": 10,
+  "triangles": {
+    "plate": 2464,
+    "switch": 414
+  },
+  "mesh_guids": {
+    "plate": "d598832316d7428db8629d5d553b67e3",
+    "top": "3c8cd16f557d4c0aaf2c64c803014233",
+    "bottom": "e88713ad6cd64ad39f95aa7af6f57c42",
+    "stem": "2fcab5920acb4e36ad7e43445e7e0f61"
+  },
+  "changed_prefabs": [
+    [
+      "Assets\\Resource\\Prefabs\\KeyboardBody_TKL87.prefab",
+      0
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\Keyboard_TKL_87.prefab",
+      87
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\Keyboard_TKL_87_Celestial_Game.prefab",
+      87
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\Keyboard_TKL_87_Gold_Game.prefab",
+      87
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\Keyboard_TKL_87_Neon_Game.prefab",
+      87
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\Keyboard_TKL_87_Wood_Game.prefab",
+      87
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\AssemblyCatalog\\Part_26a139ba317bcbb43804bf12a608e2ba.prefab",
+      1
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\AssemblyCatalog\\Part_3ffb758e76d72224ba66f4a440925fbc.prefab",
+      1
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\AssemblyCatalog\\Part_5b1f640d63149dc4399a76d501184f28.prefab",
+      1
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\AssemblyCatalog\\Part_861a81df95ba62f4baa0a937b5b75f3a.prefab",
+      1
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\AssemblyCatalog\\Part_963f322bc845e694b9bcd79c59717f6a.prefab",
+      1
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\AssemblyCatalog\\Part_9853aa6392209dc499418f1beb5a43fb.prefab",
+      1
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\AssemblyCatalog\\Part_aa7398e71d187e14481d9a55c2e74581.prefab",
+      1
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\AssemblyCatalog\\Part_e6749129210a24d4994d3ee244ab7cb4.prefab",
+      1
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\SeperateKeyboard\\Keyboard_Assembly87.prefab",
+      87
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\SeperateKeyboard\\Keyboard_AssemblyPreview.prefab",
+      87
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\SeperateKeyboard\\Keyboard_Cuso.prefab",
+      87
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\SeperateKeyboard\\Keyboard_Customize.prefab",
+      87
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\Workshop\\KeyboardTrashCan.prefab",
+      8
+    ],
+    [
+      "Assets\\Resource\\Prefabs\\Workshop\\RepairWorkbench.prefab",
+      8
+    ]
+  ],
+  "validation": {
+    "mesh_buffers": "passed",
+    "hole_centers_open": 97,
+    "switch_instances_updated": 807,
+    "unity_render": "not_run"
+  }
+}

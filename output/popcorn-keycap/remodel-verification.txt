@@ -1,0 +1,7 @@
+popcorn-a triangles=892 bounds=(0.2400, 0.2072, 0.1227)
+Upright outlet clearance=True
+popcorn-b triangles=716 bounds=(0.2400, 0.2280, 0.1760)
+Upright outlet clearance=True
+popcorn-c triangles=750 bounds=(0.2400, 0.1458, 0.0724)
+Upright outlet clearance=True
+keycap-popcorn-machine-pile triangles=4312 bounds=(0.6904, 0.2242, 0.4306)

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b2405434008408a9e2a3fb0c255f8cb, type: 3}
+  m_Name: switch-switch_brown
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tournament.SwitchDefinition
+  _id: switch-switch_brown
+  _displayName: "\uAC08\uCD95"
+  _price: 60
+  _quantity: 1
+  _data: {fileID: 11400000, guid: aa7398e71d187e14481d9a55c2e74581, type: 2}
+  _damageBonus: 1

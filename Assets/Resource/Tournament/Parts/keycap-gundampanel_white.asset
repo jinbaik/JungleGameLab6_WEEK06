@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23cb0ce5d29640679c43429f000833ab, type: 3}
+  m_Name: keycap-gundampanel_white
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tournament.KeycapDefinition
+  _id: keycap-gundampanel_white
+  _displayName: "\uAC74\uB2F4 \uD770\uC0C9 \uD0A4\uCEA1"
+  _price: 40
+  _quantity: 3
+  _material: {fileID: 2100000, guid: 3e7bfabfa1999224ba9d77cbe0feff07, type: 2}
+  _materialId: 3e7bfabfa1999224ba9d77cbe0feff07:2100000
+  _ability: {fileID: 11400000, guid: acd0e52569ac41b59315f3309d225ea5, type: 2}

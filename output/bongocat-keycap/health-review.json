@@ -1,0 +1,12 @@
+{
+  "output": null,
+  "diagnostics": [],
+  "success": true,
+  "result": {
+    "cracksVisible": true,
+    "detailsHidden": true,
+    "healthy": true,
+    "restored": true,
+    "compiling": false
+  }
+}
