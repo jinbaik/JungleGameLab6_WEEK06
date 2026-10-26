@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25c9a128f57f4c65b502d4aa9f99bc01, type: 3}
+  m_Name: Mail_Result_AllRed_Success
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Player.MonitorMailMessage
+  _mailId: mail.keyboard.all-red.001.success
+  _request: {fileID: 11400000, guid: 7aedbe6bcc0946f98257f646da3414f2, type: 2}
+  _sender: "첫 의뢰 고객"
+  _address: "customer@workshop.local"
+  _subject: "부탁드린 키보드 잘 받았습니다!"
+  _date: "오늘"
+  _body: "요청한 대로 키보드를 완성해 주셔서 감사합니다.\n모든 스위치가 적축으로 설치되어 있어 만족스럽습니다.\n잘 사용하겠습니다!"

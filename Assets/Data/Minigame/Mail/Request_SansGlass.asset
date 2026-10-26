@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d8f8755b8944451ad5604883d4734c2, type: 3}
+  m_Name: Request_SansGlass
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Player.KeyboardRequestDefinition
+  _requestId: keyboard.sans-glass.003
+  _displayName: "샌즈 축 유리 키보드"
+  _description: "필수 스위치 전체에 샌즈 축을 설치하고, 유리 하단부와 상단부 및 모든 필수 유리 키캡을 조립하세요. PCB와 보강판도 모두 조립해야 합니다. PCB와 보강판 재질은 자유입니다."
+  _requiredSwitchType: 3
+  _requiresAllRequiredSwitchSlots: 1
+  _requiresCompleteAssembly: 1
+  _requiresGlassSurfaces: 1
+  _glassMaterial: {fileID: 2100000, guid: ef29bfa57b8eeaa4684755d94aec900c, type: 2}
+  _materialCatalog: {fileID: 11400000, guid: 067fd65342d9d114ba14af37cab52dc3, type: 2}
+  _rewardGold: 100
+  _initialMail: {fileID: 11400000, guid: bc2dacf8dd89426ea61085506b79e294, type: 2}
+  _successMail: {fileID: 11400000, guid: 4e291c31d93d4c119ea0d803c2e3d9c4, type: 2}
+  _failureMail: {fileID: 11400000, guid: 3fbafd8a24484e9b81e1fca96e8ee782, type: 2}
+  _nextRequest: {fileID: 11400000, guid: 5d953ce4a59b4853b4458801cb9cfef4, type: 2}

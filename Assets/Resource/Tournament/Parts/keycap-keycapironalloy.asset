@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23cb0ce5d29640679c43429f000833ab, type: 3}
+  m_Name: keycap-keycapironalloy
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tournament.KeycapDefinition
+  _id: keycap-keycapironalloy
+  _displayName: "\uCCA0 \uD569\uAE08 \uD0A4\uCEA1"
+  _price: 50
+  _quantity: 3
+  _material: {fileID: 2100000, guid: 994431c627356934b98175a03bb95d66, type: 2}
+  _materialId: 994431c627356934b98175a03bb95d66:2100000
+  _ability: {fileID: 11400000, guid: c1e6cc2ca95a40b682a2345b832aa24e, type: 2}

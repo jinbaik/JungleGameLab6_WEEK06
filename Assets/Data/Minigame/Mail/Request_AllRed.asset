@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d8f8755b8944451ad5604883d4734c2, type: 3}
+  m_Name: Request_AllRed
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Player.KeyboardRequestDefinition
+  _requestId: keyboard.all-red.001
+  _displayName: "적축 키보드 제작"
+  _description: "실제 키보드의 모든 필수 스위치 슬롯에 적축을 설치하고 하단부, PCB, 보강판, 상단부와 필수 키캡을 모두 조립하세요. 재질과 키캡 디자인은 자유입니다."
+  _requiredSwitchType: 1
+  _requiresAllRequiredSwitchSlots: 1
+  _requiresCompleteAssembly: 1
+  _rewardGold: 100
+  _initialMail: {fileID: 11400000, guid: d1e243417ca740ceb15f5a2dad41d16e, type: 2}
+  _successMail: {fileID: 11400000, guid: 7199ec8d305f41a3a4b54c07d4c4a591, type: 2}
+  _failureMail: {fileID: 11400000, guid: 066d30bd12a94a1f9cd6dd404c78f684, type: 2}
+  _nextRequest: {fileID: 11400000, guid: 6693840b90144a6a9ff00594eb53126c, type: 2}

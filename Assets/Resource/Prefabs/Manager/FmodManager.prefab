@@ -1,0 +1,233 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6233164409691592997
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3464317468454059254}
+  - component: {fileID: 6017198698176353905}
+  - component: {fileID: 5644101937113968702}
+  m_Layer: 0
+  m_Name: FmodManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3464317468454059254
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6233164409691592997}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.8645, y: 0.13875, z: 0.77798}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6017198698176353905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6233164409691592997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e354989f9e4aaf43afea243816c81d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  _initialKeyboard: {fileID: 0}
+  _reverbOffOn: {x: 0, y: 1}
+  _delayOffOn: {x: 0, y: 1}
+  _pitchOffOn: {x: 0, y: 1}
+  _temporaryKeyboardPitch: 1.2
+  _removeKeyPitchRange: {x: 0.9, y: 1.1}
+--- !u!114 &5644101937113968702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6233164409691592997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8108d07f7d92284386603c2b5c86b01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FMODEvents
+  <IndoorAmbient>k__BackingField:
+    Guid:
+      Data1: -2047491160
+      Data2: 1150371445
+      Data3: 245133704
+      Data4: -171718166
+    Path: event:/Ambient/IndoorAmbient
+  <Button>k__BackingField:
+    Guid:
+      Data1: -1413103422
+      Data2: 1224401576
+      Data3: -629847647
+      Data4: 1073906868
+    Path: event:/UI/Button
+  <BlueSwitch>k__BackingField:
+    Guid:
+      Data1: 714337182
+      Data2: 1247155301
+      Data3: 1394622130
+      Data4: -1158505385
+    Path: event:/SFX/KeyBoard/Switch/BlueSwitch
+  <BrownSwitch>k__BackingField:
+    Guid:
+      Data1: -416014041
+      Data2: 1080270025
+      Data3: 2019034516
+      Data4: -896893305
+    Path: event:/SFX/KeyBoard/Switch/BrownSwitch
+  <RedSwitch>k__BackingField:
+    Guid:
+      Data1: 191871004
+      Data2: 1185196984
+      Data3: 302908047
+      Data4: -2044697214
+    Path: event:/SFX/KeyBoard/Switch/RedSwitch
+  <SansSwitch>k__BackingField:
+    Guid:
+      Data1: -32070428
+      Data2: 1291412373
+      Data3: 450794891
+      Data4: 1324151617
+    Path: event:/SFX/KeyBoard/Switch/SansSwitch
+  <PopSwitch>k__BackingField:
+    Guid:
+      Data1: -918527380
+      Data2: 1221018364
+      Data3: 1816992663
+      Data4: -177418115
+    Path: event:/SFX/KeyBoard/Switch/PopSwitch
+  <TypewriterSwitch>k__BackingField:
+    Guid:
+      Data1: 521934002
+      Data2: 1203661355
+      Data3: 1665637543
+      Data4: -1561119682
+    Path: event:/SFX/KeyBoard/Switch/TypewriterSwitch
+  <FireWorksSwitch>k__BackingField:
+    Guid:
+      Data1: -856896894
+      Data2: 1171141174
+      Data3: 772051638
+      Data4: 1967501989
+    Path: event:/SFX/KeyBoard/Switch/FireWorksSwitch
+  <AnimalSwitch>k__BackingField:
+    Guid:
+      Data1: 174062438
+      Data2: 1074783029
+      Data3: 1696850583
+      Data4: 396219504
+    Path: event:/SFX/KeyBoard/Switch/AnimalSwitch
+  <BreakKeyCap>k__BackingField:
+    Guid:
+      Data1: -715810010
+      Data2: 1209485294
+      Data3: -1633832268
+      Data4: -29979577
+    Path: event:/SFX/KeyBoard/KeyCaps/BreakKeyCap
+  <PutOnKey>k__BackingField:
+    Guid:
+      Data1: 1550345896
+      Data2: 1328496653
+      Data3: 824294073
+      Data4: -338442839
+    Path: event:/SFX/KeyBoard/Other/PutOn
+  <RemoveKey>k__BackingField:
+    Guid:
+      Data1: -547682682
+      Data2: 1271521387
+      Data3: -331231602
+      Data4: 1787304047
+    Path: event:/SFX/KeyBoard/Other/Remove
+  <FootSteps>k__BackingField:
+    Guid:
+      Data1: -1283923980
+      Data2: 1246508104
+      Data3: 1676953496
+      Data4: -686253831
+    Path: event:/SFX/Player/FootSteps
+  <Throwing>k__BackingField:
+    Guid:
+      Data1: -161479908
+      Data2: 1312908407
+      Data3: -1696525640
+      Data4: -1003462232
+    Path: event:/SFX/OtherObject/Throwing
+  <Trash>k__BackingField:
+    Guid:
+      Data1: -1402610498
+      Data2: 1238348543
+      Data3: 1232659857
+      Data4: -1504189152
+    Path: event:/SFX/OtherObject/Trash
+  <VendingMachineThud>k__BackingField:
+    Guid:
+      Data1: -1735314096
+      Data2: 1200576674
+      Data3: 680881561
+      Data4: -507872415
+    Path: event:/SFX/OtherObject/VendingMachineThud
+  <ThumpKeyBoard>k__BackingField:
+    Guid:
+      Data1: -327434940
+      Data2: 1340308468
+      Data3: -1073541248
+      Data4: -637734744
+    Path: event:/SFX/KeyBoard/Thump/Thump
+  <Email>k__BackingField:
+    Guid:
+      Data1: 1862088215
+      Data2: 1207027367
+      Data3: -802496874
+      Data4: -2118550270
+    Path: event:/SFX/OtherObject/Email
+  <DrawerOpen>k__BackingField:
+    Guid:
+      Data1: 2030538015
+      Data2: 1085007255
+      Data3: -316536908
+      Data4: 2130315617
+    Path: event:/SFX/OtherObject/DrawerOpen
+  <DrawerClose>k__BackingField:
+    Guid:
+      Data1: 66834287
+      Data2: 1084492545
+      Data3: -1742529911
+      Data4: -1568766927
+    Path: event:/SFX/OtherObject/DrawerClose
+  <RadioChange>k__BackingField:
+    Guid:
+      Data1: 1850124655
+      Data2: 1209657142
+      Data3: 136334498
+      Data4: -413750513
+    Path: event:/SFX/Radio/RadioChange
+  <RadioTurnOnOff>k__BackingField:
+    Guid:
+      Data1: -767259266
+      Data2: 1319183177
+      Data3: 1706372240
+      Data4: 68850873
+    Path: event:/SFX/Radio/RadioTurnOn
+  <RadioMusic>k__BackingField:
+    Guid:
+      Data1: 904751254
+      Data2: 1217279695
+      Data3: 1012826797
+      Data4: 152907510
+    Path: event:/Music/RadioMusic

@@ -1,0 +1,9 @@
+Machine normalized bounds=(0.8200, 0.9660, 0.7280) min=(-0.4100, 0.0000, -0.3680) max=(0.4100, 0.9660, 0.3600) size mm=(15.621, 18.402, 13.868)
+Normal key width/depth=.925; 1u pitch=1; minimum X neighbor gap=0.1275 Z gap=0.1695
+Anchor=(0.1600, 0.9560, 0.1200) local axis=+Y
+popcorn-a size=(0.2400, 0.2273, 0.1674) center=(0.0000, 0.0000, 0.0000) triangles=674 upright vertical path clear=True scripts=0 physics=0
+popcorn-b size=(0.2238, 0.2258, 0.2400) center=(0.0000, 0.0000, 0.0000) triangles=674 upright vertical path clear=True scripts=0 physics=0
+popcorn-c size=(0.2400, 0.1753, 0.0916) center=(0.0000, 0.0000, 0.0000) triangles=674 upright vertical path clear=True scripts=0 physics=0
+Default root children=5 renderer count=4 machine triangles=4240 scripts=0 rigidbody=0 colliders=0
+Glass surface=1 alpha=0.085 ZWrite=0; front and two side single planes; no back pane
+Anchor follows root=True

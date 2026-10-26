@@ -1,0 +1,136 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100001
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5648102524883158503, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9923999999}
+  m_SourcePrefab: {fileID: 100100000, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+--- !u!114 &9923999999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7000000000000000700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10d79e55c3144010a0d2aea6e26ff0f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.Assembly.KeyboardAssemblyState
+  _customization: {fileID: 9924000100}
+  _installation: {fileID: 9924000101}
+  _pcb: {fileID: 9924000102}
+  _screws:
+  - {fileID: 9924000103}
+  - {fileID: 9924000104}
+  - {fileID: 9924000105}
+  - {fileID: 9924000106}
+  - {fileID: 9924000107}
+  - {fileID: 9924000108}
+  _upperRenderers:
+  - {fileID: 9924000109}
+  - {fileID: 9924000110}
+  - {fileID: 9924000111}
+  - {fileID: 9924000112}
+  - {fileID: 9924000113}
+  _screwStartHeight: 0.8
+  _screwDuration: 0.65
+  _screwRotationDegrees: 720
+--- !u!114 &9924000100 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3967785068815222441, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7000000000000000700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f972d9568538a3b4180eadd677f5a94f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardCustomization
+--- !u!114 &9924000101 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 16919128326509319, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7000000000000000700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c024d23aded89c14e976d8b93dbd263c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyboardPartInstallation
+--- !u!4 &9924000102 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7987264179495128253, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &9924000103 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8851000000000000002, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &9924000104 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8851000000000000012, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &9924000105 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8851000000000000022, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &9924000106 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8851000000000000032, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &9924000107 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8851000000000000042, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &9924000108 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8851000000000000052, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &9924000109 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8852000000000000004, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &9924000110 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8780478049414863374, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &9924000111 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4131874619408227893, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &9924000112 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 903760536120378401, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &9924000113 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5999264866688161344, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7000000000000000700 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5648102524883158503, guid: b32d760f64f14d5c986e457bd952d555, type: 3}
+  m_PrefabInstance: {fileID: 100100001}
+  m_PrefabAsset: {fileID: 0}

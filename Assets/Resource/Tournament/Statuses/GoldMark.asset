@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1aa15abfe4940e7b1fe0f2abf214c6f, type: 3}
+  m_Name: GoldMark
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tournament.KeycapStatusEffectDefinition
+  _displayName: "\uAE08\uBE5B \uCDE8\uC57D"
+  _usesDuration: 1
+  _duration: 4
+  _hitCount: 1
+  _reapply: 0
+  _maxStacks: 1
+  _bonusDamage: 0
+  _damageMultiplier: 1.5
+  _directHitsOnly: 1
+  _markerPrefab: {fileID: 103694747822174141, guid: 857f57689e551554295bf0dbabcbaaf6, type: 3}
+  _attachToSurface: 1
+  _markerOffset: {x: 0.22, y: 0.08, z: 0.18}
+  _markerScale: 0.28

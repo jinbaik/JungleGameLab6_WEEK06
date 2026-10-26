@@ -1,0 +1,20 @@
+{
+  "output": null,
+  "diagnostics": [],
+  "success": true,
+  "result": {
+    "colliderMatches": true,
+    "decalCovers": true,
+    "imageApplied": true,
+    "photoMatches": true,
+    "reloadedPhoto": true,
+    "changed": true,
+    "restoredMesh": true,
+    "restoredMaterial": true,
+    "restoredCollider": true,
+    "originalDecal": true,
+    "width": 0.89,
+    "depth": 0.85,
+    "height": 0.76
+  }
+}
