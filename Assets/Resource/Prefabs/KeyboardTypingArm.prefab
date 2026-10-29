@@ -1266,8 +1266,9 @@ MonoBehaviour:
   _elbow: {fileID: 7685930323100600811}
   _wrist: {fileID: 5492790877587048334}
   _contactPoint: {fileID: 6741103108169760583}
-  _interactionController: {fileID: 0}
-  _temporarySmashInput: 1
+  _keepElbowBehind: 0
+  _minimumElbowBackOffset: 0.005
+  _useUnscaledTime: 1
   _pressDuration: 0.035
   _retractDuration: 0.055
   _hoverHeight: 0.01

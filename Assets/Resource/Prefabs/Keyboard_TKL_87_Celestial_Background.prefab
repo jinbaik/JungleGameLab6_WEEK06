@@ -76,6 +76,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Keyboard_TKL_87_Celestial_Background
       objectReference: {fileID: 0}
+    - target: {fileID: 6004080589864425764, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7606253225148691162, guid: 8864b463991158c42bdd2215fcb33c48, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -127,10 +131,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyboardModeling.KeyboardInputController
   _inputEnabled: 0
-  _blockShortcuts: 1
   _bindings: []
   _pressDistance: 0.15
   _animationSpeed: 18
+  _stemHeightOffset: 0.08
+  _stemPressDistance: 0.2
+  _stemLengthMultiplier: 1.5
   _logInput: 1
   _audioSource: {fileID: 0}
   _pressSound: {fileID: 0}

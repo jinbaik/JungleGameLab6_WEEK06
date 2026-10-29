@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4be4b26129af76744b27728a00954caa, type: 3}
+  m_Name: Switch_Sans
+  m_EditorClassIdentifier: Assembly-CSharp::SwitchData
+  _type: 3
+  _topHousingMaterial: {fileID: 2100000, guid: 794f0db3eb283b546b2d078b8b6ba4b3, type: 2}
+  _bottomHousingMaterial: {fileID: 2100000, guid: 71a7ea23368f8774d83fa7b13e4cdcfe, type: 2}
+  _stemMaterial: {fileID: 2100000, guid: 45c99e743c20bef4ba2fb0838653720d, type: 2}
+  _keyDownSound: {fileID: 0}
+  _keyUpSound: {fileID: 0}
+  _volume: 1

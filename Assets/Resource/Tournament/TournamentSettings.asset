@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e2a7df73c0d15145a79290b0e397182, type: 3}
+  m_Name: TournamentSettings
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tournament.TournamentSettings
+  _battleDuration: 30
+  _keycapHealth: 5
+  _capacity: 80
+  _scorePerCurrency: 100
+  _bundleSize: 3
+  _rerollCost: 5
+  _rerollLimit: 3
+  _prices: 0000000028000000640000003c0000003c00000032000000
+  _currencyRewardMultiplier: 1.2
+  _goldRewards: 32000000280000001e0000000a000000
+  _rounds:
+  - _attacksPerSecond: 13.2
+    _damage: 2
+    _specialCount: 0
+  - _attacksPerSecond: 15.4
+    _damage: 2
+    _specialCount: 0
+  - _attacksPerSecond: 17.6
+    _damage: 2
+    _specialCount: 0
+  - _attacksPerSecond: 19.8
+    _damage: 2
+    _specialCount: 0
+  - _attacksPerSecond: 22
+    _damage: 2
+    _specialCount: 0

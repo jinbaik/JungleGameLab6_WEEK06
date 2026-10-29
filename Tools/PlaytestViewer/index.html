@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' file:; script-src 'self' file:; style-src 'self' 'unsafe-inline' file:; img-src 'self' data: file:; connect-src 'none'; object-src 'none'; base-uri 'none'">
+  <title>Playtest Atlas · 플레이테스트와 커스터마이징 분석</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="model.js" defer></script>
+  <script src="customization-model.js" defer></script>
+  <script src="customization-ui.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#main"><span class="brand-mark">PA</span><span>PLAYTEST<br><b>ATLAS</b></span></a>
+    <div class="mode-switch" role="group" aria-label="분석 데이터 유형"><button data-mode="playtest" class="active" aria-pressed="true">플레이테스트</button><button data-mode="customization" aria-pressed="false">커스터마이징</button></div>
+    <p class="eyebrow" id="domainLabel">플레이테스트 분석</p>
+    <nav id="playtestNav" aria-label="플레이테스트 분석 화면">
+      <button data-tab="overview" class="active">01 <span>실행 개요</span></button>
+      <button data-tab="battle">02 <span>대전 분석</span></button>
+      <button data-tab="keyboard">03 <span>키보드 · 키 상세</span></button>
+      <button data-tab="shop">04 <span>기믹 · 상점</span></button>
+      <button data-tab="compare">05 <span>실행 비교</span></button>
+    </nav>
+    <nav id="customizationNav" aria-label="커스터마이징 분석 화면" hidden>
+      <button data-custom-tab="summary" class="active">01 <span>접근 · 체류 개요</span></button>
+      <button data-custom-tab="runs">02 <span>편집 흐름 · 최종 구성</span></button>
+      <button data-custom-tab="elements">03 <span>항목 · 요소 선택</span></button>
+      <button data-custom-tab="images">04 <span>이미지 사용</span></button>
+      <button data-custom-tab="compare">05 <span>플레이어 · 회차 비교</span></button>
+      <button data-custom-tab="results">06 <span>최종 결과물 분석</span></button>
+    </nav>
+    <div class="sidebar-note"><b>LOCAL FIRST</b><p>파일은 이 브라우저에서만 처리합니다.<br>서버 · 업로드 · 계정 없음</p><a href="README.md">사용법과 집계 정의 ↗</a></div>
+  </aside>
+  <div class="workspace">
+    <header class="toolbar">
+      <div class="selector" data-domain="playtest"><label for="fileSelect">파일 · 실행</label><select id="fileSelect" disabled><option>CSV를 추가하세요</option></select></div>
+      <div class="selector" data-domain="playtest"><label for="tournamentSelect">세션 · 토너먼트</label><select id="tournamentSelect" disabled><option>전체</option></select></div>
+      <div class="selector battle-selector" data-domain="playtest"><label for="battleSelect">대전</label><div><button id="prevBattle" aria-label="이전 대전" disabled>‹</button><select id="battleSelect" disabled><option>선택 대기</option></select><button id="nextBattle" aria-label="다음 대전" disabled>›</button></div></div>
+      <div class="selector" data-domain="customization" hidden><label for="customFileSelect">커스터마이징 파일</label><select id="customFileSelect" disabled><option value="ALL">모든 파일</option></select></div>
+      <div class="selector" data-domain="customization" hidden><label for="testerSelect">플레이어</label><select id="testerSelect" disabled><option value="ALL">모든 플레이어</option></select></div>
+      <div class="selector" data-domain="customization" hidden><label for="customSessionSelect">로거 세션</label><select id="customSessionSelect" disabled><option value="ALL">모든 세션</option></select></div>
+      <div class="selector" data-domain="customization" hidden><label for="customRunSelect">편집 회차</label><select id="customRunSelect" disabled><option value="ALL">모든 회차</option></select></div>
+      <button class="primary" id="addFiles">CSV 추가</button>
+      <button id="removeFile" disabled>파일 제외</button>
+      <input id="fileInput" type="file" accept=".csv,text/csv" multiple hidden>
+    </header>
+    <main id="main" tabindex="-1">
+      <div class="page-heading"><div><p class="eyebrow" id="breadcrumb">WORKSPACE / OVERVIEW</p><h1 id="pageTitle">실행 개요</h1><p id="pageSubtitle">흩어진 이벤트를 하나의 플레이 흐름으로.</p></div><span class="local-badge">오프라인 분석</span></div>
+      <div id="loadStatus" role="status" aria-live="polite"></div>
+      <div id="fileErrors" role="alert"></div>
+      <section id="welcome" class="welcome">
+        <p class="eyebrow">YOUR NEXT INSIGHT STARTS HERE</p><h2 id="welcomeTitle">한 번의 실행부터,<br>하나의 키까지.</h2>
+        <p id="welcomeDescription">플레이테스트 CSV를 선택하거나 이 창에 놓으세요.<br>여러 파일의 대전, 키보드, 기믹과 상점 기록을 비교할 수 있습니다.</p>
+        <button class="primary" id="welcomeUpload">CSV 파일 선택</button>
+        <div class="welcome-steps" id="welcomeSteps"><span><b>01</b> 실행의 진행 확인</span><span><b>02</b> 대전과 키보드 탐색</span><span><b>03</b> 다른 실행과 비교</span></div>
+        <p class="fine" id="welcomeFine">29 · 43 · 59열 지원 / UTF-8 CSV / 원본 파일 변경 없음</p>
+      </section>
+      <div id="content"></div>
+      <footer id="analysisFooter">기록된 사실을 집계합니다. 입력 ≠ 타격 성공 ≠ 기믹 발동. 미수집 데이터를 추정하지 않습니다.</footer>
+    </main>
+  </div>
+  <div id="dropOverlay" hidden>CSV 파일을 여기에 놓으세요</div>
+</body>
+</html>
