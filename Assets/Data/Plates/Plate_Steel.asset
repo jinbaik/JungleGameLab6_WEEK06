@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 016ea3bb2b2c43f4998749336b8c4fd3, type: 3}
+  m_Name: Plate_Steel
+  m_EditorClassIdentifier: Assembly-CSharp::PlateData
+  _type: 4
+  _material: {fileID: 2100000, guid: 6cf19c9eabf65e64c931b45cedcd9854, type: 2}

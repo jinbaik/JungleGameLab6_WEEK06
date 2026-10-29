@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad3e8e47f4844015ac851a4c9283e2e9, type: 3}
+  m_Name: keycap-Phoebe-ability
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tournament.KeycapAbilityDefinition
+  _trigger: 0
+  _target: 1
+  _neighborCount: 8
+  _delay: 0
+  _waveDuration: 0.5
+  _effects:
+  - _kind: 1
+    _damage: 0
+    _status: {fileID: 11400000, guid: 0ec87af481fe32049b0b425d45215d87, type: 2}
+  _propagation: 0
+  _repeatCount: 1
+  _repeatInterval: 0.1
+  _alternateDirection: 0
+  _activationEffectPrefab: {fileID: 2575139938355623549, guid: 172b8d454ae80884a825674449fa7c4d, type: 3}
+  _effectScale: 1
+  _effectLifetime: 0.6
+  _windupEffectPrefab: {fileID: 0}
+  _impactEffectPrefab: {fileID: 1145203107907861637, guid: 6ae02e6a5ef42754db0573b6176b78aa, type: 3}
+  _impactLifetime: 0.32

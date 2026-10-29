@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdcb16919c44495e97289f4a950ae702, type: 3}
+  m_Name: plate-plate_nomal
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tournament.PlateDefinition
+  _id: plate-plate_nomal
+  _displayName: "Nomal \uBCF4\uAC15\uD310"
+  _price: 60
+  _quantity: 1
+  _data: {fileID: 11400000, guid: 69e1e2a7db7be374d90eb2cfe4d82c16, type: 2}
+  _materialId: b6cacee2f02e3874d97f82f41749ddc0:2100000
+  _damageBonus: 1
