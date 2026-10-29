@@ -1,0 +1,22 @@
+Monitor browser engine setup (Windows)
+
+The CEF runtime is downloaded locally and excluded from source control because
+libcef.dll exceeds GitHub's regular file size limit. Repository administrator
+permissions and Git LFS are not required for this setup.
+
+Before opening Unity on a new checkout, run from the project root in PowerShell:
+
+  powershell -ExecutionPolicy Bypass -File .\Tools\Install-MonitorBrowserEngine.ps1
+
+The script downloads version 2.2.8 from the public VoltUPR registry, verifies the
+archive against its published SHA-1, and restores the full Engine~ directory,
+including licenses and resources. Internet access is required for installation.
+The runtime remains on disk for Unity Editor and player builds.
+
+Commit the package source/configuration, this installer, and .gitignore.
+Do not commit Packages/dev.voltstro.unitywebbrowser.engine.cef.win.x64/Engine~/.
+If that directory was already staged in GitHub Desktop, unselect its files
+before committing. Ignore rules do not remove files already tracked or staged.
+
+The local already-installed check was verified. A fresh download/install must
+also be verified on a clean machine before distributing the project to others.

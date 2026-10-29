@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25c9a128f57f4c65b502d4aa9f99bc01, type: 3}
+  m_Name: Mail_Request_KeycapDesign
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Player.MonitorMailMessage
+  _mailId: mail.sample.keycap-design
+  _request: {fileID: 0}
+  _sender: "이서준"
+  _address: "seojun@customer.local"
+  _subject: "책상에 어울리는 키캡 디자인 의뢰"
+  _date: "오늘 09:45"
+  _body: "안녕하세요! 새로 꾸민 책상에 어울리는 키보드를 만들고 싶어요.\n\n전체적으로 차분한 색상을 사용하고, 포인트가 되는 아티산 키캡을 하나 넣고 싶습니다.\n\n[의뢰 내용]\n• 키캡 색상 구성 변경\n• 1u 자리에 아티산 키캡 배치\n• 은은한 LED 조명 설정\n\n스위치는 현재 구성을 유지해 주세요.\n상세한 색 조합은 작업자님의 제안을 기다리겠습니다.\n\n감사합니다.\n이서준"

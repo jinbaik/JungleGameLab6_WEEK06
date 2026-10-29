@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d8f8755b8944451ad5604883d4734c2, type: 3}
+  m_Name: Request_AnyKeyboard
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Player.KeyboardRequestDefinition
+  _requestId: keyboard.any.002
+  _displayName: "아무 키보드나 주세요"
+  _description: "키보드 본체라면 축, 키캡, 재질, 이미지와 조립 상태에 관계없이 받습니다."
+  _requiredSwitchType: 1
+  _requiresAllRequiredSwitchSlots: 0
+  _requiresCompleteAssembly: 0
+  _rewardGold: 100
+  _initialMail: {fileID: 11400000, guid: be36edf415be460dbc50bccd44e7b1f9, type: 2}
+  _successMail: {fileID: 11400000, guid: eede1754f85a4148813f367bb79b2d7c, type: 2}
+  _failureMail: {fileID: 0}
+  _nextRequest: {fileID: 11400000, guid: 6693840b90144a6a9ff00594eb53126c, type: 2}

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad3e8e47f4844015ac851a4c9283e2e9, type: 3}
+  m_Name: keycap-keycapmarblewhite-ability
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tournament.KeycapAbilityDefinition
+  _trigger: 0
+  _target: 2
+  _neighborCount: 8
+  _delay: 0.5
+  _waveDuration: 0.55
+  _effects:
+  - _kind: 0
+    _damage: 5
+    _status: {fileID: 0}
+  _propagation: 0
+  _repeatCount: 1
+  _repeatInterval: 0.1
+  _alternateDirection: 0
+  _activationEffectPrefab: {fileID: 1942818133492522922, guid: b932762bffb5a7e44a5f95d6f95ed2e7, type: 3}
+  _effectScale: 1
+  _effectLifetime: 0.75
+  _windupEffectPrefab: {fileID: 1942818133492522922, guid: b932762bffb5a7e44a5f95d6f95ed2e7, type: 3}
+  _impactEffectPrefab: {fileID: 3728533178680546199, guid: 86490436e4a329f4297dfd48ce6fdc66, type: 3}
+  _impactLifetime: 0.32

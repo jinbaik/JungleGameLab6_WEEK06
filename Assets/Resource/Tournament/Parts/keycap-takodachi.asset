@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23cb0ce5d29640679c43429f000833ab, type: 3}
+  m_Name: keycap-takodachi
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tournament.KeycapDefinition
+  _id: keycap-takodachi
+  _displayName: "\uD0C0\uCF54\uB2E4\uCE58 \uD0A4\uCEA1"
+  _price: 60
+  _quantity: 3
+  _material: {fileID: 2100000, guid: 9e33ec1ec76a42642903ec51850882d4, type: 2}
+  _materialId: 9e33ec1ec76a42642903ec51850882d4:2100000
+  _shellMesh: {fileID: 4300000, guid: 269eb0f347f37484cae8c5386062717f, type: 2}
+  _modelMaterials:
+  - {fileID: 2100000, guid: 9e33ec1ec76a42642903ec51850882d4, type: 2}
+  - {fileID: 2100000, guid: 3b73df4ca3857d444847193a82961480, type: 2}
+  - {fileID: 2100000, guid: f60ef51de224145479b505c458e0c928, type: 2}
+  - {fileID: 2100000, guid: 22c771fcbb6bfa342bd6e21acba367ed, type: 2}
+  _oneUnitOnly: 1
+  _ability: {fileID: 11400000, guid: f1d22a4ff5c1430da381556656a1804c, type: 2}

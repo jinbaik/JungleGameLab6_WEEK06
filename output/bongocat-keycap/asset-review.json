@@ -1,0 +1,20 @@
+{
+  "output": null,
+  "diagnostics": [],
+  "success": true,
+  "result": {
+    "oneUnitMismatches": [],
+    "freshKeyboardCats": 3,
+    "compiling": false,
+    "Id": "keycap-bongocat",
+    "DisplayName": "봉고캣 키캡",
+    "Price": 60,
+    "Quantity": 3,
+    "ability": "Row",
+    "Damage": 3,
+    "Delay": 0,
+    "WaveDuration": 0.45,
+    "NeighborCount": 12,
+    "vertices": 5009
+  }
+}

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25c9a128f57f4c65b502d4aa9f99bc01, type: 3}
+  m_Name: Mail_Welcome
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Player.MonitorMailMessage
+  _mailId: mail.workshop.welcome
+  _request: {fileID: 0}
+  _sender: "워크숍 안내"
+  _address: "support@workshop.local"
+  _subject: "메일함에 오신 것을 환영합니다"
+  _date: "어제 16:00"
+  _body: "키보드 워크숍에 오신 것을 환영합니다.\n\n이곳에서 고객이 보낸 의뢰 메일을 확인할 수 있습니다.\n왼쪽 목록에서 메일을 선택하면 보낸 사람과 상세 내용이 표시됩니다.\n\n긴 메일은 마우스 휠로 스크롤해 읽을 수 있습니다.\n위아래 방향키로 다른 메일을 선택할 수도 있습니다.\n\n작업을 시작하기 전에 고객의 요청사항을 꼼꼼히 확인해 주세요. 기존 부품을 유지해 달라는 요청이 있는지도 함께 살펴보세요.\n\n즐거운 작업 되세요!"

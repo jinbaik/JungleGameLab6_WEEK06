@@ -1,0 +1,10 @@
+{
+  "changed_existing_blocks": [
+    "6484209102016570918",
+    "712209937148672475"
+  ],
+  "top_surface_area": 126.57517096308227,
+  "expected_top_area": 126.57516835124972,
+  "outline_side_clearance": 0.0735959144608988,
+  "original_exterior_vertices_preserved": true
+}

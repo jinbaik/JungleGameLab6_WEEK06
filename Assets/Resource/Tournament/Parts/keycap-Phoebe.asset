@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23cb0ce5d29640679c43429f000833ab, type: 3}
+  m_Name: keycap-Phoebe
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Tournament.KeycapDefinition
+  _id: keycap-Phoebe
+  _displayName: "Phoebe \uD0A4\uCEA1"
+  _price: 60
+  _quantity: 3
+  _material: {fileID: 2100000, guid: 7d0d722e6733b7a4f8607de7942537a7, type: 2}
+  _materialId: 7d0d722e6733b7a4f8607de7942537a7:2100000
+  _shellMesh: {fileID: 4300000, guid: 2cede46fb34233f47ba3741cbff2bde5, type: 2}
+  _modelMaterials:
+  - {fileID: 2100000, guid: 7d0d722e6733b7a4f8607de7942537a7, type: 2}
+  - {fileID: 2100000, guid: fbf3d51b09330c94ab7b90df2043f85e, type: 2}
+  - {fileID: 2100000, guid: 3c1c47012fe0daf4aa738bb0b50e9c9c, type: 2}
+  - {fileID: 2100000, guid: d66c59f0efb981c49a83ca767f9df8ee, type: 2}
+  - {fileID: 2100000, guid: 79e7419f2c6cb1a4ebee0106e57c8666, type: 2}
+  - {fileID: 2100000, guid: 6acb3eb13dcf6c241b9396f75d233a60, type: 2}
+  - {fileID: 2100000, guid: a102e2c495917eb4c940c853511bc46e, type: 2}
+  - {fileID: 2100000, guid: bec8a379c5a165945b6f7c2e85ff4186, type: 2}
+  - {fileID: 2100000, guid: 7cf7a4aa31a38d647936247030f50308, type: 2}
+  _oneUnitOnly: 1
+  _ability: {fileID: 0}

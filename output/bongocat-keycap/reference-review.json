@@ -1,0 +1,15 @@
+{
+  "output": null,
+  "diagnostics": [],
+  "success": true,
+  "result": {
+    "applied": 3,
+    "restored": true,
+    "width": 0.89,
+    "depth": 0.806,
+    "height": 0.477678478,
+    "submeshes": 3,
+    "materials": 3,
+    "meshGuid": "84f61b843e240684190222ff21475082"
+  }
+}

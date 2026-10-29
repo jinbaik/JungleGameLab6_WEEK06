@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SunsetVapor
+  m_Shader: {fileID: 4800000, guid: fdc184c5336c92641845612456f20678, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap:
+    RenderType: Opaque
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _ClearCoat: 0.38
+    - _DriftSpeed: 0.2
+    - _GradientAngle: 0.52
+    - _GradientScale: 0.42
+    - _RimPower: 2.6
+    - _RimStrength: 0.45
+    - _Smoothness: 0.65
+    - _VerticalBlend: 0.35
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CoralColor: {r: 0.98, g: 0.34, b: 0.5, a: 1}
+    - _MagentaColor: {r: 0.68, g: 0.18, b: 0.68, a: 1}
+    - _RimColor: {r: 1, g: 0.58, b: 0.38, a: 1}
+    - _SunColor: {r: 1, g: 0.68, b: 0.28, a: 1}
+    - _TwilightColor: {r: 0.2, g: 0.09, b: 0.44, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

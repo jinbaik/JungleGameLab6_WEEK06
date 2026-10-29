@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.cysharp.unitask": {
+      "version": "file:com.cysharp.unitask",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
@@ -247,6 +253,45 @@
         "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
+    },
+    "dev.voltstro.nativearrayspanextensions": {
+      "version": "file:dev.voltstro.nativearrayspanextensions",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "dev.voltstro.unitywebbrowser": {
+      "version": "file:dev.voltstro.unitywebbrowser",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "dev.voltstro.nativearrayspanextensions": "1.0.1",
+        "com.unity.nuget.newtonsoft-json": "3.2.1",
+        "com.cysharp.unitask": "2.5.10",
+        "org.nuget.voltrpc": "3.2.1"
+      }
+    },
+    "dev.voltstro.unitywebbrowser.engine.cef": {
+      "version": "file:dev.voltstro.unitywebbrowser.engine.cef",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "dev.voltstro.unitywebbrowser": "2.2.8"
+      }
+    },
+    "dev.voltstro.unitywebbrowser.engine.cef.win.x64": {
+      "version": "file:dev.voltstro.unitywebbrowser.engine.cef.win.x64",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "dev.voltstro.unitywebbrowser.engine.cef": "2.2.8"
+      }
+    },
+    "org.nuget.voltrpc": {
+      "version": "file:org.nuget.voltrpc",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0878cda883269d04bb3c0efdc042fcd5, type: 3}
+  m_Name: TypingGame
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Player.MonitorTypingGameDefinition
+  _displayName: "\uD0C0\uC790\uC5F0\uC2B5"
+  _description: "\uC81C\uC2DC \uBB38\uC7A5\uC744 \uB530\uB77C \uC785\uB825\uD558\uACE0
+    \uC815\uD655\uB3C4\uC640 \uBD84\uB2F9 \uD0C0\uC218\uB97C \uD655\uC778\uD569\uB2C8\uB2E4."
+  _icon: {fileID: 21300000, guid: 8e45a0b73c2149bfa8102d18471c9a10, type: 3}
+  _screenPrefab: {fileID: 104, guid: 68076e0d96689914bb10b18315c864b2, type: 3}
+  _sentenceSet: {fileID: 11400000, guid: a66af7975713bd242a769cad4e89605c, type: 2}

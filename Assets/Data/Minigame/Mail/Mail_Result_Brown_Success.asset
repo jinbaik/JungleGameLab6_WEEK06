@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25c9a128f57f4c65b502d4aa9f99bc01, type: 3}
+  m_Name: Mail_Result_Brown_Success
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Player.MonitorMailMessage
+  _mailId: mail.keyboard.any.002.success
+  _request: {fileID: 11400000, guid: 5d953ce4a59b4853b4458801cb9cfef4, type: 2}
+  _sender: "누렁이"
+  _address: "brown@workshop.local"
+  _subject: "키보드 잘 받았어요"
+  _date: "오늘"
+  _body: "키보드 잘 받았어요. 감사합니다!"
